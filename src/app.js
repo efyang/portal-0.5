@@ -7,39 +7,52 @@
  *
  */
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SeedScene } from 'scenes';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
+import { MainScene } from 'scenes';
+import {initPhysics} from './physics.js';
 
-// Initialize core ThreeJS components
-const scene = new SeedScene();
-const camera = new PerspectiveCamera();
-const renderer = new WebGLRenderer({ antialias: true });
+class AppData {
+    constructor() {
+        // initialize physics
+        this.cworld = initPhysics();
+
+        // Initialize core ThreeJS components
+        this.scene = new MainScene(this.cworld);
+        this.camera = new PerspectiveCamera();
+        window.camera = this.camera
+        this.renderer = new WebGLRenderer({ antialias: true });
+    }
+}
+
+const appData = new AppData()
 
 // Set up camera
-camera.position.set(6, 3, -10);
-camera.lookAt(new Vector3(0, 0, 0));
+appData.camera.position.set(0, 10, 0);
+appData.camera.lookAt(new Vector3(0, 0, 0));
 
 // Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
-const canvas = renderer.domElement;
+appData.renderer.setPixelRatio(window.devicePixelRatio);
+const canvas = appData.renderer.domElement;
 canvas.style.display = 'block'; // Removes padding below canvas
 document.body.style.margin = 0; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 // Set up controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 16;
-controls.update();
+const controls = new PointerLockControls(appData.camera, document.body);
+window.addEventListener( 'click', function () {
+    controls.lock();
+} );
+// controls.lock();
+
+// window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
-    renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
+    // controls.update();
+    appData.renderer.render(appData.scene, appData.camera);
+    appData.scene.update && appData.scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -47,9 +60,9 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 // Resize Handler
 const windowResizeHandler = () => {
     const { innerHeight, innerWidth } = window;
-    renderer.setSize(innerWidth, innerHeight);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
+    appData.renderer.setSize(innerWidth, innerHeight);
+    appData.camera.aspect = innerWidth / innerHeight;
+    appData.camera.updateProjectionMatrix();
 };
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
