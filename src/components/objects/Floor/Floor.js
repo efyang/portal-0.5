@@ -30,8 +30,10 @@ class Floor extends Group {
         this.add(floor)
 
         // create physics
+        var groundMaterial = new CANNON.Material();
+        groundMaterial.friction = 0.9;
         var groundShape = new CANNON.Plane();
-        var groundBody = new CANNON.Body({ mass: 0 });
+        var groundBody = new CANNON.Body({ mass: 0, material: groundMaterial });
         groundBody.addShape(groundShape);
         groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
         parent.state.cworld.addBody(groundBody);

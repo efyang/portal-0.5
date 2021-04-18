@@ -20,21 +20,22 @@ export function initPhysics(){
     else
         world.solver = solver;
 
-    world.gravity.set(0,-20,0);
+    world.gravity.set(0,-9.8,0);
     world.broadphase = new CANNON.NaiveBroadphase();
 
     // Create a slippery material (friction coefficient = 0.0)
     let physicsMaterial = new CANNON.Material("slipperyMaterial");
     var physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial,
                                                             physicsMaterial,
-                                                            0.0, // friction coefficient
-                                                            0.3  // restitution
+                                                            {
+                                                                friction: 0.0, // friction coefficient
+                                                                restitution: 0.2  // restitution
+                                                            }
                                                             );
     // We must add the contact materials to the world
     world.addContactMaterial(physicsContactMaterial);
 
     return world
-
 }
 
 /*
