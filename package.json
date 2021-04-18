@@ -1,0 +1,48 @@
+{
+  "name": "lower-case-dashed-name-of-project",
+  "repository": "REPOSITORY-NAME-AS-IT-APPEARS-IN-GITHUB-URL",
+  "version": "0.1.0",
+  "title": "PROJECT TITLE HERE",
+  "description": "SHORT DESCRIPTION OF PROJECT HERE. ONE TO TWO SENTENCES MAX",
+  "keywords": [
+    "Princeton",
+    "graphics",
+    "three.js",
+    "COS 426",
+    "ivy league",
+    "keyword1",
+    "keyword2",
+    "...",
+    "this last entry CANNOT have a comma after it ->"
+  ],
+  "scripts": {
+    "start": "webpack-dev-server --mode development --output-public-path \"\"",
+    "prebuild": "rimraf ./build && mkdirp ./build",
+    "build": "npm run prebuild && webpack --mode production --progress --output-public-path \"\"",
+    "format": "prettier --write '*.js' 'src/**/*.js'",
+    "deploy": "npm run prebuild && webpack --mode production --progress && gh-pages -d build"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.7",
+    "three": "^0.116.0",
+    "three-obj-loader": "^1.1.3",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
+    "file-loader": "^6.0.0",
+    "gh-pages": "^2.2.0",
+    "html-webpack-plugin": "^4.3.0",
+    "mkdirp": "^1.0.4",
+    "prettier": "^2.0.5",
+    "raw-loader": "^4.0.1",
+    "rimraf": "^3.0.2",
+    "webpack": "^4.43.0",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
