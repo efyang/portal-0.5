@@ -13,14 +13,14 @@ class Player extends Group {
 
         const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-        this.sphere = new THREE.Mesh( geometry, material );
-        this.add(this.sphere)
+        this.playerModel = new THREE.Mesh( geometry, material );
+        this.add(this.playerModel)
 
         var slipperyMaterial = new CANNON.Material();
         slipperyMaterial.friction = 0.01;
 
         var regularMaterial = new CANNON.Material();
-        regularMaterial.friction = 0.3;
+        regularMaterial.friction = 0.05;
 
         // define shape
         let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5, 2, 0.5)); 
@@ -41,10 +41,12 @@ class Player extends Group {
         let physicsBody = this.physicsBody
         parent.addToUpdateList(this);
 
+        // add collision event listener to regulate jumps
         this.physicsBody.addEventListener("collide", function(e){ 
-            let EPS = 0.2
-            if (Math.abs(physicsBody.velocity.y) > EPS) {return}
-            this.inJump = false
+            let EPS = 0.4
+            if (Math.abs(physicsBody.velocity.y) <= EPS) {
+                this.inJump = false
+            }
         } );
 
         // for movement
@@ -56,6 +58,7 @@ class Player extends Group {
             "Space": {pressed: false},
         }
 
+        // handlers to detect movement using WASD
         window.addEventListener("keydown", (e) => {
             if(this.controller[e.code]){
                 this.controller[e.code].pressed = true;
@@ -69,8 +72,10 @@ class Player extends Group {
 
     }
 
+    // updates performed at each timestep
     update(timeStamp) {
-        // handle movement
+
+        // update movement
         const up = new THREE.Vector3(0, 1, 0)
         let cameraDirection = new THREE.Vector3()
         window.camera.getWorldDirection(cameraDirection)
@@ -81,58 +86,53 @@ class Player extends Group {
 
         let jumpMultiplier = 1
         if (this.physicsBody.inJump) {
-            jumpMultiplier = 0.5
+            jumpMultiplier = 0.4
         }
 
         // regulates speed when multiple directions are pressed 
-        let movementDirections = 0
-        Object.keys(this.controller).forEach(key=> {
-            if (this.controller[key].pressed) {
-                movementDirections += 1;
-            }
-        })
-        if (this.controller["Space"].pressed) {
-            movementDirections -= 1;
-        }
+        let movementDirections = this.controller["KeyW"].pressed + this.controller["KeyS"].pressed + this.controller["KeyA"].pressed + this.controller["KeyD"].pressed;
         let movementMultiplier = 1
-        if (movementDirections > 0) {
+        if (movementDirections == 2) {
             movementMultiplier = (1 / Math.sqrt(movementDirections))
         }
 
-        const f = 50 * this.physicsBody.mass * jumpMultiplier * movementMultiplier;
+        // apply forces in WASD directions when pressed
+        const f = 25 * this.physicsBody.mass * jumpMultiplier;
         
         if (this.controller["KeyW"].pressed) {
-            this.physicsBody.applyForce(forward.clone().multiplyScalar(f), this.physicsBody.position)
+            this.physicsBody.applyForce(forward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
         if (this.controller["KeyS"].pressed) {
-            this.physicsBody.applyForce(backward.clone().multiplyScalar(f), this.physicsBody.position)
+            this.physicsBody.applyForce(backward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
         if (this.controller["KeyA"].pressed) {
-            this.physicsBody.applyForce(left.clone().multiplyScalar(f), this.physicsBody.position)
+            this.physicsBody.applyForce(left.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
         if (this.controller["KeyD"].pressed) {
-            this.physicsBody.applyForce(right.clone().multiplyScalar(f), this.physicsBody.position)
+            this.physicsBody.applyForce(right.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
+
+        // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed) {
-            let EPS = 0.1
-            if (this.physicsBody.inJump) {return} 
-            this.physicsBody.inJump = true
-            this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.10), this.physicsBody.position)
+            if (!this.physicsBody.inJump) {
+                this.physicsBody.inJump = true
+                this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.2), this.physicsBody.position)
+            }
         }
 
         let v = this.physicsBody.velocity.clone()
         // always look where the camera points
-        this.physicsBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0,1,0), window.camera.quaternion.y);
+        this.physicsBody.quaternion.copy(window.camera.quaternion)
+        this.physicsBody.quaternion.x = 0
+        this.physicsBody.quaternion.z = 0
+        this.physicsBody.quaternion.normalize()
 
-        // this.physicsBody.quaternion.copy(window.camera.quaternion)
-        // this.physicsBody.quaternion.x = 0
-        // this.physicsBody.quaternion.z = 0
+        // copy position and rotation so player model aligns with the physical body
+        this.playerModel.position.copy(this.physicsBody.position)
+        this.playerModel.quaternion.copy(this.physicsBody.quaternion)
 
-        // copy position and rotation
-        this.sphere.position.copy(this.physicsBody.position)
-        this.sphere.quaternion.copy(this.physicsBody.quaternion)
         // set camera position to be at player
-        // window.camera.position.copy(this.physicsBody.position)
+        window.camera.position.copy(this.physicsBody.position)
 
         this.physicsBody.velocity = v
 
