@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
-import { Floor, Player } from 'objects';
+import { Floor, Player, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
@@ -21,7 +21,9 @@ class MainScene extends Scene {
         // Add meshes to scene
         const floor = new Floor(this);
         const lights = new BasicLights();
+        const playerModel = new PlayerModel(this);
         const player = new Player(this);
+        // this.add(floor, player, playerModel, lights);
         this.add(floor, player, lights);
 
         // Populate GUI

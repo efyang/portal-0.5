@@ -8,36 +8,35 @@ class Player extends Group {
         super();
 
         this.name = 'Player';
+        let mass = 50;
 
-        let mass = 50, radius = 1.3;
-
+        // Construct the player model 
         const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
         this.playerModel = new THREE.Mesh( geometry, material );
-        this.add(this.playerModel)
+        this.add(this.playerModel);
 
         var slipperyMaterial = new CANNON.Material();
         slipperyMaterial.friction = 0.01;
-
-        var regularMaterial = new CANNON.Material();
-        regularMaterial.friction = 0.05;
 
         // define shape
         let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5, 2, 0.5)); 
 
         // define the physical body attributes
         this.physicsBody = new CANNON.Body({ mass: mass, material: slipperyMaterial });
-        // this.physicsBody = new CANNON.Body({ mass: mass, material: regularMaterial });
         this.physicsBody.addShape(physicsShape);
         this.physicsBody.position.set(0,5,0);
         this.physicsBody.linearDamping = 0.6;
 
         // keep the player upright
         this.physicsBody.angularDamping = 1
+
+        // set additional properties
         this.physicsBody.inJump = false
+
+        // construct the physical body
         this.physicsBody.updateMassProperties()
         parent.state.cworld.addBody(this.physicsBody);
-
         let physicsBody = this.physicsBody
         parent.addToUpdateList(this);
 
@@ -75,7 +74,7 @@ class Player extends Group {
     // updates performed at each timestep
     update(timeStamp) {
 
-        // update movement
+        // define directions
         const up = new THREE.Vector3(0, 1, 0)
         let cameraDirection = new THREE.Vector3()
         window.camera.getWorldDirection(cameraDirection)
@@ -84,9 +83,16 @@ class Player extends Group {
         const left = up.clone().cross(forward).normalize()
         const right = left.clone().negate()
 
+        // physics changes while jumping
         let jumpMultiplier = 1
         if (this.physicsBody.inJump) {
-            jumpMultiplier = 0.4
+            jumpMultiplier = 0.3
+        }
+
+        if (!this.physicsBody.inJump) {
+            this.physicsBody.linearDamping = 0.8
+        } else {
+            this.physicsBody.linearDamping = 0.5
         }
 
         // regulates speed when multiple directions are pressed 
@@ -120,7 +126,6 @@ class Player extends Group {
             }
         }
 
-        let v = this.physicsBody.velocity.clone()
         // always look where the camera points
         this.physicsBody.quaternion.copy(window.camera.quaternion)
         this.physicsBody.quaternion.x = 0
@@ -132,15 +137,7 @@ class Player extends Group {
         this.playerModel.quaternion.copy(this.physicsBody.quaternion)
 
         // set camera position to be at player
-        window.camera.position.copy(this.physicsBody.position)
-
-        this.physicsBody.velocity = v
-
-        if (!this.physicsBody.inJump) {
-            this.physicsBody.linearDamping = 0.8
-        } else {
-            this.physicsBody.linearDamping = 0.3
-        }
+        // window.camera.position.copy(this.physicsBody.position)
     }
 }
 
