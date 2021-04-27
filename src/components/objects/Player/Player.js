@@ -21,6 +21,7 @@ class Player extends Group {
 
         // define shape
         let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5 / 2, 2 / 2, 0.5 / 2)); 
+        // let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5, 2, 0.5)); 
 
         // define the physical body attributes
         this.physicsBody = new CANNON.Body({ mass: mass, material: slipperyMaterial });
@@ -43,6 +44,7 @@ class Player extends Group {
         // add collision event listener to regulate jumps
         this.physicsBody.addEventListener("collide", function(e){ 
             let EPS = 0.4
+            console.log(physicsBody.velocity.y)
             if (Math.abs(physicsBody.velocity.y) <= EPS) {
                 this.inJump = false
             }
@@ -68,16 +70,15 @@ class Player extends Group {
                 this.controller[e.code].pressed = false;
             }
         })
-
     }
 
     // updates performed at each timestep
     update(timeStamp) {
 
         // define directions
-        const up = new THREE.Vector3(0, 1, 0)
         let cameraDirection = new THREE.Vector3()
         window.camera.getWorldDirection(cameraDirection)
+        const up = new THREE.Vector3(0, 1, 0)
         const forward = cameraDirection.projectOnPlane(up).normalize()
         const backward = forward.clone().negate()
         const left = up.clone().cross(forward).normalize()
@@ -120,6 +121,7 @@ class Player extends Group {
 
         // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed) {
+            // console.log(this.physicsBody.inJump)
             if (!this.physicsBody.inJump) {
                 this.physicsBody.inJump = true
                 this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.2), this.physicsBody.position)
@@ -137,8 +139,9 @@ class Player extends Group {
         this.playerModel.quaternion.copy(this.physicsBody.quaternion)
 
         // set camera position to be at player
-        // window.camera.position.copy(this.physicsBody.position)
+        window.camera.position.copy(this.physicsBody.position)
     }
 }
+
 
 export default Player;
