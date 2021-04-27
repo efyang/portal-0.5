@@ -4,3 +4,4 @@ export * from './Floor';
 export * from './Player';
 export * from './Portal';
 export * from './PlayerModel';
+export * from './GeneralBB';

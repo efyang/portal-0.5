@@ -9,8 +9,9 @@ class GeneralBB {
         // Box3
         this.baseBB = new THREE.Box3(halfDiag.clone().negate(), halfDiag.clone())
         // Matrix4
-        this.t = t
-        this.inverse_t = this.t.clone().invert()
+        this.t = t.clone()
+        this.inverse_t = this.t.clone()
+        this.inverse_t.invert()
     }
 
     // @param {THREE.Vector3} point
@@ -21,3 +22,5 @@ class GeneralBB {
         return this.baseBB.containsPoint(p3)
     }
 }
+
+export default GeneralBB;
