@@ -1,7 +1,7 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color } from 'three';
 import { Scene, Color, Vector3 } from 'three';
-import { Floor, Player, Portal, PlayerModel } from 'objects';
+import { Floor, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
@@ -26,6 +26,9 @@ class MainScene extends Scene {
         const player = new Player(this);
         // this.add(floor, player, playerModel, lights);
         this.add(floor, player, lights);
+
+        const cube = new EnvironmentCube(this, new Vector3(0, 0, 0))
+        this.add(cube)
 
         const portal1 = new Portal(this,
             new Vector3(0, 2, 0),

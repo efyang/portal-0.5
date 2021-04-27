@@ -6,8 +6,8 @@ import { Group, Vector3 } from 'three'
 // width = x
 // height = y
 // depth = z
-const PORTAL_WIDTH = 2.5
-const PORTAL_DEPTH = 4
+const PORTAL_WIDTH = 1.5
+const PORTAL_DEPTH = 2
 const PORTAL_CDBB_HEIGHT = 0.5
 const PORTAL_HEIGHT = 0.01
 
@@ -16,13 +16,13 @@ class Portal extends Group {
     // normal - the normal of the host surface
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
-    // hostObject - object that this portal is on
-    constructor(parent, position, normal, playerDirection, output, hostObject) {
+    // hostObjects - object that this portal is on
+    constructor(parent, position, normal, playerDirection, output, hostObjects) {
         super()
         this.parent = parent
         this.pos = position.clone()
         this.output = output
-        this.hostObject = hostObject
+        this.hostObjects = hostObjects
 
         // create onb for bb transformations
         let ty = normal.clone().normalize()

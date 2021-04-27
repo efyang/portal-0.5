@@ -20,7 +20,7 @@ class Player extends Group {
         slipperyMaterial.friction = 0.01;
 
         // define shape
-        let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5, 2, 0.5)); 
+        let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5 / 2, 2 / 2, 0.5 / 2)); 
 
         // define the physical body attributes
         this.physicsBody = new CANNON.Body({ mass: mass, material: slipperyMaterial });
