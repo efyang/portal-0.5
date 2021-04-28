@@ -17,7 +17,7 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    constructor(parent, position, normal, playerDirection, output, hostObjects) {
+    constructor(parent, position, normal, playerUpDirection, output, hostObjects) {
         super()
         this.parent = parent
         this.pos = position.clone()
@@ -26,11 +26,18 @@ class Portal extends Group {
 
         // create onb for bb transformations
         let ty = normal.clone().normalize()
-        let tz = playerDirection.clone().projectOnPlane(ty)
+        let tz = playerUpDirection.clone().projectOnPlane(ty).normalize()
         if (tz.length() < 0.1) {
             tz = new Vector3(0, 1, 0)
         }
         let tx = tz.clone().cross(ty)
+
+        // for visualization purposes
+        let xHelper = new THREE.ArrowHelper(tx, position, 1, 0xff0000)
+        let yHelper = new THREE.ArrowHelper(ty, position, 1, 0x00ff00)
+        let zHelper = new THREE.ArrowHelper(tz, position, 1, 0x0000ff)
+        this.add(xHelper, yHelper, zHelper)
+
         let tRot = new THREE.Matrix4().makeBasis(tx, ty, tz)
 
         this.transform = tRot.clone().setPosition(position)
@@ -66,11 +73,22 @@ class Portal extends Group {
     }
 
     // apply teleportation to the output portal to the vector
-    // could be a velocity or position, is Vector3
     // no side effects
-    getTeleportedVector(v) {
+    getTeleportedPositionalVector(v) {
         let f = new THREE.Matrix4().makeScale(-1, -1, 1)
         let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
+        let v4 = util.threeToFour(v).applyMatrix4(m)
+        return util.fourToThree(v4)
+    }
+
+    getTeleportedDirectionalVector(v) {
+        let f = new THREE.Matrix4().makeScale(-1, -1, 1)
+        let it = new THREE.Matrix4()
+        it.extractRotation(this.CDBB.inverse_t)
+        let to = new THREE.Matrix4()
+        to.extractRotation(this.output.CDBB.t)
+
+        let m = it.clone().premultiply(f).premultiply(to)
         let v4 = util.threeToFour(v).applyMatrix4(m)
         return util.fourToThree(v4)
     }

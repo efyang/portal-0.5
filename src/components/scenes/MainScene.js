@@ -1,5 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster } from 'three';
+import * as THREE from 'three';
 import { Floor, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
@@ -33,21 +34,44 @@ class MainScene extends Scene {
         this.intersectObj = [floor.children[0], cube.children[0]];
 
         let portal1 = new Portal(this,
-            new Vector3(0, 2, 0),
-            new Vector3(-1, 0, 0), // normal of surface
-            new Vector3(1, 0, 0),
+            new Vector3(5, 1, 0),
+            new Vector3(-1, 0, 0).normalize(), // normal of surface
+            new Vector3(0, 1, 0).normalize(),
             null,
             floor)
 
         let portal2 = new Portal(this,
-            new Vector3(5, 0, 2),
-            new Vector3(0, 1, 0), // normal of surface
-            new Vector3(1, 0, 1),
+            new Vector3(10, 1, 0),
+            new Vector3(1, 0, 1).normalize(), // normal of surface
+            new Vector3(0, 2, 1).normalize(),
             portal1,
             floor)
 
         portal1.output = portal2
         this.add(portal1, portal2)
+
+        // do some test points and vectors through the portals
+        // test directional transform
+        let dv = new Vector3(1, 2, 3).normalize()
+        const inputHelper = new THREE.ArrowHelper(dv, new Vector3(4, 1, 0), 1, 0xffff00)
+        this.add(inputHelper)
+
+        let dout = portal1.getTeleportedDirectionalVector(dv)
+        const outputHelper = new THREE.ArrowHelper(dout, new Vector3(10, 1, 0).add(new Vector3(1, 0, 1).normalize()), 1, 0xff00ff)
+        this.add(outputHelper)
+        
+        // test point transform
+        const geometry = new THREE.SphereGeometry( 0.1, 32, 32 );
+        const material = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
+        const sphere1 = new THREE.Mesh( geometry, material );
+        const sphere2 = new THREE.Mesh( geometry, material );
+        let p1 = new Vector3(5, 1, 0).add(new Vector3(-1, 0.5, 0.3))
+        let p2 = portal1.getTeleportedPositionalVector(p1)
+        sphere1.position.copy(p1)
+        sphere2.position.copy(p2)
+        this.add(sphere1, sphere2)
+
+
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
 
