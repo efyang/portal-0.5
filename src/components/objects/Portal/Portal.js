@@ -66,24 +66,14 @@ class Portal extends Group {
     }
 
     // apply teleportation to the output portal to the vector
-    // could be a velocity, is Vector3
+    // could be a velocity or position, is Vector3
     // no side effects
     getTeleportedVector(v) {
-        let f = new THREE.Matrix4().makeScale(-1, -1, -1)
+        let f = new THREE.Matrix4().makeScale(-1, -1, 1)
         let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
         let v4 = util.threeToFour(v).applyMatrix4(m)
         return util.fourToThree(v4)
     }
-
-    // apply teleportation to the output portal to the vector position Vector3
-    // no side effects
-    getTeleportedPosition(v) {
-        let f = new THREE.Matrix4().makeScale(-1, 1, -1)
-        let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
-        let v4 = util.threeToFour(v).applyMatrix4(m)
-        return util.fourToThree(v4)
-    }
-
 }
 
 export default Portal;
