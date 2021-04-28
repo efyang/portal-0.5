@@ -41,7 +41,7 @@ class MainScene extends Scene {
             floor)
 
         let portal2 = new Portal(this,
-            new Vector3(10, 1, 0),
+            new Vector3(8, 1, 0),
             new Vector3(1, 0, 1).normalize(), // normal of surface
             new Vector3(0, 2, 1).normalize(),
             portal1,
@@ -57,7 +57,7 @@ class MainScene extends Scene {
         this.add(inputHelper)
 
         let dout = portal1.getTeleportedDirectionalVector(dv)
-        const outputHelper = new THREE.ArrowHelper(dout, new Vector3(10, 1, 0).add(new Vector3(1, 0, 1).normalize()), 1, 0xff00ff)
+        const outputHelper = new THREE.ArrowHelper(dout, new Vector3(8, 1, 0).add(new Vector3(1, 0, 1).normalize()), 1, 0xff00ff)
         this.add(outputHelper)
         
         // test point transform
@@ -70,6 +70,20 @@ class MainScene extends Scene {
         sphere1.position.copy(p1)
         sphere2.position.copy(p2)
         this.add(sphere1, sphere2)
+
+        // test object transform
+        let objectpos = new Vector3(5, 1, 0).add(new Vector3(-1, -0.5, -0.3))
+        const objectGroup = new THREE.Group()
+        let arrowObject1 = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), objectpos, 0.5, 0xff0000)
+        let arrowObject2 = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), objectpos, 0.5, 0x00ff00)
+        let arrowObject3 = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), objectpos, 0.5, 0x0000ff)
+        const sphere3 = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 0xffffff} ) );
+        sphere3.position.copy(objectpos)
+        objectGroup.add(arrowObject1, arrowObject2, arrowObject3, sphere3)
+        this.add(objectGroup)
+        const objectGroup2 = objectGroup.clone()
+        portal1.teleportObject3D(objectGroup2)
+        this.add(objectGroup2)
 
 
         // Populate GUI

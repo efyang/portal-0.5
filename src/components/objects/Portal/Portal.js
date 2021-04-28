@@ -81,6 +81,8 @@ class Portal extends Group {
         return util.fourToThree(v4)
     }
 
+    // for directional vectors, it doesn't make sense to translate them
+    // we only apply the rotational component of the matrix
     getTeleportedDirectionalVector(v) {
         let f = new THREE.Matrix4().makeScale(-1, -1, 1)
         let it = new THREE.Matrix4()
@@ -91,6 +93,14 @@ class Portal extends Group {
         let m = it.clone().premultiply(f).premultiply(to)
         let v4 = util.threeToFour(v).applyMatrix4(m)
         return util.fourToThree(v4)
+    }
+
+    // teleport a 3D object directly, returns nothing
+    // Object3D includes camera, meshes
+    teleportObject3D(object) {
+        let f = new THREE.Matrix4().makeScale(-1, -1, 1)
+        let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
+        object.applyMatrix4(m)
     }
 }
 
