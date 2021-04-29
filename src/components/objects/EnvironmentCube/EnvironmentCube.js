@@ -2,10 +2,8 @@ import { Group, MeshStandardMaterial, Mesh, TextureLoader, DoubleSide, RepeatWra
 import FLOOR_TEXTURE from '../../../../assets/textures/floorTexture.png'
 import * as CANNON from 'cannon'
 
-const CUBESIZE = 3
-
 class EnvironmentCube extends Group {
-    constructor(parent, position) {
+    constructor(parent, position, size = 3) {
         // Call parent Group() constructor
         super();
 
@@ -14,6 +12,8 @@ class EnvironmentCube extends Group {
             gui: parent.state.gui,
         };
        
+        const CUBESIZE = size;
+
         // create geometry
         const geometry = new BoxGeometry( CUBESIZE, CUBESIZE, CUBESIZE );
         const texture = new TextureLoader().load(FLOOR_TEXTURE);
@@ -31,7 +31,8 @@ class EnvironmentCube extends Group {
         // create physics
         var groundMaterial = new CANNON.Material();
         groundMaterial.friction = 0.9;
-        var groundShape = new CANNON.Box(new CANNON.Vec3(CUBESIZE / 2, CUBESIZE / 2, CUBESIZE / 2));
+        let EPS = 0.1
+        var groundShape = new CANNON.Box(new CANNON.Vec3(CUBESIZE / 2 + EPS, CUBESIZE / 2 + EPS, CUBESIZE / 2 + EPS));
         var groundBody = new CANNON.Body({ mass: 0, material: groundMaterial });
         groundBody.addShape(groundShape);
         groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);

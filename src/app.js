@@ -7,6 +7,8 @@
  *
  */
 import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2, Texture } from 'three';
+import { Group, LineBasicMaterial, Line, BufferGeometry, BufferAttribute } from 'three';
+
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { MainScene } from 'scenes';
@@ -31,8 +33,9 @@ class AppData {
         this.portal2Target = new WebGLRenderTarget(width, height)
         this.portal1TargetTmp = new WebGLRenderTarget(width, height)
         this.portal2TargetTmp = new WebGLRenderTarget(width, height)
+        this.controls = new PointerLockControls(this.camera, document.body);
 
-        this.scene = new MainScene(this.cworld);
+        this.scene = new MainScene(this.cworld, this.controls);
     }
 }
 
@@ -42,6 +45,41 @@ const appData = new AppData()
 appData.camera.position.set(0, 10, 0);
 appData.camera.lookAt(new Vector3(0, 0, 0));
 
+
+// Adapted from https://stackoverflow.com/questions/31655888/how-to-cast-a-visible-ray-threejs
+var material = new LineBasicMaterial({ color: 0xAAFFAA });
+
+// crosshair size
+var x = 10, y = 10;
+
+var geometry = new BufferGeometry();
+
+const vertices = new Float32Array( [
+    0, y, 0,
+    0, -y, 0,
+    0, 0, 0,
+    x, 0, 0,
+    -x, 0, 0,
+] );
+
+// itemSize = 3 because there are 3 values (components) per vertex
+geometry.setAttribute( 'position', new BufferAttribute( vertices, 3 ) );
+
+var crosshair = new Line( geometry, material );
+// place it in the center
+var crosshairPercentX = 50;
+var crosshairPercentY = 50;
+var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+
+crosshair.position.x = crosshairPositionX * appData.camera.aspect;
+crosshair.position.y = crosshairPositionY;
+crosshair.position.z = -0.3;
+
+appData.camera.add( crosshair );
+
+
+
 // Set up renderer, canvas, and minor CSS adjustments
 appData.renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = appData.renderer.domElement;
@@ -50,12 +88,12 @@ document.body.style.margin = 0; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
-// Set up controls
-const controls = new PointerLockControls(appData.camera, document.body);
+
+// lock camera controls on mouseclick
 window.addEventListener( 'click', function () {
-    controls.lock();
+    appData.controls.lock();
 } );
-// controls.lock();
+
 
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
 let stats = new Stats();
@@ -80,10 +118,11 @@ const onAnimationFrameHandler = (timeStamp) => {
 
     // stencil optimization - only render parts of scene multiple
     // times when it is going to be viewed by the portal
-    renderer.clearStencil()
-    renderer.autoClearStencil = false
-    renderer.render(appData.scene.portal1.mesh, window.camera)
-    renderer.render(appData.scene.portal2.mesh, window.camera)
+
+    // renderer.clearStencil()
+    // renderer.autoClearStencil = false
+    // renderer.render(appData.scene.portal1.mesh, window.camera)
+    // renderer.render(appData.scene.portal2.mesh, window.camera)
 
     const levels = 7
     for (let i = 0; i < levels; i++) {

@@ -44,7 +44,7 @@ class Player extends Group {
         // add collision event listener to regulate jumps
         this.physicsBody.addEventListener("collide", function(e){ 
             let EPS = 0.4
-            console.log(physicsBody.velocity.y)
+            // console.log(physicsBody.velocity.y)
             if (Math.abs(physicsBody.velocity.y) <= EPS) {
                 this.inJump = false
             }

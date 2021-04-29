@@ -1,11 +1,11 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, Vector2, Vector3, Raycaster, Texture } from 'three';
+import { Scene, Color, Vector2, Vector3, Raycaster, Texture, ArrowHelper } from 'three';
 import * as THREE from 'three';
-import { Floor, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
+import { Floor, Crosshair, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
-    constructor(cworld) {
+    constructor(cworld, controls) {
         // Call parent Scene() constructor
         super();
 
@@ -14,26 +14,35 @@ class MainScene extends Scene {
             gui: new Dat.GUI(), // Create GUI for scene
             cworld: cworld,
             updateList: [],
+            controls: controls,
         };
 
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
 
         // Add meshes to scene
-        const floor = new Floor(this);
         const lights = new BasicLights();
-        // const playerModel = new PlayerModel(this);
         const player = new Player(this);
-        // this.add(floor, player, playerModel, lights);
-        this.add(floor, player, lights);
+
+        const floor = new Floor(this, new Vector3(0,0,0), -Math.PI / 2, 0, 0);
+        const wall1 = new Floor(this, new Vector3(10, 0, 0), 0, -Math.PI / 2, 0);
+        const wall2 = new Floor(this, new Vector3(-10, 0, 0), 0, Math.PI / 2, 0);
+        const wall3 = new Floor(this, new Vector3(0, 0, 10), 0, Math.PI, 0);
+        const wall4 = new Floor(this, new Vector3(0, 0, -10), 0, 0, 0);
+        const ceiling = new Floor(this, new Vector3(0, 10, 0), Math.PI / 2, 0, 0);
+        this.add(floor, wall1, wall2, wall3, wall4, ceiling, player, lights);
+        // this.add(floor, wall1, player, lights);
 
         const cube = new EnvironmentCube(this, new Vector3(0, 0, 0))
         this.add(cube)
+        // const room = new EnvironmentRoom2(this, 0, 4, 0, 4)
+        // this.add(room, player, lights)
 
         // set intersectable objects
-        this.intersectObj = [floor.children[0], cube.children[0]];
+        this.intersectObj = [floor.children[0], wall1.children[0], wall2.children[0], wall3.children[0], wall4.children[0], ceiling.children[0], cube.children[0]];
+        // this.intersectObj = [floor.children[0], wall1.children[0], cube.children[0]];
 
-
+        // set portals
         this.portal1 = new Portal(this,
             new Vector3(5, 1.1, 0),
             new Vector3(1, 0, 0).normalize(), // normal of surface
@@ -52,6 +61,9 @@ class MainScene extends Scene {
 
         this.portal1.output = this.portal2
         this.add(this.portal1, this.portal2)
+        
+        // console.log(floor)
+        
 /*
         this.portal1 = new Portal(this,
             new Vector3(5, 1, 0),
@@ -110,53 +122,53 @@ class MainScene extends Scene {
 
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
+        
 
         // construct portals
         // handle portal spawning on mouse down
         // window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false)
-        /*window.addEventListener("mousedown", (event) => {
-            let self = this
-            const raycaster = new Raycaster();
-
-            // let cameraDirection = new Vector3()
-            // window.camera.getWorldDirection(cameraDirection)
-            // raycaster.setFromCamera( cameraDirection, window.camera );
+        
+        window.addEventListener("mousedown", (event) => {
+            if (!this.state.controls.isLocked) { return; }
 
             let mouse = new Vector2(0,0)
+            const raycaster = new Raycaster();
             raycaster.setFromCamera( mouse, window.camera );
 
-            console.log(this.intersectObj)
             const intersects = raycaster.intersectObjects( this.intersectObj );
-            // const intersects = raycaster.intersectObject( this.floor );
-            console.log(intersects)
             if (intersects.length > 0) {
                 if (event.button == 0) {           // left click
                     
-                    portal1.children[0].geometry.dispose();
-                    portal1.children[0].material.dispose();
-                    this.remove(portal1);
-                    portal1 = new Portal(this,
-                        new Vector3(9, 0, 2),
-                        new Vector3(0, 1, 0), // normal of surface
-                        new Vector3(1, 0, 1),
-                        null,
-                        floor)
-                    self.add(portal1)
+                    this.portal1.mesh.geometry.dispose();
+                    this.portal1.mesh.material.dispose();
+                    this.remove(this.portal1);
+                    console.log(intersects[0])
+                    this.portal1 = new Portal(this,
+                        intersects[0].point,
+                        intersects[0].face.normal.normalize(), // normal of surface
+                        new Vector3(0, 1, 0).normalize(),
+                        this.portal2,
+                        intersects[0].object.parent,
+                        'orange')
+                    this.add(this.portal1)
+                    this.portal2.output = this.portal1
                 } else if (event.button == 2) {    // right click
                     
-                    portal2.children[0].geometry.dispose();
-                    portal2.children[0].material.dispose();
-                    this.remove(portal2);
-                    portal2 = new Portal(this,
-                        new Vector3(5, 0, 2),
-                        new Vector3(0, 1, 0), // normal of surface
-                        new Vector3(1, 0, 1),
-                        portal1,
-                        floor)
-                    self.add(portal2)
+                    this.portal2.mesh.geometry.dispose();
+                    this.portal2.mesh.material.dispose();
+                    this.remove(this.portal2);
+                    this. portal2 = new Portal(this,
+                        intersects[0].point,
+                        intersects[0].face.normal.normalize(), // normal of surface
+                        new Vector3(0, 1, 0).normalize(),
+                        this.portal1,
+                        intersects[0].object,
+                        'blue')
+                    this.add(this.portal2)
+                    this.portal1.output = this.portal2
                 }
             }
-        })*/
+        })
     }
 
     addToUpdateList(object) {
@@ -170,29 +182,6 @@ class MainScene extends Scene {
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
-        }
-    }
-
-    handleMouseDown(event) {
-        const raycaster = new Raycaster();
-
-        // let cameraDirection = new Vector3()
-        // window.camera.getWorldDirection(cameraDirection)
-        // raycaster.setFromCamera( cameraDirection, window.camera );
-
-        let mouse = new Vector2(0,0)
-        raycaster.setFromCamera( mouse, window.camera );
-
-        console.log(this.intersectObj)
-        const intersects = raycaster.intersectObjects( this.intersectObj );
-        // const intersects = raycaster.intersectObject( this.floor );
-        console.log(intersects)
-        if (intersects.length > 0) {
-            if (event.button == 0) {           // left click
-                portal
-            } else if (event.button == 2) {    // right click
-
-            }
         }
     }
 }

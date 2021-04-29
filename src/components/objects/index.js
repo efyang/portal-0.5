@@ -7,3 +7,5 @@ export * from './PlayerModel';
 export * from './GeneralBB';
 export * from './EnvironmentCube'
 export * from './EnvironmentRoom'
+export * from './EnvironmentRoom2'
+export * from './Crosshair'

@@ -10,7 +10,7 @@ import * as GLOBALS from '../../../globals'
 const PORTAL_WIDTH = 1.5
 const PORTAL_DEPTH = 2
 const PORTAL_CDBB_HEIGHT = 0.5
-const PORTAL_HEIGHT = 0.00001
+const PORTAL_HEIGHT = 0.0001
 
 class Portal extends Group {
     // position - the center position (vector3)
@@ -46,6 +46,7 @@ class Portal extends Group {
 
         this.transform = tRot.clone().setPosition(position)
         this.plane.applyMatrix4(this.transform)
+        this.plane.translate(normal.clone().multiplyScalar(0.0001));
 
         // create the 3d model
 
@@ -76,10 +77,10 @@ class Portal extends Group {
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
-            stencilWrite: true, // stencil optimization, only for culling portal
-            stencilFunc: THREE.EqualStencilFunc,
-            stencilRef: 1,
-            stencilFail: THREE.ReplaceStencilOp,
+            // stencilWrite: true, // stencil optimization, only for culling portal
+            // stencilFunc: THREE.EqualStencilFunc,
+            // stencilRef: 1,
+            // stencilFail: THREE.ReplaceStencilOp,
         });
 
         this.mesh = new THREE.Mesh( geometry, material );
