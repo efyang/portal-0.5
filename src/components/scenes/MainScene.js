@@ -39,14 +39,16 @@ class MainScene extends Scene {
             new Vector3(1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             null,
-            floor)
+            floor,
+            'orange')
 
         this.portal2 = new Portal(this,
             new Vector3(8, 1.1, 0),
             new Vector3(-1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             this.portal1,
-            floor)
+            floor,
+            'blue')
 
         this.portal1.output = this.portal2
         this.add(this.portal1, this.portal2)

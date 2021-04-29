@@ -11,6 +11,7 @@ import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2, 
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { MainScene } from 'scenes';
 import {initPhysics} from './physics.js';
+const Stats = require("stats.js");
 
 class AppData {
     constructor() {
@@ -57,7 +58,8 @@ window.addEventListener( 'click', function () {
 // controls.lock();
 
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
-
+let stats = new Stats();
+document.body.appendChild(stats.dom);
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
     // controls.update();
@@ -90,6 +92,9 @@ const onAnimationFrameHandler = (timeStamp) => {
         appData.scene.portal2.teleportObject3D(portal1Camera)
         appData.scene.portal1.mesh.material.colorWrite = true
         appData.scene.portal2.mesh.material.colorWrite = false
+        // necessary so that we properly render recursion (otherwise the other portal might block)
+        appData.scene.portal1.renderOrder = 2
+        appData.scene.portal2.renderOrder = 3
         renderer.clippingPlanes = [appData.scene.portal2.plane.clone()]
         renderer.setRenderTarget(appData.portal1TargetTmp)
         renderer.render(appData.scene, portal1Camera)
@@ -97,6 +102,9 @@ const onAnimationFrameHandler = (timeStamp) => {
         appData.scene.portal1.teleportObject3D(portal2Camera)
         appData.scene.portal1.mesh.material.colorWrite = false
         appData.scene.portal2.mesh.material.colorWrite = true
+        // necessary so that we properly render recursion (otherwise the other portal might block)
+        appData.scene.portal1.renderOrder = 3
+        appData.scene.portal2.renderOrder = 2
         renderer.clippingPlanes = [appData.scene.portal1.plane.clone()]
         renderer.setRenderTarget(appData.portal2TargetTmp)
         renderer.render(appData.scene, portal2Camera)
@@ -108,16 +116,13 @@ const onAnimationFrameHandler = (timeStamp) => {
         appData.portal1Target = appData.portal1TargetTmp
         appData.portal1TargetTmp = swap
         appData.scene.portal1.mesh.material.uniforms.texture1.value = appData.portal1Target.texture
+        appData.scene.portal1.mesh.material.needsUpdate = true
 
         swap = appData.portal2Target
         appData.portal2Target = appData.portal2TargetTmp
         appData.portal2TargetTmp = swap
         appData.scene.portal2.mesh.material.uniforms.texture1.value = appData.portal2Target.texture
-
-    renderer.setRenderTarget(null)
-    renderer.localClippingEnabled = false
-    renderer.clippingPlanes = []
-    renderer.render(appData.scene, window.camera)
+        appData.scene.portal2.mesh.material.needsUpdate = true
     }
 
     appData.scene.portal1.mesh.material.colorWrite = true
@@ -130,6 +135,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderer.render(appData.scene, window.camera)
 
     // appData.renderer.render(appData.scene, appData.camera);
+    stats.update();
     appData.scene.update && appData.scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
 };

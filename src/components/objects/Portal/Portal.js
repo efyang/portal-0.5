@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GeneralBB } from 'objects'
 import * as util from '../../../util'
 import { Group, Vector3 } from 'three'
+import * as GLOBALS from '../../../globals'
 
 // width = x
 // height = y
@@ -17,7 +18,7 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    constructor(parent, position, normal, playerUpDirection, output, hostObjects) {
+    constructor(parent, position, normal, playerUpDirection, output, hostObjects, ringColor) {
         super()
         this.parent = parent
         this.pos = position.clone()
@@ -34,10 +35,12 @@ class Portal extends Group {
         let tx = tz.clone().cross(ty)
 
         // for visualization purposes
-        let xHelper = new THREE.ArrowHelper(tx, position, 1, 0xff0000)
-        let yHelper = new THREE.ArrowHelper(ty, position, 1, 0x00ff00)
-        let zHelper = new THREE.ArrowHelper(tz, position, 1, 0x0000ff)
-        this.add(xHelper, yHelper, zHelper)
+        if (GLOBALS.DEBUG) {
+            let xHelper = new THREE.ArrowHelper(tx, position, 1, 0xff0000)
+            let yHelper = new THREE.ArrowHelper(ty, position, 1, 0x00ff00)
+            let zHelper = new THREE.ArrowHelper(tz, position, 1, 0x0000ff)
+            this.add(xHelper, yHelper, zHelper)
+        }
 
         let tRot = new THREE.Matrix4().makeBasis(tx, ty, tz)
 
@@ -65,11 +68,11 @@ class Portal extends Group {
 
         const geometry = new THREE.BoxGeometry( PORTAL_WIDTH, PORTAL_HEIGHT, PORTAL_DEPTH );
         const uniforms = {
-            texture1: {type: 't', value: null},
-            ww: {type: 'f', value: window.innerWidth}, // not correct values at time of creation necessarily, will be updated later in render loop
-            wh: {type: 'f', value: window.innerHeight}
+            texture1: {type: 't', value: new THREE.Texture()},
+            ww: {type: 'f', value: 1}, // not correct values at time of creation necessarily, will be updated later in render loop
+            wh: {type: 'f', value: 1}
         }
-        const material = new THREE.ShaderMaterial( /*{colorWrite: false}*/ {
+        const material = new THREE.ShaderMaterial({
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
@@ -77,6 +80,8 @@ class Portal extends Group {
 
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.applyMatrix4(this.transform)
+        this.mesh.updateMatrix()
+        this.mesh.matrixAutoUpdate = false
 
         const ringPoints = [];
         ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
@@ -88,7 +93,7 @@ class Portal extends Group {
         ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, -PORTAL_DEPTH / 2 - 0.01) );
         ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
         const ringGeometry = new THREE.BufferGeometry().setFromPoints( ringPoints );
-        const ringMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
+        const ringMaterial = new THREE.LineBasicMaterial({color: ringColor});
         this.ring = new THREE.Line( ringGeometry, ringMaterial);
         this.ring.applyMatrix4(this.transform)
         this.add(this.ring)
