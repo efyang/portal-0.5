@@ -78,8 +78,12 @@ const onAnimationFrameHandler = (timeStamp) => {
     appData.portal1TargetTmp.setSize(width, height);
     appData.portal2TargetTmp.setSize(width, height);
 
-    appData.scene.portal1.mesh.material.colorWrite = false
-    appData.scene.portal2.mesh.material.colorWrite = false
+    // stencil optimization - only render parts of scene multiple
+    // times when it is going to be viewed by the portal
+    renderer.clearStencil()
+    renderer.autoClearStencil = false
+    renderer.render(appData.scene.portal1.mesh, window.camera)
+    renderer.render(appData.scene.portal2.mesh, window.camera)
 
     const levels = 7
     for (let i = 0; i < levels; i++) {
@@ -90,21 +94,17 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderer.localClippingEnabled = true
     for (let level = 0; level < levels - 1; level++) {
         appData.scene.portal2.teleportObject3D(portal1Camera)
-        appData.scene.portal1.mesh.material.colorWrite = true
-        appData.scene.portal2.mesh.material.colorWrite = false
         // necessary so that we properly render recursion (otherwise the other portal might block)
-        appData.scene.portal1.renderOrder = 2
-        appData.scene.portal2.renderOrder = 3
+        appData.scene.portal1.visible = true
+        appData.scene.portal2.visible = false
         renderer.clippingPlanes = [appData.scene.portal2.plane.clone()]
         renderer.setRenderTarget(appData.portal1TargetTmp)
         renderer.render(appData.scene, portal1Camera)
 
         appData.scene.portal1.teleportObject3D(portal2Camera)
-        appData.scene.portal1.mesh.material.colorWrite = false
-        appData.scene.portal2.mesh.material.colorWrite = true
         // necessary so that we properly render recursion (otherwise the other portal might block)
-        appData.scene.portal1.renderOrder = 3
-        appData.scene.portal2.renderOrder = 2
+        appData.scene.portal1.visible = false
+        appData.scene.portal2.visible = true
         renderer.clippingPlanes = [appData.scene.portal1.plane.clone()]
         renderer.setRenderTarget(appData.portal2TargetTmp)
         renderer.render(appData.scene, portal2Camera)
@@ -125,8 +125,8 @@ const onAnimationFrameHandler = (timeStamp) => {
         appData.scene.portal2.mesh.material.needsUpdate = true
     }
 
-    appData.scene.portal1.mesh.material.colorWrite = true
-    appData.scene.portal2.mesh.material.colorWrite = true
+    appData.scene.portal1.visible = true
+    appData.scene.portal2.visible = true
 
     // finally, render to screen
     renderer.setRenderTarget(null)
