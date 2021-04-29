@@ -5,7 +5,7 @@ import { Floor, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
-    constructor(cworld) {
+    constructor(cworld, portal1Target, portal2Target) {
         // Call parent Scene() constructor
         super();
 
@@ -33,30 +33,53 @@ class MainScene extends Scene {
         // set intersectable objects
         this.intersectObj = [floor.children[0], cube.children[0]];
 
-        let portal1 = new Portal(this,
+
+        this.portal1 = new Portal(this,
+            new Vector3(5, 1, 0),
+            new Vector3(1, 0, 0).normalize(), // normal of surface
+            new Vector3(0, 1, 0).normalize(),
+            null,
+            floor,
+            portal1Target.texture)
+
+        this.portal2 = new Portal(this,
+            new Vector3(8, 1, 0),
+            new Vector3(-1, 0, 0).normalize(), // normal of surface
+            new Vector3(0, 1, 0).normalize(),
+            this.portal1,
+            floor,
+            portal2Target.texture)
+
+        this.portal1.output = this.portal2
+        this.add(this.portal1, this.portal2)
+/*
+        this.portal1 = new Portal(this,
             new Vector3(5, 1, 0),
             new Vector3(-1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             null,
-            floor)
+            floor,
+            portal1Target.texture)
 
-        let portal2 = new Portal(this,
+        this.portal2 = new Portal(this,
             new Vector3(8, 1, 0),
             new Vector3(1, 0, 1).normalize(), // normal of surface
             new Vector3(0, 2, 1).normalize(),
-            portal1,
-            floor)
+            this.portal1,
+            floor,
+            portal2Target.texture)
 
-        portal1.output = portal2
-        this.add(portal1, portal2)
-
+        this.portal1.output = this.portal2
+        this.add(this.portal1, this.portal2)
+*/
+        /*
         // do some test points and vectors through the portals
         // test directional transform
         let dv = new Vector3(1, 2, 3).normalize()
         const inputHelper = new THREE.ArrowHelper(dv, new Vector3(4, 1, 0), 1, 0xffff00)
         this.add(inputHelper)
 
-        let dout = portal1.getTeleportedDirectionalVector(dv)
+        let dout = this.portal1.getTeleportedDirectionalVector(dv)
         const outputHelper = new THREE.ArrowHelper(dout, new Vector3(8, 1, 0).add(new Vector3(1, 0, 1).normalize()), 1, 0xff00ff)
         this.add(outputHelper)
         
@@ -66,7 +89,7 @@ class MainScene extends Scene {
         const sphere1 = new THREE.Mesh( geometry, material );
         const sphere2 = new THREE.Mesh( geometry, material );
         let p1 = new Vector3(5, 1, 0).add(new Vector3(-1, 0.5, 0.3))
-        let p2 = portal1.getTeleportedPositionalVector(p1)
+        let p2 = this.portal1.getTeleportedPositionalVector(p1)
         sphere1.position.copy(p1)
         sphere2.position.copy(p2)
         this.add(sphere1, sphere2)
@@ -82,9 +105,8 @@ class MainScene extends Scene {
         objectGroup.add(arrowObject1, arrowObject2, arrowObject3, sphere3)
         this.add(objectGroup)
         const objectGroup2 = objectGroup.clone()
-        portal1.teleportObject3D(objectGroup2)
-        this.add(objectGroup2)
-
+        this.portal1.teleportObject3D(objectGroup2)
+        this.add(objectGroup2)*/
 
         // Populate GUI
         // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
@@ -92,7 +114,7 @@ class MainScene extends Scene {
         // construct portals
         // handle portal spawning on mouse down
         // window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false)
-        window.addEventListener("mousedown", (event) => {
+        /*window.addEventListener("mousedown", (event) => {
             let self = this
             const raycaster = new Raycaster();
 
@@ -134,7 +156,7 @@ class MainScene extends Scene {
                     self.add(portal2)
                 }
             }
-        })
+        })*/
     }
 
     addToUpdateList(object) {

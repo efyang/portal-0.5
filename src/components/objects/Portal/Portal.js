@@ -9,7 +9,7 @@ import { Group, Vector3 } from 'three'
 const PORTAL_WIDTH = 1.5
 const PORTAL_DEPTH = 2
 const PORTAL_CDBB_HEIGHT = 0.5
-const PORTAL_HEIGHT = 0.01
+const PORTAL_HEIGHT = 0.1
 
 class Portal extends Group {
     // position - the center position (vector3)
@@ -17,12 +17,13 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    constructor(parent, position, normal, playerUpDirection, output, hostObjects) {
+    constructor(parent, position, normal, playerUpDirection, output, hostObjects, texture) {
         super()
         this.parent = parent
         this.pos = position.clone()
         this.output = output
         this.hostObjects = hostObjects
+        this.plane = new THREE.Plane(new Vector3(0, 1, 0), 0)
 
         // create onb for bb transformations
         let ty = normal.clone().normalize()
@@ -41,13 +42,53 @@ class Portal extends Group {
         let tRot = new THREE.Matrix4().makeBasis(tx, ty, tz)
 
         this.transform = tRot.clone().setPosition(position)
+        this.plane.applyMatrix4(this.transform)
 
         // create the 3d model
+
+        const VERT_SHADER = `
+        void main() 
+        {
+            vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * modelViewPosition;
+        }
+        `
+
+        const FRAG_SHADER = `
+        uniform sampler2D texture1;
+        uniform float ww;
+        uniform float wh;
+        void main() {
+            gl_FragColor = texture2D(texture1, gl_FragCoord.xy / vec2(ww, wh));
+        }
+        `
+
         const geometry = new THREE.BoxGeometry( PORTAL_WIDTH, PORTAL_HEIGHT, PORTAL_DEPTH );
-        const material = new THREE.MeshStandardMaterial( {color: 0x00ff00, opacity: 0.5, transparent: true} );
+        const uniforms = {
+            texture1: {type: 't', value: texture},
+            ww: {type: 'f', value: window.innerWidth}, // not correct values at time of creation necessarily, will be updated later in render loop
+            wh: {type: 'f', value: window.innerHeight}
+        }
+        const material = new THREE.ShaderMaterial( /*{colorWrite: false}*/ {
+            vertexShader: VERT_SHADER,
+            fragmentShader: FRAG_SHADER,
+            uniforms: uniforms,
+        });
+
         this.mesh = new THREE.Mesh( geometry, material );
-        this.mesh.position.set(0, 0, 0)
         this.mesh.applyMatrix4(this.transform)
+
+        const ringPoints = [];
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.1, 0, PORTAL_DEPTH / 2 + 0.1 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.1, 0, PORTAL_DEPTH / 2 + 0.1 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.1, 0, -PORTAL_DEPTH / 2 - 0.1 ) );
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.1, 0, -PORTAL_DEPTH / 2 - 0.1) );
+        const ringGeometry = new THREE.BufferGeometry().setFromPoints( ringPoints );
+        const ringMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
+        let ring = new THREE.Line( ringGeometry, ringMaterial);
+        ring.applyMatrix4(this.transform)
+        this.add(ring)
+
         this.add(this.mesh)
 
         // CDBB: collision disable BB
