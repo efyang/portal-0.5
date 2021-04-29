@@ -9,7 +9,7 @@ import { Group, Vector3 } from 'three'
 const PORTAL_WIDTH = 1.5
 const PORTAL_DEPTH = 2
 const PORTAL_CDBB_HEIGHT = 0.5
-const PORTAL_HEIGHT = 0.1
+const PORTAL_HEIGHT = 0.00001
 
 class Portal extends Group {
     // position - the center position (vector3)
@@ -17,7 +17,7 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    constructor(parent, position, normal, playerUpDirection, output, hostObjects, texture) {
+    constructor(parent, position, normal, playerUpDirection, output, hostObjects) {
         super()
         this.parent = parent
         this.pos = position.clone()
@@ -65,7 +65,7 @@ class Portal extends Group {
 
         const geometry = new THREE.BoxGeometry( PORTAL_WIDTH, PORTAL_HEIGHT, PORTAL_DEPTH );
         const uniforms = {
-            texture1: {type: 't', value: texture},
+            texture1: {type: 't', value: null},
             ww: {type: 'f', value: window.innerWidth}, // not correct values at time of creation necessarily, will be updated later in render loop
             wh: {type: 'f', value: window.innerHeight}
         }
@@ -79,15 +79,19 @@ class Portal extends Group {
         this.mesh.applyMatrix4(this.transform)
 
         const ringPoints = [];
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.1, 0, PORTAL_DEPTH / 2 + 0.1 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.1, 0, PORTAL_DEPTH / 2 + 0.1 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.1, 0, -PORTAL_DEPTH / 2 - 0.1 ) );
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.1, 0, -PORTAL_DEPTH / 2 - 0.1) );
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, -PORTAL_DEPTH / 2 - 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, -PORTAL_DEPTH / 2 - 0.01 ) );
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, -PORTAL_DEPTH / 2 - 0.01) );
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, -PORTAL_DEPTH / 2 - 0.01) );
+        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
         const ringGeometry = new THREE.BufferGeometry().setFromPoints( ringPoints );
         const ringMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
-        let ring = new THREE.Line( ringGeometry, ringMaterial);
-        ring.applyMatrix4(this.transform)
-        this.add(ring)
+        this.ring = new THREE.Line( ringGeometry, ringMaterial);
+        this.ring.applyMatrix4(this.transform)
+        this.add(this.ring)
 
         this.add(this.mesh)
 

@@ -1,11 +1,11 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, Vector2, Vector3, Raycaster } from 'three';
+import { Scene, Color, Vector2, Vector3, Raycaster, Texture } from 'three';
 import * as THREE from 'three';
 import { Floor, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
-    constructor(cworld, portal1Target, portal2Target) {
+    constructor(cworld) {
         // Call parent Scene() constructor
         super();
 
@@ -35,20 +35,18 @@ class MainScene extends Scene {
 
 
         this.portal1 = new Portal(this,
-            new Vector3(5, 1, 0),
+            new Vector3(5, 1.1, 0),
             new Vector3(1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             null,
-            floor,
-            portal1Target.texture)
+            floor)
 
         this.portal2 = new Portal(this,
-            new Vector3(8, 1, 0),
+            new Vector3(8, 1.1, 0),
             new Vector3(-1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             this.portal1,
-            floor,
-            portal2Target.texture)
+            floor)
 
         this.portal1.output = this.portal2
         this.add(this.portal1, this.portal2)

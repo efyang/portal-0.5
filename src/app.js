@@ -6,7 +6,7 @@
  * handles window resizes.
  *
  */
-import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2 } from 'three';
+import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2, Texture } from 'three';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { MainScene } from 'scenes';
@@ -28,8 +28,10 @@ class AppData {
         const height = screenSize.y
         this.portal1Target = new WebGLRenderTarget(width, height)
         this.portal2Target = new WebGLRenderTarget(width, height)
+        this.portal1TargetTmp = new WebGLRenderTarget(width, height)
+        this.portal2TargetTmp = new WebGLRenderTarget(width, height)
 
-        this.scene = new MainScene(this.cworld, this.portal1Target, this.portal2Target);
+        this.scene = new MainScene(this.cworld);
     }
 }
 
@@ -63,34 +65,63 @@ const onAnimationFrameHandler = (timeStamp) => {
     let portal1Camera = window.camera.clone()
     let portal2Camera = window.camera.clone()
 
+    // ensure that uniforms and render target are correctly sized
     const { width, height } = appData.renderer.domElement;
     appData.scene.portal1.mesh.material.uniforms.ww.value = width
     appData.scene.portal1.mesh.material.uniforms.wh.value = height
     appData.scene.portal2.mesh.material.uniforms.ww.value = width
     appData.scene.portal2.mesh.material.uniforms.wh.value = height
+    appData.portal1Target.setSize(width, height);
+    appData.portal2Target.setSize(width, height);
+    appData.portal1TargetTmp.setSize(width, height);
+    appData.portal2TargetTmp.setSize(width, height);
 
     appData.scene.portal1.mesh.material.colorWrite = false
     appData.scene.portal2.mesh.material.colorWrite = false
-    appData.scene.portal1.teleportObject3D(portal1Camera)
-    appData.scene.portal2.teleportObject3D(portal2Camera)
 
-    // render the per-camera views
+    const levels = 7
+    for (let i = 0; i < levels; i++) {
+        appData.scene.portal1.teleportObject3D(portal1Camera)
+        appData.scene.portal2.teleportObject3D(portal2Camera)
+    }
+
     renderer.localClippingEnabled = true
-    renderer.setRenderTarget(appData.portal1Target)
-    renderer.clippingPlanes = [appData.scene.portal2.plane.clone()]
-    renderer.render(appData.scene, portal1Camera)
-    renderer.setRenderTarget(appData.portal2Target)
-    renderer.clippingPlanes = [appData.scene.portal1.plane.clone()]
-    renderer.render(appData.scene, portal2Camera)
+    for (let level = 0; level < levels - 1; level++) {
+        appData.scene.portal2.teleportObject3D(portal1Camera)
+        appData.scene.portal1.mesh.material.colorWrite = true
+        appData.scene.portal2.mesh.material.colorWrite = false
+        renderer.clippingPlanes = [appData.scene.portal2.plane.clone()]
+        renderer.setRenderTarget(appData.portal1TargetTmp)
+        renderer.render(appData.scene, portal1Camera)
+
+        appData.scene.portal1.teleportObject3D(portal2Camera)
+        appData.scene.portal1.mesh.material.colorWrite = false
+        appData.scene.portal2.mesh.material.colorWrite = true
+        renderer.clippingPlanes = [appData.scene.portal1.plane.clone()]
+        renderer.setRenderTarget(appData.portal2TargetTmp)
+        renderer.render(appData.scene, portal2Camera)
+
+        // need to do the swap operation:
+        // https://stackoverflow.com/questions/54048816/how-to-switch-the-texture-of-render-target-in-three-js
+        // cannot render to texture while also using texture, so have to create another temp render target
+        let swap = appData.portal1Target
+        appData.portal1Target = appData.portal1TargetTmp
+        appData.portal1TargetTmp = swap
+        appData.scene.portal1.mesh.material.uniforms.texture1.value = appData.portal1Target.texture
+
+        swap = appData.portal2Target
+        appData.portal2Target = appData.portal2TargetTmp
+        appData.portal2TargetTmp = swap
+        appData.scene.portal2.mesh.material.uniforms.texture1.value = appData.portal2Target.texture
+
+    renderer.setRenderTarget(null)
+    renderer.localClippingEnabled = false
+    renderer.clippingPlanes = []
+    renderer.render(appData.scene, window.camera)
+    }
 
     appData.scene.portal1.mesh.material.colorWrite = true
     appData.scene.portal2.mesh.material.colorWrite = true
-
-    /*
-    // try to render another level of portal 2
-    renderer.setRenderTarget(appData.portal2Target)
-    renderer.clippingPlanes = [appData.scene.portal1.plane.clone()]
-    renderer.render(appData.scene, portal2Camera)*/
 
     // finally, render to screen
     renderer.setRenderTarget(null)
@@ -108,8 +139,6 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 const windowResizeHandler = () => {
     const { innerWidth, innerHeight } = window;
     appData.renderer.setSize(innerWidth, innerHeight);
-    appData.portal1Target.setSize(innerWidth, innerHeight);
-    appData.portal2Target.setSize(innerWidth, innerHeight);
     appData.camera.aspect = innerWidth / innerHeight;
     appData.camera.updateProjectionMatrix();
 };
