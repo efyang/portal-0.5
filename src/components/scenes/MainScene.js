@@ -1,7 +1,7 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster, Texture, ArrowHelper } from 'three';
 import * as THREE from 'three';
-import { Floor, Crosshair, Player, Portal, EnvironmentCube, PlayerModel } from 'objects';
+import { Floor, Crosshair, Player, Portal, EnvironmentCube, EnvironmentRoom2, PlayerModel } from 'objects';
 import { BasicLights } from 'lights';
 
 class MainScene extends Scene {
@@ -24,23 +24,26 @@ class MainScene extends Scene {
         const lights = new BasicLights();
         const player = new Player(this);
 
-        const floor = new Floor(this, new Vector3(0,0,0), -Math.PI / 2, 0, 0);
-        const wall1 = new Floor(this, new Vector3(10, 0, 0), 0, -Math.PI / 2, 0);
-        const wall2 = new Floor(this, new Vector3(-10, 0, 0), 0, Math.PI / 2, 0);
-        const wall3 = new Floor(this, new Vector3(0, 0, 10), 0, Math.PI, 0);
-        const wall4 = new Floor(this, new Vector3(0, 0, -10), 0, 0, 0);
-        const ceiling = new Floor(this, new Vector3(0, 10, 0), Math.PI / 2, 0, 0);
-        this.add(floor, wall1, wall2, wall3, wall4, ceiling, player, lights);
-        // this.add(floor, wall1, player, lights);
+        // const floor = new Floor(this, new Vector3(0,0,0), -Math.PI / 2, 0, 0);
+        // const wall1 = new Floor(this, new Vector3(10, 0, 0), 0, -Math.PI / 2, 0);
+        // const wall2 = new Floor(this, new Vector3(-10, 0, 0), 0, Math.PI / 2, 0);
+        // const wall3 = new Floor(this, new Vector3(0, 0, 10), 0, Math.PI, 0);
+        // const wall4 = new Floor(this, new Vector3(0, 0, -10), 0, 0, 0);
+        // const ceiling = new Floor(this, new Vector3(0, 10, 0), Math.PI / 2, 0, 0);
+        // this.add(floor, wall1, wall2, wall3, wall4, ceiling, player, lights);
 
-        const cube = new EnvironmentCube(this, new Vector3(0, 0, 0))
-        this.add(cube)
-        // const room = new EnvironmentRoom2(this, 0, 4, 0, 4)
-        // this.add(room, player, lights)
+        // const cube = new EnvironmentCube(this, new Vector3(0, 0, 0))
+        // this.add(cube)
+
+        const room = new EnvironmentRoom2(this)
+        this.add(room, player, lights);
 
         // set intersectable objects
-        this.intersectObj = [floor.children[0], wall1.children[0], wall2.children[0], wall3.children[0], wall4.children[0], ceiling.children[0], cube.children[0]];
-        // this.intersectObj = [floor.children[0], wall1.children[0], cube.children[0]];
+        // console.log(floor)
+        // this.intersectObj = [floor.children[0], wall1.children[0], wall2.children[0], wall3.children[0], wall4.children[0], ceiling.children[0], cube.children[0]];
+        console.log(room)
+        console.log(room.children)
+        this.intersectObj = [ room.children[0], room.children[1], room.children[2], room.children[3], room.children[4], room.children[5]];
 
         // set portals
         this.portal1 = new Portal(this,
@@ -48,7 +51,7 @@ class MainScene extends Scene {
             new Vector3(1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             null,
-            floor,
+            null,
             'orange')
 
         this.portal2 = new Portal(this,
@@ -56,7 +59,7 @@ class MainScene extends Scene {
             new Vector3(-1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
             this.portal1,
-            floor,
+            null,
             'blue')
 
         this.portal1.output = this.portal2

@@ -2,6 +2,7 @@ import { Group, MeshStandardMaterial, Mesh, TextureLoader, DoubleSide, RepeatWra
 import FLOOR_TEXTURE from '../../../../assets/textures/floorTexture.png'
 import * as CANNON from 'cannon'
 
+
 class EnvironmentCube extends Group {
     constructor(parent, position, size = 3) {
         // Call parent Group() constructor

@@ -8,12 +8,13 @@
  */
 import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2, Texture } from 'three';
 import { Group, LineBasicMaterial, Line, BufferGeometry, BufferAttribute } from 'three';
-
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { MainScene } from 'scenes';
 import {initPhysics} from './physics.js';
+
 const Stats = require("stats.js");
+
 
 class AppData {
     constructor() {
@@ -40,6 +41,7 @@ class AppData {
 }
 
 const appData = new AppData()
+
 
 // Set up camera
 appData.camera.position.set(0, 10, 0);
