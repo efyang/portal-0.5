@@ -1,6 +1,8 @@
 import { Group } from 'three';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import MODEL from './blenderExport.gltf';
 
 class Player extends Group {
     constructor(parent) {
@@ -10,11 +12,50 @@ class Player extends Group {
         this.name = 'Player';
         let mass = 50;
 
+        /*
         // Construct the player model 
         const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
         this.playerModel = new THREE.Mesh( geometry, material );
         this.add(this.playerModel);
+        */
+
+        // Load object
+        const loader = new GLTFLoader();
+
+        // this.name = 'Player';
+        loader.load(MODEL, (gltf) => {
+            // console.log(gltf.scene.children[0])
+            // this.playerModel = gltf.scene.children[0]
+            gltf.scene.scale.set(0.2,0.2,0.2) // scale here
+            this.add(gltf.scene);
+        });
+
+        /*
+        // this utility function allows you to use any three.js
+        // loader with promises and async/await
+        function modelLoader(url) {
+            return new Promise((resolve, reject) => {
+            loader.load(url, data=> resolve(data), null, reject);
+            });
+        }
+
+        let scene = this;
+        async function main() {
+            const gltfData = await modelLoader(URL),
+            
+            .add(gltf.scene);
+            // this.playerModel = this.children[0];
+
+        }
+        main().catch(error => {
+            console.error(error);
+        });
+        */
+
+        // console.log(this)
+        // this.playerModel = this.children[0];
+        // console.log(this.playerModel)
 
         var slipperyMaterial = new CANNON.Material();
         slipperyMaterial.friction = 0.01;
@@ -135,8 +176,10 @@ class Player extends Group {
         this.physicsBody.quaternion.normalize()
 
         // copy position and rotation so player model aligns with the physical body
-        this.playerModel.position.copy(this.physicsBody.position)
-        this.playerModel.quaternion.copy(this.physicsBody.quaternion)
+        if (this.playerModel) {
+            this.playerModel.position.copy(this.physicsBody.position)
+            this.playerModel.quaternion.copy(-this.physicsBody.quaternion)
+        }
 
         // set camera position to be at player
         window.camera.position.copy(this.physicsBody.position)

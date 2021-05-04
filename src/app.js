@@ -52,7 +52,7 @@ appData.camera.lookAt(new Vector3(0, 0, 0));
 var material = new LineBasicMaterial({ color: 0xAAFFAA });
 
 // crosshair size
-var x = 10, y = 10;
+var x = 0.003, y = 0.003;
 
 var geometry = new BufferGeometry();
 
@@ -79,8 +79,7 @@ crosshair.position.y = crosshairPositionY;
 crosshair.position.z = -0.3;
 
 appData.camera.add( crosshair );
-
-
+appData.scene.add(camera)
 
 // Set up renderer, canvas, and minor CSS adjustments
 appData.renderer.setPixelRatio(window.devicePixelRatio);

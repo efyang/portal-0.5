@@ -50,6 +50,7 @@ module.exports = {
             objects$: path.resolve(__dirname, 'src/components/objects'),
             scenes$: path.resolve(__dirname, 'src/components/scenes'),
             textures$: path.resolve(__dirname, 'assets/textures'),
+            globals$: path.resolve(__dirname, 'src/globals'),
         },
     },
     plugins: [

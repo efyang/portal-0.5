@@ -2,15 +2,13 @@ import * as THREE from 'three'
 import { GeneralBB } from 'objects'
 import * as util from '../../../util'
 import { Group, Vector3 } from 'three'
-import * as GLOBALS from '../../../globals'
+import { consts, globals } from '../../../globals';
+import { Line2, LineGeometry, LineMaterial } from 'three-fatline';
 
-// width = x
-// height = y
-// depth = z
-const PORTAL_WIDTH = 1.5
-const PORTAL_DEPTH = 2
-const PORTAL_CDBB_HEIGHT = 0.5
-const PORTAL_HEIGHT = 0.0001
+const portal_width = consts.PORTAL_WIDTH
+const portal_depth = consts.PORTAL_DEPTH
+const portal_cdbb_height = consts.PORTAL_CDBB_HEIGHT
+const portal_height = consts.PORTAL_HEIGHT
 
 class Portal extends Group {
     // position - the center position (vector3)
@@ -27,22 +25,22 @@ class Portal extends Group {
         this.plane = new THREE.Plane(new Vector3(0, 1, 0), 0)
 
         // create onb for bb transformations
-        let ty = normal.clone().normalize()
-        let tz = playerUpDirection.clone().projectOnPlane(ty).normalize()
-        if (tz.length() < 0.1) {
-            tz = new Vector3(0, 1, 0)
+        this.ty = normal.clone().normalize()
+        this.tz = playerUpDirection.clone().projectOnPlane(this.ty).normalize()
+        if (this.tz.length() < 0.1) {
+            this.tz = new Vector3(0, 1, 0)
         }
-        let tx = tz.clone().cross(ty)
+        this.tx = this.tz.clone().cross(this.ty)
 
         // for visualization purposes
-        if (GLOBALS.DEBUG) {
-            let xHelper = new THREE.ArrowHelper(tx, position, 1, 0xff0000)
-            let yHelper = new THREE.ArrowHelper(ty, position, 1, 0x00ff00)
-            let zHelper = new THREE.ArrowHelper(tz, position, 1, 0x0000ff)
+        if (globals.DEBUG) {
+            let xHelper = new THREE.ArrowHelper(this.tx, position, 1, 0xff0000)
+            let yHelper = new THREE.ArrowHelper(this.ty, position, 1, 0x00ff00)
+            let zHelper = new THREE.ArrowHelper(this.tz, position, 1, 0x0000ff)
             this.add(xHelper, yHelper, zHelper)
         }
 
-        let tRot = new THREE.Matrix4().makeBasis(tx, ty, tz)
+        let tRot = new THREE.Matrix4().makeBasis(this.tx, this.ty, this.tz)
 
         this.transform = tRot.clone().setPosition(position)
         this.plane.applyMatrix4(this.transform)
@@ -67,7 +65,7 @@ class Portal extends Group {
         }
         `
 
-        const geometry = new THREE.BoxGeometry( PORTAL_WIDTH, PORTAL_HEIGHT, PORTAL_DEPTH );
+        const geometry = new THREE.BoxGeometry( portal_width, portal_height, portal_depth );
         const uniforms = {
             texture1: {type: 't', value: new THREE.Texture()},
             ww: {type: 'f', value: 1}, // not correct values at time of creation necessarily, will be updated later in render loop
@@ -88,20 +86,43 @@ class Portal extends Group {
         this.mesh.updateMatrix()
         this.mesh.matrixAutoUpdate = false
 
+        // define ringpoints for portal border lines
         const ringPoints = [];
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, -PORTAL_DEPTH / 2 - 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -PORTAL_WIDTH / 2 - 0.01, 0, -PORTAL_DEPTH / 2 - 0.01 ) );
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, -PORTAL_DEPTH / 2 - 0.01) );
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, -PORTAL_DEPTH / 2 - 0.01) );
-        ringPoints.push( new THREE.Vector3( PORTAL_WIDTH / 2 + 0.01, 0, PORTAL_DEPTH / 2 + 0.01 ) );
-        const ringGeometry = new THREE.BufferGeometry().setFromPoints( ringPoints );
-        const ringMaterial = new THREE.LineBasicMaterial({color: ringColor});
-        this.ring = new THREE.Line( ringGeometry, ringMaterial);
-        this.ring.applyMatrix4(this.transform)
-        this.add(this.ring)
+        let EPS = 0.01
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, portal_depth / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, portal_depth / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, portal_depth / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, -portal_depth / 2 - 0.01 ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, -portal_depth / 2 - 0.01 ) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, -portal_depth / 2 - 0.01) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, -portal_depth / 2 - 0.01) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, portal_depth / 2 + 0.01 ) );
+        
+        // apply matrix so borders are on portals
+        for (let rpoint of ringPoints) {
+            rpoint.applyMatrix4(this.transform)
+        }
+
+        // create line meshes for borders
+        const geometryLine = new LineGeometry();
+        geometryLine.setPositions( [ringPoints[0].x, ringPoints[0].y, ringPoints[0].z, 
+                                    ringPoints[1].x, ringPoints[1].y, ringPoints[1].z,
+                                    ringPoints[2].x, ringPoints[2].y, ringPoints[2].z,
+                                    ringPoints[3].x, ringPoints[3].y, ringPoints[3].z,
+                                    ringPoints[4].x, ringPoints[4].y, ringPoints[4].z, 
+                                    ringPoints[5].x, ringPoints[5].y, ringPoints[5].z,
+                                    ringPoints[6].x, ringPoints[6].y, ringPoints[6].z,
+                                    ringPoints[7].x, ringPoints[7].y, ringPoints[7].z] );
+        
+        const matLine = new LineMaterial( {
+            color: ringColor,
+            linewidth: 1, // in pixels
+            resolution: new THREE.Vector2(640, 480) // resolution of the viewport
+        } );
+
+        const line = new Line2( geometryLine, matLine );
+        line.computeLineDistances();
+        this.add( line );
 
         this.add(this.mesh)
 
@@ -113,11 +134,11 @@ class Portal extends Group {
         let tCDBB = this.transform.clone()
         // STBB is centered at 1/4 height of CDBB behind the portal
         // because height of STBB is half height of CDBB
-        let pSTBB = position.clone().add(normal.clone().multiplyScalar(-PORTAL_CDBB_HEIGHT / 4))
+        let pSTBB = position.clone().add(normal.clone().multiplyScalar(-portal_cdbb_height / 4))
         let tSTBB = tRot.clone().setPosition(pSTBB)
 
-        this.CDBB = new GeneralBB(PORTAL_WIDTH, PORTAL_CDBB_HEIGHT, PORTAL_DEPTH, tCDBB)
-        this.STBB = new GeneralBB(PORTAL_WIDTH, PORTAL_CDBB_HEIGHT/2, PORTAL_DEPTH, tSTBB)
+        this.CDBB = new GeneralBB(portal_width, portal_cdbb_height, portal_depth, tCDBB)
+        this.STBB = new GeneralBB(portal_width, portal_cdbb_height/2, portal_depth, tSTBB)
        
         // if valid placement, add and render
         parent.addToUpdateList( this );

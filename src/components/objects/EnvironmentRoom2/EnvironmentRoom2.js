@@ -1,5 +1,6 @@
-import { Group, MeshToonMaterial, TextureLoader, DoubleSide, RepeatWrapping, Vector3 } from 'three';
+import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
+import { EnvironmentCube2 } from 'objects'
 import FLOOR_TEXTURE from '../../../../assets/textures/floorTexture.png'
 import * as CANNON from 'cannon'
 
@@ -23,7 +24,7 @@ class EnvironmentRoom2 extends Group {
         const files = ['floor', 'wall1', 'wall2', 'wall3', 'wall4', 'ceiling'];
         let filename;
         
-        
+        /*
         for (filename of files) {
             let path = 'src/components/Jsons/' + filename + '.json';
             loader.load(
@@ -33,18 +34,23 @@ class EnvironmentRoom2 extends Group {
                 // onLoad callback
                 // Here the loaded data is assumed to be an object
                 function ( object ) {
-                    const texture = new TextureLoader().load(FLOOR_TEXTURE);
-                    texture.wrapS = RepeatWrapping;
-                    texture.wrapT = RepeatWrapping;
-                    texture.repeat.set( 5, 5);
-                    const material = new MeshToonMaterial( {side: DoubleSide, map: texture } );
-                    object.material = material;
+                    // const texture = new TextureLoader().load(FLOOR_TEXTURE);
+                    // texture.wrapS = RepeatWrapping;
+                    // texture.wrapT = RepeatWrapping;
+                    // texture.repeat.set( 5, 5);
+                    // const material = new MeshToonMaterial( {side: DoubleSide, map: texture } );
+                    // object.material = material;
+
+                    console.log(object.position)
+                    console.log(object.quaternion)
+                    let cube = new EnvironmentCube2(parent, object.geometry, object.matrix);
+
 
                     // Add the loaded object to the scene
-                    self.add(object);
+                    // self.add(object);
     
                     // Add self to parent's update list
-                    parent.addToUpdateList(self)
+                    // parent.addToUpdateList(self)
                 },
             
                 // onProgress callback
@@ -59,6 +65,29 @@ class EnvironmentRoom2 extends Group {
 
             );
         }
+        */
+
+        // return JSON data from any file path (asynchronous)
+        function getJSON(path) {
+            return fetch(path).then(response => response.json());
+        }
+
+        for (filename of files) {
+            let path = 'src/components/Jsons/' + filename + '.json';
+            // load JSON data; then proceed
+            getJSON(path).then(data => {
+                // console.log(data.geometries[0].width)
+                let geometries = data.geometries[0]
+                console.log(geometries)
+                let matrix = data.object.matrix
+                let position = new Vector3(matrix[12], matrix[13], matrix[14])
+                console.log(position)
+                let cube = new EnvironmentCube2(this, geometries, position)
+                this.add(cube);
+            })
+        }
+        
+        parent.addToUpdateList(this)
 
 
         // Floor physics
@@ -72,6 +101,8 @@ class EnvironmentRoom2 extends Group {
         // floorBody.addShape(floorShape, new CANNON.Vec3(0,-1,0), floorQuaternion);
         floorBody.addShape(floorShape, new CANNON.Vec3(0,-1,0));
         parent.state.cworld.addBody(floorBody);
+
+        /*
 
         // Wall physics
         var wallMaterial = new CANNON.Material();
@@ -101,12 +132,14 @@ class EnvironmentRoom2 extends Group {
 
         ceilBody.addShape(ceilShape, new CANNON.Vec3(0,11,0));
         parent.state.cworld.addBody(ceilBody);
-    }
-   
 
+        */
+    }
 
     update(timeStamp) {
     }   
+
+    
 }
 
 export default EnvironmentRoom2;
