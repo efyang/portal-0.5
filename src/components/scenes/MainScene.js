@@ -7,16 +7,14 @@ import { consts, globals } from 'globals';
 
 
 class MainScene extends Scene {
-    constructor(cworld, controls) {
+    constructor() {
         // Call parent Scene() constructor
         super();
 
         // Init state
         this.state = {
             gui: new Dat.GUI(), // Create GUI for scene
-            cworld: cworld,
             updateList: [],
-            controls: controls,
         };
 
         // Set background to a nice color
@@ -70,7 +68,8 @@ class MainScene extends Scene {
 
         // construct portals
         window.addEventListener("mousedown", (event) => {
-            if (!this.state.controls.isLocked) { return; }
+            // if (!this.state.controls.isLocked) { return; }
+            if (!globals.CONTROLS.isLocked) { return; }
 
             // create raycaster
             let mouse = new Vector2(0,0)
@@ -90,57 +89,69 @@ class MainScene extends Scene {
                 const portal_width = consts.PORTAL_WIDTH
                 const portal_depth = consts.PORTAL_DEPTH
 
-                let EPS = 0.02
-
-                // the 4 corners of the portal that will be at this point
+                // the 4 corners of the new portal that will be at this point
+                let EPS = consts.PORTAL_EPS * 2;
                 let portalPoints = [point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS)))]
-                for (let p of portalPoints) {
+                
+                                    for (let p of portalPoints) {
                     if (!this.validPortalPoint(p, normal, intersects[0].object)) {
                         return;
                     }
                 }
 
+                // get points along the edge of the new portal to check for overlap against the other portal
                 let edgePoints = this.getEdgePoints(portalPoints);
 
                 if (event.button == 0) {           // left click
-                    // check that this portal does not intersect the other one
-                    if (intersects[0].object == globals.PORTALS[1].hostObjects && portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
-                        globals.PORTALS[0].mesh.geometry.dispose();
-                        globals.PORTALS[0].mesh.material.dispose();
-                        this.remove(globals.PORTALS[0]);
-                        globals.PORTALS[0] = new Portal(this,
-                            point,
-                            normal, // normal of surface
-                            playerUpDirection,
-                            globals.PORTALS[1],
-                            intersects[0].object,
-                            'orange',
-                            portalPoints)
-                        this.add(globals.PORTALS[0])
-                        globals.PORTALS[1].output = globals.PORTALS[0]
-                        globals.PORTALS[0] = globals.PORTALS[0]
+                    // check that this new portal does not overlap with the other portal when they are on the same surface
+                    if (intersects[0].object == globals.PORTALS[1].hostObjects && !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
+                        return;
                     }
+
+                    // delete the old portal this new one is replacing
+                    globals.PORTALS[0].mesh.geometry.dispose();
+                    globals.PORTALS[0].mesh.material.dispose();
+                    this.remove(globals.PORTALS[0]);
+
+                    // create new portal
+                    globals.PORTALS[0] = new Portal(this,
+                        point,
+                        normal, // normal of surface
+                        playerUpDirection,
+                        globals.PORTALS[1],
+                        intersects[0].object,
+                        'orange',
+                        portalPoints)
+                    this.add(globals.PORTALS[0])
+                    globals.PORTALS[1].output = globals.PORTALS[0]
+                    globals.PORTALS[0] = globals.PORTALS[0]
+
                 } else if (event.button == 2) {    // right click
-                    // check that this portal does not intersect the other one
-                    if (intersects[0].object == globals.PORTALS[0].hostObjects && portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
-                        globals.PORTALS[1].mesh.geometry.dispose();
-                        globals.PORTALS[1].mesh.material.dispose();
-                        this.remove(globals.PORTALS[1]);
-                        globals.PORTALS[1] = new Portal(this,
-                            point,
-                            normal, // normal of surface
-                            playerUpDirection,
-                            globals.PORTALS[0],
-                            intersects[0].object,
-                            'blue',
-                            portalPoints)
-                        this.add(globals.PORTALS[1])
-                        globals.PORTALS[0].output = globals.PORTALS[1]
-                        globals.PORTALS[1] = globals.PORTALS[1]
+                    // check that this new portal does not overlap with the other portal when they are on the same surface
+                    if (intersects[0].object == globals.PORTALS[0].hostObjects && !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
+                        return;
                     }
+
+                    // delete the old portal this new one is replacing
+                    globals.PORTALS[1].mesh.geometry.dispose();
+                    globals.PORTALS[1].mesh.material.dispose();
+                    this.remove(globals.PORTALS[1]);
+
+                    // create new portal
+                    globals.PORTALS[1] = new Portal(this,
+                        point,
+                        normal, // normal of surface
+                        playerUpDirection,
+                        globals.PORTALS[0],
+                        intersects[0].object,
+                        'blue',
+                        portalPoints)
+                    this.add(globals.PORTALS[1])
+                    globals.PORTALS[0].output = globals.PORTALS[1]
+                    globals.PORTALS[1] = globals.PORTALS[1]
                 }
             }
         })
@@ -153,7 +164,7 @@ class MainScene extends Scene {
     update(timeStamp) {
         const { updateList } = this.state;
         const timeStep=1/60
-        this.state.cworld.step(timeStep)
+        globals.CANNON_WORLD.step(timeStep)
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
@@ -240,11 +251,6 @@ class MainScene extends Scene {
 
         return edgePoints;
     }
-    
-    // return JSON data from any file path (asynchronous)
-    getJSON(path) {
-        return fetch(path).then(response => response.json());
-    }
 
     // check if new portal that will contain portalPoints and edgePoints overlaps with the other portal's corner points 'otherPortalPoints'
     portalsNotOverlapping(portalPoints, edgePoints, otherPortalPoints) {
@@ -262,6 +268,11 @@ class MainScene extends Scene {
         }
 
         return true;
+    }
+
+    // return JSON data from any file path (asynchronous)
+    getJSON(path) {
+        return fetch(path).then(response => response.json());
     }
 }
 

@@ -17,7 +17,7 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    // ringColor - the color of the ring, portal1: blue, portal2: orange
+    // ringColor - the color of the ring, portal1: orange, portal2: blue
     // portalPoints - the positions of the corners of the portals
     constructor(parent, position, normal, playerUpDirection, output, hostObjects, ringColor, portalPoints = []) {
         super()
@@ -112,15 +112,16 @@ class Portal extends Group {
 
         // create line meshes for borders
         const geometryLine = new LineGeometry();
-        geometryLine.setPositions( [ringPoints[0].x, ringPoints[0].y, ringPoints[0].z, 
-                                    ringPoints[1].x, ringPoints[1].y, ringPoints[1].z,
-                                    ringPoints[2].x, ringPoints[2].y, ringPoints[2].z,
-                                    ringPoints[3].x, ringPoints[3].y, ringPoints[3].z,
-                                    ringPoints[4].x, ringPoints[4].y, ringPoints[4].z, 
-                                    ringPoints[5].x, ringPoints[5].y, ringPoints[5].z,
-                                    ringPoints[6].x, ringPoints[6].y, ringPoints[6].z,
-                                    ringPoints[7].x, ringPoints[7].y, ringPoints[7].z] );
-        
+       
+        geometryLine.setPositions( [this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z, 
+                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
+                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
+                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
+                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
+                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
+                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
+                                    this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z])
+
         const matLine = new LineMaterial( {
             color: ringColor,
             linewidth: 1, // in pixels
