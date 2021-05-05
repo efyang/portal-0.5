@@ -1,6 +1,7 @@
-import { Group, MeshStandardMaterial, Mesh, MeshPhongMaterial, TextureLoader, DoubleSide, RepeatWrapping, BoxGeometry } from 'three';
-import FLOOR_TEXTURE from '../../../../assets/textures/floorTexture.png'
+import { Group, MeshStandardMaterial, Mesh, DoubleSide, RepeatWrapping, BoxGeometry, TextureLoader } from 'three';
+import {consts, globals} from 'globals'
 import * as CANNON from 'cannon'
+import FLOOR_TEXTURE_PNG from '../../../../assets/textures/floorTexture.png'
 
 
 class EnvironmentCube2 extends Group {
@@ -23,7 +24,8 @@ class EnvironmentCube2 extends Group {
         const geometry = new BoxGeometry( this.width, this.height, this.depth );
 
         // create material
-        const texture = new TextureLoader().load(FLOOR_TEXTURE);
+        // const texture = consts.FLOOR_TEXTURE.clone()
+        const texture = new TextureLoader().load(FLOOR_TEXTURE_PNG)
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set( this.dimensions[0]/2, this.dimensions[1]/2 );
@@ -37,12 +39,11 @@ class EnvironmentCube2 extends Group {
         // create physics
         var physicsMaterial = new CANNON.Material();
         physicsMaterial.friction = 0.9;
-        let EPS = 0.1
         var physicsShape = new CANNON.Box(new CANNON.Vec3(this.width / 2, this.height / 2, this.depth / 2));
         var physicsBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
         physicsBody.addShape(physicsShape, new CANNON.Vec3(pos.x, pos.y, pos.z));
         // physicsBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
-        parent.state.cworld.addBody(physicsBody);
+        globals.CANNON_WORLD.addBody(physicsBody);
 
         // Add self to parent's update list
         

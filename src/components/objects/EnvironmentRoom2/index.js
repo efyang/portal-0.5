@@ -1,1 +1,0 @@
-export { default as EnvironmentRoom2 } from './EnvironmentRoom2.js';

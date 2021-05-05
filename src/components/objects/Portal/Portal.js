@@ -9,6 +9,7 @@ const portal_width = consts.PORTAL_WIDTH
 const portal_depth = consts.PORTAL_DEPTH
 const portal_cdbb_height = consts.PORTAL_CDBB_HEIGHT
 const portal_height = consts.PORTAL_HEIGHT
+const portal_eps = consts.PORTAL_EPS
 
 class Portal extends Group {
     // position - the center position (vector3)
@@ -16,7 +17,9 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    constructor(parent, position, normal, playerUpDirection, output, hostObjects, ringColor) {
+    // ringColor - the color of the ring, portal1: blue, portal2: orange
+    // portalPoints - the positions of the corners of the portals
+    constructor(parent, position, normal, playerUpDirection, output, hostObjects, ringColor, portalPoints = []) {
         super()
         this.parent = parent
         this.pos = position.clone()
@@ -31,6 +34,15 @@ class Portal extends Group {
             this.tz = new Vector3(0, 1, 0)
         }
         this.tx = this.tz.clone().cross(this.ty)
+
+        // set portal corner points
+        this.portalPoints = portalPoints;
+        if (portalPoints === undefined || portalPoints.length == 0) {
+            this.portalPoints = [this.pos.clone().add(this.tz.clone().multiplyScalar(portal_depth/2 + 2*portal_eps).add(this.tx.clone().multiplyScalar(portal_width/2 + 2*portal_eps))), 
+                this.pos.clone().add(this.tz.clone().multiplyScalar(-portal_depth/2 - 2*portal_eps).add(this.tx.clone().multiplyScalar(portal_width/2 + 2*portal_eps))), 
+                this.pos.clone().add(this.tz.clone().multiplyScalar(-portal_depth/2 - 2*portal_eps).add(this.tx.clone().multiplyScalar(-portal_width/2 - 2*portal_eps))), 
+                this.pos.clone().add(this.tz.clone().multiplyScalar(portal_depth/2 + 2*portal_eps).add(this.tx.clone().multiplyScalar(-portal_width/2 - 2*portal_eps)))]
+        }
 
         // for visualization purposes
         if (globals.DEBUG) {
@@ -75,10 +87,10 @@ class Portal extends Group {
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
-            // stencilWrite: true, // stencil optimization, only for culling portal
-            // stencilFunc: THREE.EqualStencilFunc,
-            // stencilRef: 1,
-            // stencilFail: THREE.ReplaceStencilOp,
+            stencilWrite: true, // stencil optimization, only for culling portal
+            stencilFunc: THREE.EqualStencilFunc,
+            stencilRef: 1,
+            stencilFail: THREE.ReplaceStencilOp,
         });
 
         this.mesh = new THREE.Mesh( geometry, material );
@@ -89,14 +101,14 @@ class Portal extends Group {
         // define ringpoints for portal border lines
         const ringPoints = [];
         let EPS = 0.01
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, portal_depth / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, portal_depth / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, portal_depth / 2 + 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, -portal_depth / 2 - 0.01 ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - 0.01, 0, -portal_depth / 2 - 0.01 ) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, -portal_depth / 2 - 0.01) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, -portal_depth / 2 - 0.01) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + 0.01, 0, portal_depth / 2 + 0.01 ) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
+        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
+        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
         
         // apply matrix so borders are on portals
         for (let rpoint of ringPoints) {

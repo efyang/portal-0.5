@@ -1,7 +1,7 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster} from 'three';
 import * as THREE from 'three';
-import { Floor, Crosshair, Player, Portal, EnvironmentCube2, PlayerModel } from 'objects';
+import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 
@@ -22,47 +22,15 @@ class MainScene extends Scene {
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
 
-        // Add meshes to scene
-        const lights = new BasicLights();
-        const player = new Player(this);
-        this.add(lights, player)
-
-        // defines intersectable objects
+        // defines intersectable objects for setting portals
         this.intersectObj = [];
 
-        // const room = new EnvironmentRoom(this)    
-        // console.log(room);
-        // this.add(room)
-
+        // load meshes from json file to scene
         const files = consts.FILES;
-        let filename;
-
-        // return JSON data from any file path (asynchronous)
-        function getJSON(path) {
-            return fetch(path).then(response => response.json());
-        }
-
-        /*
-        for (filename of files) {
+        for (let filename of files) {
             let path = 'src/components/Jsons/' + filename + '.json';
             // load JSON data; then proceed
-            getJSON(path).then(data => {
-                // console.log(data.geometries[0].width)
-                let geometries = data.geometries[0]
-                let matrix = data.object.matrix
-                let position = new Vector3(matrix[12], matrix[13], matrix[14])
-                let cube = new EnvironmentCube2(this, geometries, position);
-                this.add(cube);
-                this.intersectObj.push(cube.children[0]);
-            })
-        }
-        */
-
-        // load scene meshes from json file
-        for (filename of files) {
-            let path = 'src/components/Jsons/' + filename + '.json';
-            // load JSON data; then proceed
-            getJSON(path).then(data => {
+            this.getJSON(path).then(data => {
                 for (let i = 0; i < data.geometries.length; i++) {
                     let geometries = data.geometries[i]
                     let matrix = data.object.children[i].matrix
@@ -73,10 +41,15 @@ class MainScene extends Scene {
                 }
             })
         }
-      
 
-        // set portals
-        this.portal1 = new Portal(this,
+        // Add other meshes to scene
+        const lights = new BasicLights();
+        const player = new Player(this);
+        this.add(lights, player)
+
+        // set initial portals
+        // TODO: try removing these later on to test single portal cases
+        globals.PORTALS[0] = new Portal(this,
             new Vector3(5, 1.1, 0),
             new Vector3(1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
@@ -84,80 +57,16 @@ class MainScene extends Scene {
             null,
             'orange')
 
-        this.portal2 = new Portal(this,
+        globals.PORTALS[1] = new Portal(this,
             new Vector3(8, 1.1, 0),
             new Vector3(-1, 0, 0).normalize(), // normal of surface
             new Vector3(0, 1, 0).normalize(),
-            this.portal1,
+            globals.PORTALS[0],
             null,
             'blue')
 
-        this.portal1.output = this.portal2
-        this.add(this.portal1, this.portal2)
-        
-        // console.log(floor)
-        
-/*
-        this.portal1 = new Portal(this,
-            new Vector3(5, 1, 0),
-            new Vector3(-1, 0, 0).normalize(), // normal of surface
-            new Vector3(0, 1, 0).normalize(),
-            null,
-            floor,
-            portal1Target.texture)
-
-        this.portal2 = new Portal(this,
-            new Vector3(8, 1, 0),
-            new Vector3(1, 0, 1).normalize(), // normal of surface
-            new Vector3(0, 2, 1).normalize(),
-            this.portal1,
-            floor,
-            portal2Target.texture)
-
-        this.portal1.output = this.portal2
-        this.add(this.portal1, this.portal2)
-*/
-        /*
-        // do some test points and vectors through the portals
-        // test directional transform
-        let dv = new Vector3(1, 2, 3).normalize()
-        const inputHelper = new THREE.ArrowHelper(dv, new Vector3(4, 1, 0), 1, 0xffff00)
-        this.add(inputHelper)
-
-        let dout = this.portal1.getTeleportedDirectionalVector(dv)
-        const outputHelper = new THREE.ArrowHelper(dout, new Vector3(8, 1, 0).add(new Vector3(1, 0, 1).normalize()), 1, 0xff00ff)
-        this.add(outputHelper)
-        
-        // test point transform
-        const geometry = new THREE.SphereGeometry( 0.1, 32, 32 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
-        const sphere1 = new THREE.Mesh( geometry, material );
-        const sphere2 = new THREE.Mesh( geometry, material );
-        let p1 = new Vector3(5, 1, 0).add(new Vector3(-1, 0.5, 0.3))
-        let p2 = this.portal1.getTeleportedPositionalVector(p1)
-        sphere1.position.copy(p1)
-        sphere2.position.copy(p2)
-        this.add(sphere1, sphere2)
-
-        // test object transform
-        let objectpos = new Vector3(5, 1, 0).add(new Vector3(-1, -0.5, -0.3))
-        const objectGroup = new THREE.Group()
-        let arrowObject1 = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), objectpos, 0.5, 0xff0000)
-        let arrowObject2 = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), objectpos, 0.5, 0x00ff00)
-        let arrowObject3 = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), objectpos, 0.5, 0x0000ff)
-        const sphere3 = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 0xffffff} ) );
-        sphere3.position.copy(objectpos)
-        objectGroup.add(arrowObject1, arrowObject2, arrowObject3, sphere3)
-        this.add(objectGroup)
-        const objectGroup2 = objectGroup.clone()
-        this.portal1.teleportObject3D(objectGroup2)
-        this.add(objectGroup2)*/
-
-        // Populate GUI
-        // this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
-        
-        this.portal1Points = []
-        this.portal2Point = []
+        globals.PORTALS[0].output = globals.PORTALS[1]
+        this.add(globals.PORTALS[0], globals.PORTALS[1])
 
         // construct portals
         window.addEventListener("mousedown", (event) => {
@@ -166,11 +75,11 @@ class MainScene extends Scene {
             // create raycaster
             let mouse = new Vector2(0,0)
             const raycaster = new Raycaster();
-            raycaster.setFromCamera( mouse, window.camera );
+            raycaster.setFromCamera( mouse, globals.MAIN_CAMERA );
 
             // define playerUpDirection
             let playerUpDirection = new THREE.Vector3(0,1,0)
-            playerUpDirection.applyQuaternion(window.camera.quaternion)
+            playerUpDirection.applyQuaternion(globals.MAIN_CAMERA.quaternion)
 
             const intersects = raycaster.intersectObjects( this.intersectObj );
             if (intersects.length > 0) {
@@ -189,7 +98,7 @@ class MainScene extends Scene {
                                     point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS)))]
                 for (let p of portalPoints) {
-                    if (!this.validPortalPoint(p, normal,intersects[0].object)) {
+                    if (!this.validPortalPoint(p, normal, intersects[0].object)) {
                         return;
                     }
                 }
@@ -198,63 +107,40 @@ class MainScene extends Scene {
 
                 if (event.button == 0) {           // left click
                     // check that this portal does not intersect the other one
-                    if (intersects[0].object == this.portal2.hostObjects && this.portal2Points) {
-                        for (let p of portalPoints) {
-                            if (this.pointInPortal(p, this.portal2Points)) {
-                                console.log("INVALID PLACEMENT (corner)")
-                                return;
-                            }
-                        }
-                        for (let p of edgePoints) {
-                            if (this.pointInPortal(p, this.portal2Points)) {
-                                console.log("INVALID PLACEMENT (edge)")
-                                return;
-                            }
-                        }
+                    if (intersects[0].object == globals.PORTALS[1].hostObjects && portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
+                        globals.PORTALS[0].mesh.geometry.dispose();
+                        globals.PORTALS[0].mesh.material.dispose();
+                        this.remove(globals.PORTALS[0]);
+                        globals.PORTALS[0] = new Portal(this,
+                            point,
+                            normal, // normal of surface
+                            playerUpDirection,
+                            globals.PORTALS[1],
+                            intersects[0].object,
+                            'orange',
+                            portalPoints)
+                        this.add(globals.PORTALS[0])
+                        globals.PORTALS[1].output = globals.PORTALS[0]
+                        globals.PORTALS[0] = globals.PORTALS[0]
                     }
-                    this.portal1.mesh.geometry.dispose();
-                    this.portal1.mesh.material.dispose();
-                    this.remove(this.portal1);
-                    this.portal1 = new Portal(this,
-                        point,
-                        normal, // normal of surface
-                        playerUpDirection,
-                        this.portal2,
-                        intersects[0].object,
-                        'orange')
-                    this.add(this.portal1)
-                    this.portal2.output = this.portal1
-                    this.portal1Points = portalPoints
                 } else if (event.button == 2) {    // right click
                     // check that this portal does not intersect the other one
-                    if (intersects[0].object == this.portal1.hostObjects && this.portal1Points) {
-                        for (let p of portalPoints) {
-                            if (this.pointInPortal(p, this.portal1Points)) {
-                                console.log("INVALID PLACEMENT (corner)")
-                                return;
-                            }
-                        }
-                        for (let p of edgePoints) {
-                            if (this.pointInPortal(p, this.portal1Points)) {
-                                console.log("INVALID PLACEMENT (edge)")
-                                return;
-                            }
-                        }
+                    if (intersects[0].object == globals.PORTALS[0].hostObjects && portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
+                        globals.PORTALS[1].mesh.geometry.dispose();
+                        globals.PORTALS[1].mesh.material.dispose();
+                        this.remove(globals.PORTALS[1]);
+                        globals.PORTALS[1] = new Portal(this,
+                            point,
+                            normal, // normal of surface
+                            playerUpDirection,
+                            globals.PORTALS[0],
+                            intersects[0].object,
+                            'blue',
+                            portalPoints)
+                        this.add(globals.PORTALS[1])
+                        globals.PORTALS[0].output = globals.PORTALS[1]
+                        globals.PORTALS[1] = globals.PORTALS[1]
                     }
-                    
-                    this.portal2.mesh.geometry.dispose();
-                    this.portal2.mesh.material.dispose();
-                    this.remove(this.portal2);
-                    this. portal2 = new Portal(this,
-                        point,
-                        normal, // normal of surface
-                        playerUpDirection,
-                        this.portal1,
-                        intersects[0].object,
-                        'blue')
-                    this.add(this.portal2)
-                    this.portal1.output = this.portal2
-                    this.portal2Points = portalPoints
                 }
             }
         })
@@ -353,6 +239,29 @@ class MainScene extends Scene {
         }
 
         return edgePoints;
+    }
+    
+    // return JSON data from any file path (asynchronous)
+    getJSON(path) {
+        return fetch(path).then(response => response.json());
+    }
+
+    // check if new portal that will contain portalPoints and edgePoints overlaps with the other portal's corner points 'otherPortalPoints'
+    portalsNotOverlapping(portalPoints, edgePoints, otherPortalPoints) {
+        for (let p of portalPoints) {
+            if (this.pointInPortal(p, otherPortalPoints)) {
+                // console.log("INVALID PLACEMENT (corner)")
+                return false;
+            }
+        }
+        for (let p of edgePoints) {
+            if (this.pointInPortal(p, otherPortalPoints)) {
+                // console.log("INVALID PLACEMENT (edge)")
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

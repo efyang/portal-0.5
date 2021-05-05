@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import MODEL from './blenderExport.gltf';
+import { globals } from 'globals'
 
 class Player extends Group {
     constructor(parent) {
@@ -78,7 +79,7 @@ class Player extends Group {
 
         // construct the physical body
         this.physicsBody.updateMassProperties()
-        parent.state.cworld.addBody(this.physicsBody);
+        globals.CANNON_WORLD.addBody(this.physicsBody);
         let physicsBody = this.physicsBody
         parent.addToUpdateList(this);
 
@@ -118,7 +119,7 @@ class Player extends Group {
 
         // define directions
         let cameraDirection = new THREE.Vector3()
-        window.camera.getWorldDirection(cameraDirection)
+        globals.MAIN_CAMERA.getWorldDirection(cameraDirection)
         const up = new THREE.Vector3(0, 1, 0)
         const forward = cameraDirection.projectOnPlane(up).normalize()
         const backward = forward.clone().negate()
@@ -170,7 +171,7 @@ class Player extends Group {
         }
 
         // always look where the camera points
-        this.physicsBody.quaternion.copy(window.camera.quaternion)
+        this.physicsBody.quaternion.copy(globals.MAIN_CAMERA.quaternion)
         this.physicsBody.quaternion.x = 0
         this.physicsBody.quaternion.z = 0
         this.physicsBody.quaternion.normalize()
@@ -182,7 +183,7 @@ class Player extends Group {
         }
 
         // set camera position to be at player
-        window.camera.position.copy(this.physicsBody.position)
+        globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
     }
 }
 
