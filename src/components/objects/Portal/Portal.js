@@ -86,10 +86,6 @@ class Portal extends Group {
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
-            stencilWrite: true, // stencil optimization, only for culling portal
-            stencilFunc: THREE.EqualStencilFunc,
-            stencilRef: 1,
-            stencilFail: THREE.ReplaceStencilOp,
         });
 
         this.mesh = new THREE.Mesh( geometry, material );

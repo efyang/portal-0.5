@@ -40,9 +40,7 @@ document.body.appendChild(stats.dom);
 
 
 function renderPortal(thisIndex, pairIndex) {
-    let portal = globals.PORTALS[thisIndex]
-    let pairPortal = globals.PORTALS[pairIndex]
-    if (portal === null || pairPortal === null) {
+    if (globals.PORTALS[thisIndex] === null || globals.PORTALS[pairIndex] === null) {
         return
     }
 
@@ -51,29 +49,22 @@ function renderPortal(thisIndex, pairIndex) {
 
     // ensure that uniforms and render target are correctly sized
     const { width, height } = renderer.domElement
-    portal.mesh.material.uniforms.ww.value = width
-    portal.mesh.material.uniforms.wh.value = height
+    globals.PORTALS[thisIndex].mesh.material.uniforms.ww.value = width
+    globals.PORTALS[thisIndex].mesh.material.uniforms.wh.value = height
     globals.PORTAL_TARGETS[thisIndex].setSize(width, height)
     globals.PORTAL_TMP_TARGETS[thisIndex].setSize(width, height)
 
-    // stencil optimization - only render parts of scene multiple
-    // times when it is going to be viewed by the portal
-
-    renderer.clearStencil()
-    renderer.autoClearStencil = false
-    renderer.render(portal.mesh, globals.MAIN_CAMERA)
-
     for (let i = 0; i < consts.RECURSIVE_PORTAL_LEVELS; i++) {
-        portal.teleportObject3D(portalCamera)
+        globals.PORTALS[thisIndex].teleportObject3D(portalCamera)
     }
 
+    // hide the portal for the farthest iteration - texture is currently garbage
+    globals.PORTALS[thisIndex].visible = false
+    globals.PORTALS[pairIndex].visible = false
     renderer.localClippingEnabled = true
     for (let level = 0; level < consts.RECURSIVE_PORTAL_LEVELS; level++) {
-        pairPortal.teleportObject3D(portalCamera)
         // necessary so that we properly render recursion (otherwise the other portal might block)
-        portal.visible = true
-        pairPortal.visible = false
-        renderer.clippingPlanes = [portal.plane.clone()]
+        renderer.clippingPlanes = [globals.PORTALS[pairIndex].plane.clone()]
         renderer.setRenderTarget(globals.PORTAL_TMP_TARGETS[thisIndex])
         renderer.render(scene, portalCamera)
 
@@ -83,12 +74,15 @@ function renderPortal(thisIndex, pairIndex) {
         let swap = globals.PORTAL_TARGETS[thisIndex]
         globals.PORTAL_TARGETS[thisIndex] = globals.PORTAL_TMP_TARGETS[thisIndex]
         globals.PORTAL_TMP_TARGETS[thisIndex] = swap
-        portal.mesh.material.uniforms.texture1.value = globals.PORTAL_TARGETS[thisIndex].texture
-        portal.mesh.material.needsUpdate = true
+        globals.PORTALS[thisIndex].mesh.material.uniforms.texture1.value = globals.PORTAL_TARGETS[thisIndex].texture
+        globals.PORTALS[pairIndex].teleportObject3D(portalCamera)
+        
+        // show this portal to itself on subsequent iterations
+        globals.PORTALS[thisIndex].visible = true
     }
 
-    portal.visible = true
-    pairPortal.visible = true
+    globals.PORTALS[thisIndex].visible = true
+    globals.PORTALS[pairIndex].visible = true
 }
 
 
