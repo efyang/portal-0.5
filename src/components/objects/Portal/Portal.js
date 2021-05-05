@@ -17,7 +17,7 @@ class Portal extends Group {
     // playerDirection - the direction the player is facing
     // output - portal that this portal is paired with
     // hostObjects - object that this portal is on
-    // ringColor - the color of the ring, portal1: blue, portal2: orange
+    // ringColor - the color of the ring, portal1: orange, portal2: blue
     // portalPoints - the positions of the corners of the portals
     constructor(parent, position, normal, playerUpDirection, output, hostObjects, ringColor, portalPoints = []) {
         super()

@@ -15,9 +15,9 @@ import {initPhysics} from './physics.js';
 import { consts, globals } from 'globals';
 
 const Stats = require("stats.js");
-const controls = new PointerLockControls(globals.MAIN_CAMERA, document.body);
-const scene = new MainScene(globals.CANNON_WORLD, controls);
-
+const controls = new PointerLockControls(globals.MAIN_CAMERA, document.body)
+// const scene = new MainScene(globals.CANNON_WORLD, globals.CONTROLS);
+const scene = new MainScene(controls);
 
 // Set up camera
 /*

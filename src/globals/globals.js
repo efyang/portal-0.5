@@ -1,5 +1,6 @@
 import * as physics from '../physics'
 import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera } from 'three';
+import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 
 export default {
 
@@ -17,4 +18,5 @@ export default {
     PORTAL_TMP_TARGETS: [new WebGLRenderTarget(1, 1), new WebGLRenderTarget(1, 1)],
     PORTALS: [null, null],
     CANNON_WORLD: physics.initPhysics(),
+    // CONTROLS: new PointerLockControls(),
 }
