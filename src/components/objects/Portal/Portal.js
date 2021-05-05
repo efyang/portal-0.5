@@ -58,8 +58,7 @@ class Portal extends Group {
         this.plane.applyMatrix4(this.transform)
         this.plane.translate(normal.clone().multiplyScalar(0.0001));
 
-        // create the 3d model
-
+        // create the 3d model for the portal
         const VERT_SHADER = `
         void main() 
         {
@@ -98,6 +97,7 @@ class Portal extends Group {
         this.mesh.updateMatrix()
         this.mesh.matrixAutoUpdate = false
 
+        // constructing the portal borders
         const geometryLine = new LineGeometry();
        
         geometryLine.setPositions( [this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z, 

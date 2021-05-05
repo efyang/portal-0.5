@@ -6,12 +6,8 @@
  * handles window resizes.
  *
  */
-import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, Vector3, Vector2 } from 'three';
-import { LineBasicMaterial, Line, BufferGeometry, BufferAttribute } from 'three';
-import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { Crosshair } from 'crosshair'
 import { MainScene } from 'scenes';
-import {initPhysics} from './physics.js';
 import { consts, globals } from 'globals';
 
 const Stats = require("stats.js");
