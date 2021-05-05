@@ -179,7 +179,7 @@ class Player extends Group {
         // copy position and rotation so player model aligns with the physical body
         if (this.playerModel) {
             this.playerModel.position.copy(this.physicsBody.position)
-            this.playerModel.quaternion.copy(-this.physicsBody.quaternion)
+            this.playerModel.quaternion.copy(this.physicsBody.quaternion)
         }
 
         // set camera position to be at player

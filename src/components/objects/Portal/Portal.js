@@ -87,10 +87,6 @@ class Portal extends Group {
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
-            stencilWrite: true, // stencil optimization, only for culling portal
-            stencilFunc: THREE.EqualStencilFunc,
-            stencilRef: 1,
-            stencilFail: THREE.ReplaceStencilOp,
         });
 
         this.mesh = new THREE.Mesh( geometry, material );
@@ -100,7 +96,6 @@ class Portal extends Group {
 
         // define ringpoints for portal border lines
         const ringPoints = [];
-        let EPS = 0.01
         ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
         ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
         ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
