@@ -15,14 +15,7 @@ import {initPhysics} from './physics.js';
 import { consts, globals } from 'globals';
 
 const Stats = require("stats.js");
-const controls = new PointerLockControls(globals.MAIN_CAMERA, document.body)
-// const scene = new MainScene(globals.CANNON_WORLD, globals.CONTROLS);
-const scene = new MainScene(controls);
-
-// Set up camera
-/*
-globals.MAIN_CAMERA.position.set(0, 10, 0);
-globals.MAIN_CAMERA.lookAt(new Vector3(0, 0, 0));*/
+const scene = new MainScene();
 
 // add a crosshair to the scene
 const crosshair = new Crosshair()
@@ -40,7 +33,7 @@ document.body.appendChild(canvas);
 
 // lock camera controls on mouseclick
 window.addEventListener( 'click', function () {
-    controls.lock();
+    globals.CONTROLS.lock();
 } );
 
 
