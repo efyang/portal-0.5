@@ -98,34 +98,17 @@ class Portal extends Group {
         this.mesh.updateMatrix()
         this.mesh.matrixAutoUpdate = false
 
-        // define ringpoints for portal border lines
-        const ringPoints = [];
-        let EPS = 0.01
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        
-        // apply matrix so borders are on portals
-        for (let rpoint of ringPoints) {
-            rpoint.applyMatrix4(this.transform)
-        }
-
-        // create line meshes for borders
         const geometryLine = new LineGeometry();
-        geometryLine.setPositions( [ringPoints[0].x, ringPoints[0].y, ringPoints[0].z, 
-                                    ringPoints[1].x, ringPoints[1].y, ringPoints[1].z,
-                                    ringPoints[2].x, ringPoints[2].y, ringPoints[2].z,
-                                    ringPoints[3].x, ringPoints[3].y, ringPoints[3].z,
-                                    ringPoints[4].x, ringPoints[4].y, ringPoints[4].z, 
-                                    ringPoints[5].x, ringPoints[5].y, ringPoints[5].z,
-                                    ringPoints[6].x, ringPoints[6].y, ringPoints[6].z,
-                                    ringPoints[7].x, ringPoints[7].y, ringPoints[7].z] );
-        
+       
+        geometryLine.setPositions( [this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z, 
+                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
+                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
+                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
+                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
+                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
+                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
+                                    this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z])
+
         const matLine = new LineMaterial( {
             color: ringColor,
             linewidth: 1, // in pixels
