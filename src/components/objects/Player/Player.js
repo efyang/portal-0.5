@@ -2,6 +2,7 @@ import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import MODEL from './blenderExport.gltf';
 import { globals } from 'globals'
 
@@ -14,50 +15,76 @@ class Player extends Group {
         let mass = 50;
 
         // Construct the player model 
-        const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
-        const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-        this.mesh = new THREE.Mesh( geometry, material );
-        this.add(this.mesh);
-        this.meshClone = this.mesh.clone()
-        this.add(this.meshClone)
-        this.meshClone.visible = false
+        // const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
+        // const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+        // this.mesh = new THREE.Mesh( geometry, material );
+        // this.add(this.mesh);
+        // this.meshClone = this.mesh.clone()
+        // this.add(this.meshClone)
+        // this.meshClone.visible = false
 
-        // Load object
-        // const loader = new GLTFLoader();
+        // adapted from https://sbcode.net/threejs/fbx-animation/
+        this.mixers = null;
+        this.animationActions = [];
+        this.modelReady = false;
+        this.lastAction = null;
+        this.currAction = null;
+        this.mesh = null;
+        this.lastTimeStamp = 0;
+        const loader = new FBXLoader();
 
-        // // this.name = 'Player';
-        // loader.load(MODEL, (gltf) => {
-        //     // console.log(gltf.scene.children[0])
-        //     // this.playerModel = gltf.scene.children[0]
-        //     gltf.scene.scale.set(0.2,0.2,0.2) // scale here
-        //     this.add(gltf.scene);
-        // });
-
-        /*
-        // this utility function allows you to use any three.js
-        // loader with promises and async/await
-        function modelLoader(url) {
-            return new Promise((resolve, reject) => {
-            loader.load(url, data=> resolve(data), null, reject);
-            });
-        }
-
-        let scene = this;
-        async function main() {
-            const gltfData = await modelLoader(URL),
+        loader.load('src/components/objects/Player/models/xbot.fbx', (fbx) => {
+            fbx.scale.setScalar(0.007);
+            this.mixers = new THREE.AnimationMixer(fbx)
+            fbx.traverse(c => {
+                c.castShadow = true;
+            })
+            this.mesh = fbx
+            this.meshClone = this.mesh.clone()
+            this.meshClone.visible = false
+            this.add(this.mesh);  
+            this.add(this.meshClone)
             
-            .add(gltf.scene);
-            // this.playerModel = this.children[0];
+            loader.load('src/components/objects/Player/models/Idle.fbx', (idleAnim) => {
+                console.log("loaded idle")
+                let animationAction = this.mixers.clipAction(idleAnim.animations[0])
+                this.animationActions.push(animationAction)
 
-        }
-        main().catch(error => {
-            console.error(error);
-        });
-        */
+                loader.load('src/components/objects/Player/models/Jump.fbx', (jumpAnim) => {
+                    console.log("loaded jump")
+                    let animationAction = this.mixers.clipAction(jumpAnim.animations[0])
+                    this.animationActions.push(animationAction)
+                
+                    loader.load('src/components/objects/Player/models/StationaryRunning.fbx', (runningAnim) => {
+                        console.log("loaded running")
+                        let animationAction = this.mixers.clipAction(runningAnim.animations[0])
+                        this.animationActions.push(animationAction)
+                        this.modelReady = true;
+                        
+                        loader.load('src/components/objects/Player/models/RunningBackward.fbx', (runningAnim) => {
+                            console.log("loaded running")
+                            let animationAction = this.mixers.clipAction(runningAnim.animations[0])
+                            this.animationActions.push(animationAction)
+                            this.modelReady = true;
 
-        // console.log(this)
-        // this.playerModel = this.children[0];
-        // console.log(this.playerModel)
+                            loader.load('src/components/objects/Player/models/RightStrafe.fbx', (runningAnim) => {
+                                console.log("loaded running")
+                                let animationAction = this.mixers.clipAction(runningAnim.animations[0])
+                                this.animationActions.push(animationAction)
+                                this.modelReady = true;
+
+                                loader.load('src/components/objects/Player/models/LeftStrafe.fbx', (runningAnim) => {
+                                    console.log("loaded running")
+                                    let animationAction = this.mixers.clipAction(runningAnim.animations[0])
+                                    this.animationActions.push(animationAction)
+                                    this.modelReady = true;
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
 
         var slipperyMaterial = new CANNON.Material();
         slipperyMaterial.friction = 0.01;
@@ -117,6 +144,8 @@ class Player extends Group {
 
     // updates performed at each timestep
     update(timeStamp) {
+
+        let animationIndex = 0
 
         // define directions
         let cameraDirection = new THREE.Vector3()
@@ -179,14 +208,48 @@ class Player extends Group {
 
         // copy position and rotation so player model aligns with the physical body
         if (this.mesh) {
-            this.mesh.position.copy(this.physicsBody.position)
+            this.mesh.position.copy(this.physicsBody.position).add(new Vector3(0,-1,0))
+            // this.mesh.position.copy(this.physicsBody.position)
             this.mesh.quaternion.copy(this.physicsBody.quaternion)
-            this.meshClone.position.copy(this.mesh.position)
-            this.meshClone.quaternion.copy(this.mesh.quaternion)
+            this.meshClone.position.copy(this.mesh.position).add(new Vector3(0,-1,0))
+            // this.meshClone.position.copy(this.mesh.position)
+
+            this.mesh.quaternion.copy(this.mesh.quaternion).multiply(new THREE.Quaternion(0,50,0)).normalize()
+            this.meshClone.quaternion.copy(this.mesh.quaternion).multiply(new THREE.Quaternion(0,50,0)).normalize()
         }
 
         // set camera position to be at player
-        globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
+        // globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
+
+        // handle model movements
+        const timeElapsedS = (timeStamp - this.lastTimeStamp) * 0.001;
+        this.lastTimeStamp = timeStamp;
+        if (this.modelReady) {
+            // if (this.physicsBody.inJump) { animationIndex = 1}
+            if (this.controller["KeyW"].pressed) { animationIndex = 2}
+            if (this.controller["KeyS"].pressed) { animationIndex = 3}
+            if (this.controller["KeyD"].pressed) { animationIndex = 4}
+            if (this.controller["KeyA"].pressed) { animationIndex = 5}
+
+            let action = this.animationActions[animationIndex];
+            this.setAction(action)
+            this.mixers.update(timeElapsedS);
+        }
+    }
+
+    setAction(action) {
+        if (action != this.activeAction) {
+            this.lastAction = this.activeAction;
+            this.activeAction = action;
+            let fadeDuration = 0.01
+            if (this.lastAction) {
+                fadeDuration = 0.8
+                this.lastAction.fadeOut(fadeDuration)
+            }
+            this.activeAction.reset()
+            this.activeAction.fadeIn(fadeDuration)
+            this.activeAction.play()
+        }
     }
 }
 

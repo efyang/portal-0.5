@@ -30,6 +30,9 @@ class MainScene extends Scene {
             .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
 
 
+        
+        globals.MAIN_CAMERA.position.copy(new Vector3(0, 5, 0))
+
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
 
@@ -132,7 +135,7 @@ class MainScene extends Scene {
                 const portal_depth = consts.PORTAL_DEPTH
 
                 // the 4 corners of the new portal that will be at this point
-                let EPS = consts.PORTAL_EPS * 2;
+                let EPS = consts.PORTAL_EPS * 3;
                 let portalPoints = [point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
                                     point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
@@ -149,8 +152,9 @@ class MainScene extends Scene {
 
                 if (event.button == 0) {           // left click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
+
                     if (globals.PORTALS[1] !== null &&
-                        intersects[0].object == globals.PORTALS[1].hostObjects &&
+                        intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                         !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
                         return;
                     }
@@ -184,7 +188,7 @@ class MainScene extends Scene {
                 } else if (event.button == 2) {    // right click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
                     if (globals.PORTALS[0] !== null &&
-                        intersects[0].object == globals.PORTALS[0].hostObjects &&
+                        intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
                         !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
                         return;
                     }
@@ -210,7 +214,7 @@ class MainScene extends Scene {
                         'blue',
                         portalPoints)
                     this.add(globals.PORTALS[1])
-                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
+                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[1]
                     if (globals.PORTALS[0] !== null) {
                         globals.PORTALS[0].output = globals.PORTALS[1]
@@ -343,13 +347,13 @@ class MainScene extends Scene {
     portalsNotOverlapping(portalPoints, edgePoints, otherPortalPoints) {
         for (let p of portalPoints) {
             if (this.pointInPortal(p, otherPortalPoints)) {
-                // console.log("INVALID PLACEMENT (corner)")
+                console.log("INVALID PLACEMENT (corner)")
                 return false;
             }
         }
         for (let p of edgePoints) {
             if (this.pointInPortal(p, otherPortalPoints)) {
-                // console.log("INVALID PLACEMENT (edge)")
+                console.log("INVALID PLACEMENT (edge)")
                 return false;
             }
         }
