@@ -26,6 +26,7 @@ class Portal extends Group {
         this.output = output
         this.hostObjects = hostObjects
         this.plane = new THREE.Plane(new Vector3(0, 1, 0), 0)
+        this.debugMeshes = new Group()
 
         // create onb for bb transformations
         this.ty = normal.clone().normalize()
@@ -45,12 +46,10 @@ class Portal extends Group {
         }
 
         // for visualization purposes
-        if (globals.DEBUG) {
-            let xHelper = new THREE.ArrowHelper(this.tx, position, 1, 0xff0000)
-            let yHelper = new THREE.ArrowHelper(this.ty, position, 1, 0x00ff00)
-            let zHelper = new THREE.ArrowHelper(this.tz, position, 1, 0x0000ff)
-            this.add(xHelper, yHelper, zHelper)
-        }
+        let xHelper = new THREE.ArrowHelper(this.tx, position, 1, 0xff0000)
+        let yHelper = new THREE.ArrowHelper(this.ty, position, 1, 0x00ff00)
+        let zHelper = new THREE.ArrowHelper(this.tz, position, 1, 0x0000ff)
+        this.debugMeshes.add(xHelper, yHelper, zHelper)
 
         let tRot = new THREE.Matrix4().makeBasis(this.tx, this.ty, this.tz)
 
@@ -86,6 +85,10 @@ class Portal extends Group {
             vertexShader: VERT_SHADER,
             fragmentShader: FRAG_SHADER,
             uniforms: uniforms,
+            stencilWrite: true, // stencil optimization, only for culling portal
+            stencilFunc: THREE.EqualStencilFunc,
+            stencilRef: 1,
+            stencilFail: THREE.ReplaceStencilOp,
         });
 
         this.mesh = new THREE.Mesh( geometry, material );
@@ -107,7 +110,9 @@ class Portal extends Group {
 
         const matLine = new LineMaterial( {
             color: ringColor,
-            linewidth: 1, // in pixels
+            linewidth: 3, // in pixels
+            opacity: 0.5,
+            transparent: true,
             resolution: new THREE.Vector2(640, 480) // resolution of the viewport
         } );
 
@@ -131,10 +136,9 @@ class Portal extends Group {
         this.CDBB = new GeneralBB(portal_width, portal_cdbb_height, portal_depth, tCDBB, 0xff0000)
         this.STBB = new GeneralBB(portal_width, portal_cdbb_height/2, portal_depth, tSTBB, 0x00ff00)
 
-        if (globals.DEBUG){
-            this.add(this.CDBB.helper)
-            this.add(this.STBB.helper)
-        }
+        this.debugMeshes.add(this.CDBB.helper)
+        this.debugMeshes.add(this.STBB.helper)
+        this.add(this.debugMeshes)
        
         // if valid placement, add and render
         parent.addToUpdateList( this );
@@ -173,6 +177,13 @@ class Portal extends Group {
         let f = new THREE.Matrix4().makeScale(-1, -1, 1)
         let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
         object.applyMatrix4(m)
+    }
+
+    teleportPhysicalObject(object) {
+        let f = new THREE.Matrix4().makeScale(-1, -1, 1)
+        let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
+        object.applyMatrix4(m)
+        object.physicsBody.position.applyMatrix4(m)
     }
 }
 

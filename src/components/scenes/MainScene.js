@@ -22,6 +22,13 @@ class MainScene extends Scene {
             gui: new Dat.GUI(), // Create GUI for scene
             updateList: [],
         };
+        const debugFolder = this.state.gui.addFolder("debug")
+        debugFolder.add({debug: globals.DEBUG}, "debug")
+            .onChange((v) => globals.DEBUG = v)
+        const portalsFolder = this.state.gui.addFolder("portals")
+        portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 0, 10, 1)
+            .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
+
 
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
@@ -33,6 +40,8 @@ class MainScene extends Scene {
 
         // deifnes the dynamic objects for collision groups
         this.dynamicObjects = []
+
+        this.debugMeshes = []
 
         // load meshes from json file to scene
         const files = consts.FILES;
@@ -52,7 +61,8 @@ class MainScene extends Scene {
                     // console.log(cube.children[0])
                     this.environmentObjects.push(cube);
                     this.intersectObjects.push(cube.children[0])
-                    
+                
+                    // just instantiate physics on load to not deal with async
                     cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
                     cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
                 }
@@ -66,10 +76,10 @@ class MainScene extends Scene {
         this.add(lights, player)
         this.dynamicObjects.push(player)
 
-        for (let e of this.environmentObjects) {
+        /*for (let e of this.environmentObjects) {
             e.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
             e.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
-        }
+        }*/
 
         for (let d of this.dynamicObjects) {
             d.physicsBody.collisionFilterGroup = consts.CGROUP_DYNAMIC 
@@ -149,9 +159,10 @@ class MainScene extends Scene {
                     if (globals.PORTALS[0] !== null) {
                         globals.PORTALS[0].mesh.geometry.dispose();
                         globals.PORTALS[0].mesh.material.dispose();
-                        if (globals.PORTALS[0].hostObjects !== null)
+                        if (globals.PORTALS[0].hostObjects !== null) {
                             globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
                             globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                        }
                         this.remove(globals.PORTALS[0]);
                     }
 
@@ -167,8 +178,9 @@ class MainScene extends Scene {
                     this.add(globals.PORTALS[0])
                     globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[0]
-                    if (globals.PORTALS[1] !== null)
+                    if (globals.PORTALS[1] !== null) {
                         globals.PORTALS[1].output = globals.PORTALS[0]
+                    }
                 } else if (event.button == 2) {    // right click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
                     if (globals.PORTALS[0] !== null &&
@@ -181,9 +193,10 @@ class MainScene extends Scene {
                     if (globals.PORTALS[1] !== null) {
                         globals.PORTALS[1].mesh.geometry.dispose();
                         globals.PORTALS[1].mesh.material.dispose();
-                        if (globals.PORTALS[1].hostObjects !== null)
+                        if (globals.PORTALS[1].hostObjects !== null) {
                             globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[1]
                             globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                        }
                         this.remove(globals.PORTALS[1]);
                     }
 
@@ -199,8 +212,9 @@ class MainScene extends Scene {
                     this.add(globals.PORTALS[1])
                     globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[1]
-                    if (globals.PORTALS[0] !== null)
+                    if (globals.PORTALS[0] !== null) {
                         globals.PORTALS[0].output = globals.PORTALS[1]
+                    }
                 }
             }
         })

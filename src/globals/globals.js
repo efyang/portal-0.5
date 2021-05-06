@@ -5,6 +5,10 @@ import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockContro
 const camera = new PerspectiveCamera();
 
 export default {
+     /***********************************************************
+    * PORTALS
+    ***********************************************************/
+    PORTAL_RECURSION_LEVELS: 3,
 
     /***********************************************************
     * DEBUGGING

@@ -9,7 +9,6 @@ export default {
     PORTAL_DEPTH: 2,
     PORTAL_CDBB_HEIGHT: 3,
     PORTAL_HEIGHT: 0.0001,
-    RECURSIVE_PORTAL_LEVELS: 7,
     PORTAL_EPS: 0.01,
 
     /**********************************************************

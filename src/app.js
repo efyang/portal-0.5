@@ -54,7 +54,7 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTAL_TARGETS[thisIndex].setSize(width, height)
     globals.PORTAL_TMP_TARGETS[thisIndex].setSize(width, height)
 
-    for (let i = 0; i < consts.RECURSIVE_PORTAL_LEVELS; i++) {
+    for (let i = 0; i < globals.PORTAL_RECURSION_LEVELS; i++) {
         globals.PORTALS[thisIndex].teleportObject3D(portalCamera)
     }
 
@@ -62,7 +62,7 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTALS[thisIndex].visible = false
     globals.PORTALS[pairIndex].visible = false
     renderer.localClippingEnabled = true
-    for (let level = 0; level < consts.RECURSIVE_PORTAL_LEVELS; level++) {
+    for (let level = 0; level < globals.PORTAL_RECURSION_LEVELS; level++) {
         // necessary so that we properly render recursion (otherwise the other portal might block)
         renderer.clippingPlanes = [globals.PORTALS[pairIndex].plane.clone()]
         renderer.setRenderTarget(globals.PORTAL_TMP_TARGETS[thisIndex])
@@ -87,19 +87,39 @@ function renderPortal(thisIndex, pairIndex) {
 
 
 const onAnimationFrameHandler = (timeStamp) => {
-    // controls.update();
+    // stencil optimization - only render parts of scene multiple
+    // times when it is going to be viewed by the portal
+    let renderer = globals.RENDERER
+
+    renderer.clearStencil()
+    renderer.autoClearStencil = false
+    if (globals.PORTALS[0])
+        renderer.render(globals.PORTALS[0].mesh, globals.MAIN_CAMERA)
+    if (globals.PORTALS[1])
+        renderer.render(globals.PORTALS[1].mesh, globals.MAIN_CAMERA)
     renderPortal(0, 1)
     renderPortal(1, 0)
 
     if (globals.PORTALS[0] === null && globals.PORTALS[1] !== null) {
-        globals.PORTALS[1].mesh.material.visible = false
+        globals.PORTALS[1].mesh.visible = false
     }
     if (globals.PORTALS[0] !== null && globals.PORTALS[1] === null) {
-        globals.PORTALS[0].mesh.material.visible = false
+        globals.PORTALS[0].mesh.visible = false
+    }
+    if (globals.PORTALS[0] !== null && globals.PORTALS[1] !== null) {
+        globals.PORTALS[0].mesh.visible = true
+        globals.PORTALS[1].mesh.visible = true
+    }
+
+    // handle debug visibility
+    if (globals.PORTALS[0]) {
+        globals.PORTALS[0].debugMeshes.visible = globals.DEBUG
+    }
+    if (globals.PORTALS[1]) {
+        globals.PORTALS[1].debugMeshes.visible = globals.DEBUG
     }
 
     // finally, render to screen
-    let renderer = globals.RENDERER
     renderer.setRenderTarget(null)
     renderer.localClippingEnabled = false
     renderer.clippingPlanes = []

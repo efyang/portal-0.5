@@ -16,15 +16,13 @@ class GeneralBB {
         this.inverse_t = this.t.clone()
         this.inverse_t.invert()
 
-        if (globals.DEBUG) {
-            // Box3 Helper to visualize
-            // Box3Helper can't be transformed easily, just make our own
-            let helperGeometry = new THREE.BoxGeometry(width, height, depth);
-            let wireframe = new THREE.WireframeGeometry( helperGeometry );
-            let line = new THREE.LineSegments( wireframe, new THREE.LineBasicMaterial({color: debugColor, opacity: 0.5, transparent: true}) );
-            line.applyMatrix4(this.t);
-            this.helper = line
-        }
+        // Box3 Helper to visualize
+        // Box3Helper can't be transformed easily, just make our own
+        let helperGeometry = new THREE.BoxGeometry(width, height, depth);
+        let wireframe = new THREE.WireframeGeometry( helperGeometry );
+        let line = new THREE.LineSegments( wireframe, new THREE.LineBasicMaterial({color: debugColor, opacity: 0.5, transparent: true}) );
+        line.applyMatrix4(this.t);
+        this.helper = line
     }
 
     // @param {THREE.Vector3} point
