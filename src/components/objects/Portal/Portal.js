@@ -145,8 +145,13 @@ class Portal extends Group {
         let pSTBB = position.clone().add(normal.clone().multiplyScalar(-portal_cdbb_height / 4))
         let tSTBB = tRot.clone().setPosition(pSTBB)
 
-        this.CDBB = new GeneralBB(portal_width, portal_cdbb_height, portal_depth, tCDBB)
-        this.STBB = new GeneralBB(portal_width, portal_cdbb_height/2, portal_depth, tSTBB)
+        this.CDBB = new GeneralBB(portal_width, portal_cdbb_height, portal_depth, tCDBB, 0xff0000)
+        this.STBB = new GeneralBB(portal_width, portal_cdbb_height/2, portal_depth, tSTBB, 0x00ff00)
+
+        if (globals.DEBUG){
+            this.add(this.CDBB.helper)
+            this.add(this.STBB.helper)
+        }
        
         // if valid placement, add and render
         parent.addToUpdateList( this );

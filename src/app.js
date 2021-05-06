@@ -95,6 +95,13 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderPortal(0, 1)
     renderPortal(1, 0)
 
+    if (globals.PORTALS[0] === null && globals.PORTALS[1] !== null) {
+        globals.PORTALS[1].mesh.material.visible = false
+    }
+    if (globals.PORTALS[0] !== null && globals.PORTALS[1] === null) {
+        globals.PORTALS[0].mesh.material.visible = false
+    }
+
     // finally, render to screen
     let renderer = globals.RENDERER
     renderer.setRenderTarget(null)

@@ -37,13 +37,12 @@ class EnvironmentCube2 extends Group {
         this.add(cube)
 
         // create physics
-        var physicsMaterial = new CANNON.Material();
+        let physicsMaterial = new CANNON.Material();
         physicsMaterial.friction = 0.9;
-        var physicsShape = new CANNON.Box(new CANNON.Vec3(this.width / 2, this.height / 2, this.depth / 2));
-        var physicsBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
-        physicsBody.addShape(physicsShape, new CANNON.Vec3(pos.x, pos.y, pos.z));
-        // physicsBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
-        globals.CANNON_WORLD.addBody(physicsBody);
+        let physicsShape = new CANNON.Box(new CANNON.Vec3(this.width / 2, this.height / 2, this.depth / 2));
+        this.physicsBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
+        this.physicsBody.addShape(physicsShape, new CANNON.Vec3(pos.x, pos.y, pos.z));
+        globals.CANNON_WORLD.addBody(this.physicsBody);
 
         // Add self to parent's update list
         

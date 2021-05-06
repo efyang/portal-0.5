@@ -1,10 +1,16 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, Vector2, Vector3, Raycaster} from 'three';
+import { Scene, Color, Vector2, Vector3, Raycaster, Box3} from 'three';
 import * as THREE from 'three';
 import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
+import 'regenerator-runtime/runtime'
 
+// return JSON data from any file path (asynchronous)
+async function getJSON(path) {
+    const response = await fetch(path).then(response => response.json());
+    return response;
+}
 
 class MainScene extends Scene {
     constructor() {
@@ -20,31 +26,57 @@ class MainScene extends Scene {
         // Set background to a nice color
         this.background = new Color(0x7ec0ee);
 
-        // defines intersectable objects for setting portals
-        this.intersectObj = [];
+        this.intersectObjects = [];
+
+        // defines environmental objects for setting portals and for collision groups
+        this.environmentObjects = [];
+
+        // deifnes the dynamic objects for collision groups
+        this.dynamicObjects = []
 
         // load meshes from json file to scene
         const files = consts.FILES;
         for (let filename of files) {
-            let path = 'src/components/Jsons/' + filename + '.json';
+            let path = 'src/components/jsons/' + filename + '.json';
             // load JSON data; then proceed
-            this.getJSON(path).then(data => {
+            const loadJSON = async() => {
+                const data = await fetch(path).then(response => response.json())
+
                 for (let i = 0; i < data.geometries.length; i++) {
                     let geometries = data.geometries[i]
                     let matrix = data.object.children[i].matrix
                     let position = new Vector3(matrix[12], matrix[13], matrix[14])
                     let cube = new EnvironmentCube2(this, geometries, position);
                     this.add(cube);
-                    this.intersectObj.push(cube.children[0]);
+                    // this.environmentObjects.push(cube.children[0]);
+                    // console.log(cube.children[0])
+                    this.environmentObjects.push(cube);
+                    this.intersectObjects.push(cube.children[0])
+                    
+                    cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
+                    cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
                 }
-            })
+            }
+            loadJSON();
         }
 
         // Add other meshes to scene
         const lights = new BasicLights();
         const player = new Player(this);
         this.add(lights, player)
+        this.dynamicObjects.push(player)
 
+        for (let e of this.environmentObjects) {
+            e.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
+            e.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
+        }
+
+        for (let d of this.dynamicObjects) {
+            d.physicsBody.collisionFilterGroup = consts.CGROUP_DYNAMIC 
+            d.physicsBody.collisionFilterMask = consts.CGROUP_ALL
+        }
+
+        /*
         // set initial portals
         // TODO: try removing these later on to test single portal cases
         globals.PORTALS[0] = new Portal(this,
@@ -64,7 +96,7 @@ class MainScene extends Scene {
             'blue')
 
         globals.PORTALS[0].output = globals.PORTALS[1]
-        this.add(globals.PORTALS[0], globals.PORTALS[1])
+        this.add(globals.PORTALS[0], globals.PORTALS[1])*/
 
         // construct portals
         window.addEventListener("mousedown", (event) => {
@@ -80,7 +112,7 @@ class MainScene extends Scene {
             let playerUpDirection = new THREE.Vector3(0,1,0)
             playerUpDirection.applyQuaternion(globals.MAIN_CAMERA.quaternion)
 
-            const intersects = raycaster.intersectObjects( this.intersectObj );
+            const intersects = raycaster.intersectObjects( this.intersectObjects );
             if (intersects.length > 0) {
                 const point = intersects[0].point;
                 const normal = intersects[0].face.normal.clone().normalize()
@@ -107,14 +139,21 @@ class MainScene extends Scene {
 
                 if (event.button == 0) {           // left click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
-                    if (intersects[0].object == globals.PORTALS[1].hostObjects && !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
+                    if (globals.PORTALS[1] !== null &&
+                        intersects[0].object == globals.PORTALS[1].hostObjects &&
+                        !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
                         return;
                     }
 
                     // delete the old portal this new one is replacing
-                    globals.PORTALS[0].mesh.geometry.dispose();
-                    globals.PORTALS[0].mesh.material.dispose();
-                    this.remove(globals.PORTALS[0]);
+                    if (globals.PORTALS[0] !== null) {
+                        globals.PORTALS[0].mesh.geometry.dispose();
+                        globals.PORTALS[0].mesh.material.dispose();
+                        if (globals.PORTALS[0].hostObjects !== null)
+                            globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
+                            globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                        this.remove(globals.PORTALS[0]);
+                    }
 
                     // create new portal
                     globals.PORTALS[0] = new Portal(this,
@@ -122,23 +161,31 @@ class MainScene extends Scene {
                         normal, // normal of surface
                         playerUpDirection,
                         globals.PORTALS[1],
-                        intersects[0].object,
+                        intersects[0].object.parent,
                         'orange',
                         portalPoints)
                     this.add(globals.PORTALS[0])
-                    globals.PORTALS[1].output = globals.PORTALS[0]
-                    globals.PORTALS[0] = globals.PORTALS[0]
-
+                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
+                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[0]
+                    if (globals.PORTALS[1] !== null)
+                        globals.PORTALS[1].output = globals.PORTALS[0]
                 } else if (event.button == 2) {    // right click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
-                    if (intersects[0].object == globals.PORTALS[0].hostObjects && !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
+                    if (globals.PORTALS[0] !== null &&
+                        intersects[0].object == globals.PORTALS[0].hostObjects &&
+                        !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
                         return;
                     }
 
                     // delete the old portal this new one is replacing
-                    globals.PORTALS[1].mesh.geometry.dispose();
-                    globals.PORTALS[1].mesh.material.dispose();
-                    this.remove(globals.PORTALS[1]);
+                    if (globals.PORTALS[1] !== null) {
+                        globals.PORTALS[1].mesh.geometry.dispose();
+                        globals.PORTALS[1].mesh.material.dispose();
+                        if (globals.PORTALS[1].hostObjects !== null)
+                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[1]
+                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                        this.remove(globals.PORTALS[1]);
+                    }
 
                     // create new portal
                     globals.PORTALS[1] = new Portal(this,
@@ -146,12 +193,14 @@ class MainScene extends Scene {
                         normal, // normal of surface
                         playerUpDirection,
                         globals.PORTALS[0],
-                        intersects[0].object,
+                        intersects[0].object.parent,
                         'blue',
                         portalPoints)
                     this.add(globals.PORTALS[1])
-                    globals.PORTALS[0].output = globals.PORTALS[1]
-                    globals.PORTALS[1] = globals.PORTALS[1]
+                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
+                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[1]
+                    if (globals.PORTALS[0] !== null)
+                        globals.PORTALS[0].output = globals.PORTALS[1]
                 }
             }
         })
@@ -164,11 +213,26 @@ class MainScene extends Scene {
     update(timeStamp) {
         const { updateList } = this.state;
         const timeStep=1/60
-        globals.CANNON_WORLD.step(timeStep)
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
         }
+
+        for (let d of this.dynamicObjects) {
+            let pos = new Vector3(d.physicsBody.position.x, d.physicsBody.position.y, d.physicsBody.position.z)
+            // let bb = new Box3(new Vector3().copy(d.physicsBody.aabb.lowerBound), new Vector3().copy(d.physicsBody.aabb.upperBound))
+            d.physicsBody.collisionFilterMask = consts.CGROUP_ALL
+            if (globals.PORTALS[0] === null || globals.PORTALS[1] === null) {
+                continue
+            }
+            for (let p = 0; p < globals.PORTALS.length; p++) {
+                if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
+                    d.physicsBody.collisionFilterMask = d.physicsBody.collisionFilterMask & ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
+                }
+            }
+        }
+
+        globals.CANNON_WORLD.step(timeStep)
     }
 
     validPortalPoint(point, normal, object) {
@@ -177,7 +241,7 @@ class MainScene extends Scene {
         const raycaster = new Raycaster();
         let behindPoint = point.clone().add(normal.clone().multiplyScalar(-0.1))
         raycaster.set(behindPoint, normal)
-        let intersects = raycaster.intersectObjects( this.intersectObj );
+        let intersects = raycaster.intersectObjects( this.intersectObjects );
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 ||  intersects[0].object != object) {
@@ -187,7 +251,7 @@ class MainScene extends Scene {
         // check that the same intersectable object is directly behind the point
         let frontPoint = point.clone().add(normal.clone().multiplyScalar(0.1))
         raycaster.set(frontPoint, normal.clone().multiplyScalar(-1))
-        intersects = raycaster.intersectObjects( this.intersectObj );
+        intersects = raycaster.intersectObjects( this.intersectObjects );
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 || intersects[0].object != object) {
@@ -270,10 +334,6 @@ class MainScene extends Scene {
         return true;
     }
 
-    // return JSON data from any file path (asynchronous)
-    getJSON(path) {
-        return fetch(path).then(response => response.json());
-    }
 }
 
 export default MainScene;
