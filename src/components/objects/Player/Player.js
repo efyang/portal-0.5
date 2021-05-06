@@ -13,24 +13,22 @@ class Player extends Group {
         this.name = 'Player';
         let mass = 50;
 
-        /*
         // Construct the player model 
         const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
         this.playerModel = new THREE.Mesh( geometry, material );
         this.add(this.playerModel);
-        */
 
         // Load object
-        const loader = new GLTFLoader();
+        // const loader = new GLTFLoader();
 
-        // this.name = 'Player';
-        loader.load(MODEL, (gltf) => {
-            // console.log(gltf.scene.children[0])
-            // this.playerModel = gltf.scene.children[0]
-            gltf.scene.scale.set(0.2,0.2,0.2) // scale here
-            this.add(gltf.scene);
-        });
+        // // this.name = 'Player';
+        // loader.load(MODEL, (gltf) => {
+        //     // console.log(gltf.scene.children[0])
+        //     // this.playerModel = gltf.scene.children[0]
+        //     gltf.scene.scale.set(0.2,0.2,0.2) // scale here
+        //     this.add(gltf.scene);
+        // });
 
         /*
         // this utility function allows you to use any three.js
@@ -183,7 +181,8 @@ class Player extends Group {
         }
 
         // set camera position to be at player
-        globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
+        // globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
+        globals.MAIN_CAMERA.position.copy(new THREE.Vector3(0, 10, 0));
     }
 }
 

@@ -58,8 +58,7 @@ class Portal extends Group {
         this.plane.applyMatrix4(this.transform)
         this.plane.translate(normal.clone().multiplyScalar(0.0001));
 
-        // create the 3d model
-
+        // create the 3d model for the portal
         const VERT_SHADER = `
         void main() 
         {
@@ -94,23 +93,7 @@ class Portal extends Group {
         this.mesh.updateMatrix()
         this.mesh.matrixAutoUpdate = false
 
-        // define ringpoints for portal border lines
-        const ringPoints = [];
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
-        ringPoints.push( new THREE.Vector3( -portal_width / 2 - portal_eps, 0, -portal_depth / 2 - portal_eps ) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, -portal_depth / 2 - portal_eps) );
-        ringPoints.push( new THREE.Vector3( portal_width / 2 + portal_eps, 0, portal_depth / 2 + portal_eps ) );
-        
-        // apply matrix so borders are on portals
-        for (let rpoint of ringPoints) {
-            rpoint.applyMatrix4(this.transform)
-        }
-
-        // create line meshes for borders
+        // constructing the portal borders
         const geometryLine = new LineGeometry();
        
         geometryLine.setPositions( [this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z, 
