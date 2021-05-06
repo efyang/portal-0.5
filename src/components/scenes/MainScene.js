@@ -243,6 +243,9 @@ class MainScene extends Scene {
                 if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
                     d.physicsBody.collisionFilterMask = d.physicsBody.collisionFilterMask & ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
                 }
+                if (globals.PORTALS[p].STBB.containsPoint(pos)) {
+                    globals.PORTALS[p].teleportPhysicalObject(d)
+                }
             }
         }
 
