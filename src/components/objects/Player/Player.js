@@ -16,9 +16,9 @@ class Player extends Group {
         // Construct the player model 
         const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-        this.playerModel = new THREE.Mesh( geometry, material );
-        this.add(this.playerModel);
-        this.meshClone = this.playerModel.clone()
+        this.mesh = new THREE.Mesh( geometry, material );
+        this.add(this.mesh);
+        this.meshClone = this.mesh.clone()
         this.add(this.meshClone)
         this.meshClone.visible = false
 
@@ -178,11 +178,11 @@ class Player extends Group {
         this.physicsBody.quaternion.normalize()
 
         // copy position and rotation so player model aligns with the physical body
-        if (this.playerModel) {
-            this.playerModel.position.copy(this.physicsBody.position)
-            this.playerModel.quaternion.copy(this.physicsBody.quaternion)
-            this.meshClone.position.copy(this.playerModel.position)
-            this.meshClone.quaternion.copy(this.playerModel.quaternion)
+        if (this.mesh) {
+            this.mesh.position.copy(this.physicsBody.position)
+            this.mesh.quaternion.copy(this.physicsBody.quaternion)
+            this.meshClone.position.copy(this.mesh.position)
+            this.meshClone.quaternion.copy(this.mesh.quaternion)
         }
 
         // set camera position to be at player
