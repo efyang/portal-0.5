@@ -181,8 +181,7 @@ class Player extends Group {
         }
 
         // set camera position to be at player
-        // globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
-        globals.MAIN_CAMERA.position.copy(new THREE.Vector3(0, 10, 0));
+        globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
     }
 }
 
