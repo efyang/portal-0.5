@@ -26,7 +26,7 @@ class MainScene extends Scene {
         debugFolder.add({debug: globals.DEBUG}, "debug")
             .onChange((v) => globals.DEBUG = v)
         const portalsFolder = this.state.gui.addFolder("portals")
-        portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 0, 10, 1)
+        portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 1, 10, 1)
             .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
 
 
@@ -226,7 +226,6 @@ class MainScene extends Scene {
 
     update(timeStamp) {
         const { updateList } = this.state;
-        const timeStep=1/60
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
@@ -240,16 +239,24 @@ class MainScene extends Scene {
                 continue
             }
             for (let p = 0; p < globals.PORTALS.length; p++) {
+                // collision disable, might be partially intersecting with portal
                 if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
                     d.physicsBody.collisionFilterMask = d.physicsBody.collisionFilterMask & ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
+                    // show the clone
+                    globals.PORTALS[p].teleportObject3D(d.meshClone)
+                    d.meshClone.visible = true
+                } else {
+                    d.meshClone.visible = false
                 }
+                
+                // should teleport
                 if (globals.PORTALS[p].STBB.containsPoint(pos)) {
                     globals.PORTALS[p].teleportPhysicalObject(d)
+                    globals.PORTALS[p].teleportObject3D(globals.MAIN_CAMERA)
                 }
             }
         }
 
-        globals.CANNON_WORLD.step(timeStep)
     }
 
     validPortalPoint(point, normal, object) {

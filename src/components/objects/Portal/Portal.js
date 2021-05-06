@@ -180,11 +180,17 @@ class Portal extends Group {
     }
 
     teleportPhysicalObject(object) {
-        this.teleportObject3D(object)
+        let f = new THREE.Matrix4().makeScale(-1, -1, 1)
+        let m = this.CDBB.inverse_t.clone().premultiply(f).premultiply(this.output.CDBB.t)
+        object.applyMatrix4(m)
         let position = util.cannonToThreeVector3(object.physicsBody.position)
         let previousPosition = util.cannonToThreeVector3(object.physicsBody.position)
         let velocity = util.cannonToThreeVector3(object.physicsBody.velocity)
         let force = util.cannonToThreeVector3(object.physicsBody.force)
+
+        let orientation = new THREE.Quaternion().copy(object.physicsBody.quaternion)
+        let mquat = new THREE.Quaternion().setFromRotationMatrix(m)
+        orientation.premultiply(mquat)
 
         position = this.getTeleportedPositionalVector(position)
         previousPosition = this.getTeleportedPositionalVector(previousPosition)
@@ -195,6 +201,7 @@ class Portal extends Group {
         object.physicsBody.previousPosition.copy(previousPosition)
         object.physicsBody.velocity.copy(velocity)
         object.physicsBody.force.copy(force)
+        object.physicsBody.quaternion.copy(orientation)
     }
 }
 

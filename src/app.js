@@ -85,7 +85,6 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTALS[pairIndex].visible = true
 }
 
-
 const onAnimationFrameHandler = (timeStamp) => {
     // stencil optimization - only render parts of scene multiple
     // times when it is going to be viewed by the portal
@@ -128,6 +127,9 @@ const onAnimationFrameHandler = (timeStamp) => {
     // globals.RENDERER.render(appData.scene, appData.camera);
     stats.update();
     scene.update && scene.update(timeStamp);
+
+    const timeStep = 1/60
+    globals.CANNON_WORLD.step(timeStep)
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);

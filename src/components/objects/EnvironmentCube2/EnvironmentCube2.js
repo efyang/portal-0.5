@@ -29,7 +29,7 @@ class EnvironmentCube2 extends Group {
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set( this.dimensions[0]/2, this.dimensions[1]/2 );
-        const material = new MeshStandardMaterial( {side: DoubleSide, map: texture } );
+        const material = new MeshStandardMaterial( {side: DoubleSide, map: texture, roughness: 1, metalness: 0.5 } );
 
         let cube = new Mesh( geometry, material );
         cube.position.copy(pos);

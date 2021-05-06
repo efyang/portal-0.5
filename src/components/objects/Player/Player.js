@@ -1,4 +1,4 @@
-import { Group } from 'three';
+import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -18,6 +18,9 @@ class Player extends Group {
         const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
         this.playerModel = new THREE.Mesh( geometry, material );
         this.add(this.playerModel);
+        this.meshClone = this.playerModel.clone()
+        this.add(this.meshClone)
+        this.meshClone.visible = false
 
         // Load object
         // const loader = new GLTFLoader();
@@ -133,7 +136,7 @@ class Player extends Group {
         if (!this.physicsBody.inJump) {
             this.physicsBody.linearDamping = 0.8
         } else {
-            this.physicsBody.linearDamping = 0.5
+            this.physicsBody.linearDamping = 0.2
         }
 
         // regulates speed when multiple directions are pressed 
@@ -178,6 +181,8 @@ class Player extends Group {
         if (this.playerModel) {
             this.playerModel.position.copy(this.physicsBody.position)
             this.playerModel.quaternion.copy(this.physicsBody.quaternion)
+            this.meshClone.position.copy(this.playerModel.position)
+            this.meshClone.quaternion.copy(this.playerModel.quaternion)
         }
 
         // set camera position to be at player
