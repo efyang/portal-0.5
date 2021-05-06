@@ -238,6 +238,7 @@ class MainScene extends Scene {
             if (globals.PORTALS[0] === null || globals.PORTALS[1] === null) {
                 continue
             }
+            d.meshClone.visible = false
             for (let p = 0; p < globals.PORTALS.length; p++) {
                 // collision disable, might be partially intersecting with portal
                 if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
@@ -245,8 +246,6 @@ class MainScene extends Scene {
                     // show the clone
                     globals.PORTALS[p].teleportObject3D(d.meshClone)
                     d.meshClone.visible = true
-                } else {
-                    d.meshClone.visible = false
                 }
                 
                 // should teleport
