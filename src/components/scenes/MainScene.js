@@ -207,7 +207,7 @@ class MainScene extends Scene {
                         globals.PORTALS[1].mesh.material.dispose();
                         if (globals.PORTALS[1].hostObjects !== null) {
                             // mark this object as no longer in this group
-                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
+                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[1]
                             // add back to environment group if in neither of the groups
                             if (!(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
                                 !(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
