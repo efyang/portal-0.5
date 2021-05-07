@@ -59,5 +59,5 @@ export default {
     CGROUP_ENVIRONMENT: 1 << 0,
     CGROUP_PORTAL_HOST_CDISABLE: [1 << 1, 1 << 2],
     CGROUP_DYNAMIC: 1 << 3,
-    CGROUP_ALL: 0b1111,
+    CGROUP_ALL: 0xFF,
 }

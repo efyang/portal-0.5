@@ -88,7 +88,7 @@ class Player extends Group {
         })
 
         var slipperyMaterial = new CANNON.Material();
-        slipperyMaterial.friction = 0.01;
+        slipperyMaterial.friction = 0.00;
 
         // define shape
         let physicsShape = new CANNON.Box(new CANNON.Vec3(0.5 / 2, 2 / 2, 0.5 / 2)); 
@@ -98,13 +98,13 @@ class Player extends Group {
         this.physicsBody = new CANNON.Body({ mass: mass, material: slipperyMaterial });
         this.physicsBody.addShape(physicsShape);
         this.physicsBody.position.set(0,5,0);
-        this.physicsBody.linearDamping = 0.6;
+        this.physicsBody.linearDamping = 0.9;
 
         // keep the player upright
         this.physicsBody.angularDamping = 1
 
         // set additional properties
-        this.physicsBody.inJump = false
+        this.physicsBody.inJump = true
 
         // construct the physical body
         this.physicsBody.updateMassProperties()
@@ -114,11 +114,11 @@ class Player extends Group {
 
         // add collision event listener to regulate jumps
         this.physicsBody.addEventListener("collide", function(e){ 
-            let EPS = 0.4
+            //let EPS = 0.4
             // console.log(physicsBody.velocity.y)
-            if (Math.abs(physicsBody.velocity.y) <= EPS) {
-                this.inJump = false
-            }
+            //if (Math.abs(physicsBody.velocity.y) <= EPS) {
+            this.inJump = false
+            //}
         } );
 
         // for movement
@@ -160,13 +160,13 @@ class Player extends Group {
         // physics changes while jumping
         let jumpMultiplier = 1
         if (this.physicsBody.inJump) {
-            jumpMultiplier = 0.3
+            jumpMultiplier = 0.1
         }
 
         if (!this.physicsBody.inJump) {
-            this.physicsBody.linearDamping = 0.8
+            this.physicsBody.linearDamping = 0.999
         } else {
-            this.physicsBody.linearDamping = 0.2
+            this.physicsBody.linearDamping = 0.5
         }
 
         // regulates speed when multiple directions are pressed 

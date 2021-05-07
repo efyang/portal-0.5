@@ -5,6 +5,7 @@ import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
+import * as CANNON from 'cannon'
 
 // return JSON data from any file path (asynchronous)
 async function getJSON(path) {
@@ -165,8 +166,13 @@ class MainScene extends Scene {
                         globals.PORTALS[0].mesh.geometry.dispose();
                         globals.PORTALS[0].mesh.material.dispose();
                         if (globals.PORTALS[0].hostObjects !== null) {
+                            // mark this object as collideable with portal 0 bb objects
                             globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
-                            globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                            // add back to environment group only if collideable with both portal objects
+                            if (!(globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
+                                !(globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
+                                globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                            }
                         }
                         this.remove(globals.PORTALS[0]);
                     }
@@ -181,8 +187,9 @@ class MainScene extends Scene {
                         'orange',
                         portalPoints)
                     this.add(globals.PORTALS[0])
-                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[0]
+                    // remove this object from the environment group
+                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     if (globals.PORTALS[1] !== null) {
                         globals.PORTALS[1].output = globals.PORTALS[0]
                     }
@@ -199,8 +206,13 @@ class MainScene extends Scene {
                         globals.PORTALS[1].mesh.geometry.dispose();
                         globals.PORTALS[1].mesh.material.dispose();
                         if (globals.PORTALS[1].hostObjects !== null) {
-                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[1]
-                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                            // mark this object as no longer in this group
+                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
+                            // add back to environment group if in neither of the groups
+                            if (!(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
+                                !(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
+                                globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+                            }
                         }
                         this.remove(globals.PORTALS[1]);
                     }
@@ -215,8 +227,10 @@ class MainScene extends Scene {
                         'blue',
                         portalPoints)
                     this.add(globals.PORTALS[1])
-                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
+                    // add this object to the group
                     globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[1]
+                    // remove this object from the environment group
+                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
                     if (globals.PORTALS[0] !== null) {
                         globals.PORTALS[0].output = globals.PORTALS[1]
                     }
@@ -247,7 +261,7 @@ class MainScene extends Scene {
             for (let p = 0; p < globals.PORTALS.length; p++) {
                 // collision disable, might be partially intersecting with portal
                 if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
-                    d.physicsBody.collisionFilterMask = d.physicsBody.collisionFilterMask & ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
+                    d.physicsBody.collisionFilterMask &= ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
                     // show the clone
                     globals.PORTALS[p].teleportObject3D(d.meshClone)
                     d.meshClone.visible = true
@@ -257,6 +271,14 @@ class MainScene extends Scene {
                 if (globals.PORTALS[p].STBB.containsPoint(pos)) {
                     globals.PORTALS[p].teleportPhysicalObject(d)
                     globals.PORTALS[p].teleportObject3D(globals.MAIN_CAMERA)
+                    d.physicsBody.inJump = true
+                    d.physicsBody.collisionFilterMask |= globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
+                    d.physicsBody.collisionFilterMask &= ~globals.PORTALS[1 - p].hostObjects.physicsBody.collisionFilterGroup
+                    // need to apply a small upwards force to ensure that the body does not phase into the object
+                    // if it does this (can happen when 2 portals are set and 1 is right above ground and another is slightly higher)
+                    // then collisions with the ground body will stop (idk why) and the player will be stuck in inJump
+                    d.physicsBody.applyForce(new CANNON.Vec3(0, 100 * d.physicsBody.mass, 0), d.physicsBody.position)
+                    break
                 }
             }
         }

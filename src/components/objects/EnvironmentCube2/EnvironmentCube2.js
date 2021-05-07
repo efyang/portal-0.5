@@ -38,7 +38,8 @@ class EnvironmentCube2 extends Group {
 
         // create physics
         let physicsMaterial = new CANNON.Material();
-        physicsMaterial.friction = 0.9;
+        physicsMaterial.friction = 0.01;
+        physicsMaterial.restitution = 0.1;
         let physicsShape = new CANNON.Box(new CANNON.Vec3(this.width / 2, this.height / 2, this.depth / 2));
         this.physicsBody = new CANNON.Body({ mass: 0, material: physicsMaterial });
         this.physicsBody.addShape(physicsShape, new CANNON.Vec3(pos.x, pos.y, pos.z));
