@@ -46,39 +46,35 @@ class Player extends Group {
             this.add(this.mesh);  
             this.add(this.meshClone)
             
-            loader.load('src/components/objects/Player/models/Idle.fbx', (idleAnim) => {
-                console.log("loaded idle")
+            loader.load('src/components/objects/Player/models/StandingIdle.fbx', (idleAnim) => {
                 let animationAction = this.mixers.clipAction(idleAnim.animations[0])
                 this.animationActions.push(animationAction)
 
                 loader.load('src/components/objects/Player/models/Jump.fbx', (jumpAnim) => {
-                    console.log("loaded jump")
                     let animationAction = this.mixers.clipAction(jumpAnim.animations[0])
                     this.animationActions.push(animationAction)
                 
                     loader.load('src/components/objects/Player/models/StationaryRunning.fbx', (runningAnim) => {
-                        console.log("loaded running")
                         let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                         this.animationActions.push(animationAction)
-                        this.modelReady = true;
                         
                         loader.load('src/components/objects/Player/models/RunningBackward.fbx', (runningAnim) => {
-                            console.log("loaded running")
                             let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                             this.animationActions.push(animationAction)
-                            this.modelReady = true;
 
                             loader.load('src/components/objects/Player/models/RightStrafe.fbx', (runningAnim) => {
-                                console.log("loaded running")
                                 let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                 this.animationActions.push(animationAction)
-                                this.modelReady = true;
 
                                 loader.load('src/components/objects/Player/models/LeftStrafe.fbx', (runningAnim) => {
-                                    console.log("loaded running")
                                     let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                     this.animationActions.push(animationAction)
-                                    this.modelReady = true;
+
+                                    loader.load('src/components/objects/Player/models/FallingIdle.fbx', (runningAnim) => {
+                                        let animationAction = this.mixers.clipAction(runningAnim.animations[0])
+                                        this.animationActions.push(animationAction)
+                                        this.modelReady = true;
+                                    })
                                 })
                             })
                         })
@@ -152,10 +148,7 @@ class Player extends Group {
     update(timeStamp) {
         if (!this.hadCollisions) {
             this.hadCollisions = false
-            //this.inJump = true
         }
-
-        let animationIndex = 0
 
         // define directions
         let cameraDirection = new THREE.Vector3()
@@ -203,7 +196,6 @@ class Player extends Group {
 
         // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed) {
-            // console.log(this.physicsBody.inJump)
             if (!this.physicsBody.inJump) {
                 this.physicsBody.inJump = true
                 this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
@@ -233,12 +225,32 @@ class Player extends Group {
         // handle model movements
         const timeElapsedS = (timeStamp - this.lastTimeStamp) * 0.001;
         this.lastTimeStamp = timeStamp;
+        let animationIndex = 0
         if (this.modelReady) {
-            // if (this.physicsBody.inJump) { animationIndex = 1}
-            if (this.controller["KeyW"].pressed) { animationIndex = 2}
-            if (this.controller["KeyS"].pressed) { animationIndex = 3}
-            if (this.controller["KeyD"].pressed) { animationIndex = 4}
-            if (this.controller["KeyA"].pressed) { animationIndex = 5}
+            if (this.physicsBody.inJump) {
+                animationIndex = 6;
+            } else if (this.controller["KeyW"].pressed && this.controller["KeyD"].pressed && this.controller["KeyA"].pressed && this.controller["KeyS"].pressed) {
+                animationIndex = 0
+            } else if (this.controller["KeyW"].pressed && this.controller["KeyS"].pressed) {
+                animationIndex = 0;
+                if (this.controller["KeyD"].pressed) {
+                    animationIndex = 4
+                } else if (this.controller["KeyA"].pressed) {
+                    animationIndex = 5
+                }
+            } else if (this.controller["KeyA"].pressed && this.controller["KeyD"].pressed) {
+                animationIndex = 0;
+                if (this.controller["KeyW"].pressed) {
+                    animationIndex = 2
+                } else if (this.controller["KeyS"].pressed) {
+                    animationIndex = 3
+                }
+            } else{
+                if (this.controller["KeyW"].pressed) { animationIndex = 2}
+                if (this.controller["KeyS"].pressed) { animationIndex = 3}
+                if (this.controller["KeyD"].pressed) { animationIndex = 4}
+                if (this.controller["KeyA"].pressed) { animationIndex = 5}
+            }
 
             let action = this.animationActions[animationIndex];
             this.setAction(action)
