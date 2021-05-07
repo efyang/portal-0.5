@@ -7,7 +7,6 @@ import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
-import * as CANNON from 'cannon'
 
 // return JSON data from any file path (asynchronous)
 async function getJSON(path) {
@@ -155,6 +154,19 @@ class MainScene extends Scene {
                 if (globals.PORTALS[p].STBB.containsPoint(pos)) {
                     globals.PORTALS[p].teleportPhysicalObject(d)
                     globals.PORTALS[p].teleportObject3D(globals.MAIN_CAMERA)
+
+                    // fix camera rotation
+                    // create a new basis with up as the up
+                    // https://danielilett.com/2020-01-03-tut4-4-portal-momentum/
+                    let up = new THREE.Vector3(0, 1, 0)
+                    let cameraForward = new THREE.Vector3()
+                    globals.MAIN_CAMERA.getWorldDirection(cameraForward)
+                    cameraForward.normalize()
+                    let cameraRight = cameraForward.clone().cross(up).normalize()
+                    let cameraUp = cameraRight.clone().cross(cameraForward).normalize()
+                    let cameraMat = new THREE.Matrix4().makeBasis(cameraRight, cameraUp, cameraForward.negate())
+                    globals.MAIN_CAMERA.quaternion.setFromRotationMatrix(cameraMat)
+
                     d.physicsBody.collisionFilterMask |= globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
                     d.physicsBody.collisionFilterMask &= ~globals.PORTALS[1 - p].hostObjects.physicsBody.collisionFilterGroup
                     break
