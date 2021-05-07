@@ -113,72 +113,8 @@ class MainScene extends Scene {
         globals.PORTALS[0].output = globals.PORTALS[1]
         this.add(globals.PORTALS[0], globals.PORTALS[1])*/
 
-        // construct portals
-        window.addEventListener("mousedown", (event) => {
-            // if (!this.state.controls.isLocked) { return; }
-            if (!globals.CONTROLS.isLocked) { return; }
-
-            // create raycaster
-            let mouse = new Vector2(0,0)
-            const raycaster = new Raycaster();
-            raycaster.setFromCamera( mouse, globals.MAIN_CAMERA );
-
-            // define playerUpDirection
-            let playerUpDirection = new THREE.Vector3(0,1,0)
-            playerUpDirection.applyQuaternion(globals.MAIN_CAMERA.quaternion)
-
-            const intersects = raycaster.intersectObjects( this.intersectObjects );
-            if (intersects.length > 0) {
-                const point = intersects[0].point;
-                const normal = intersects[0].face.normal.clone().normalize()
-                const depthDir = playerUpDirection.clone().projectOnPlane(normal).normalize()
-                const widthDir = depthDir.clone().cross(normal)
-                const portal_width = consts.PORTAL_WIDTH
-                const portal_depth = consts.PORTAL_DEPTH
-
-                // the 4 corners of the new portal that will be at this point
-                let EPS = consts.PORTAL_EPS * 3;
-                let portalPoints = [point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
-                                    point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
-                                    point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
-                                    point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS)))]
-                
-                                    for (let p of portalPoints) {
-                    if (!this.validPortalPoint(p, normal, intersects[0].object)) {
-                        return;
-                    }
-                }
-
-                // get points along the edge of the new portal to check for overlap against the other portal
-                let edgePoints = this.getEdgePoints(portalPoints);
-
-                if (event.button == 0) {           // left click
-                    // check that this new portal does not overlap with the other portal when they are on the same surface
-                    if (globals.PORTALS[1] !== null &&
-                        intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
-                        !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
-                        return;
-                    }
-                    // delete the old portal this new one is replacing
-                    if (globals.PORTALS[0] !== null) {
-                        this.deletePortal(0);
-                    }
-                    this.createPortal(0, 1, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
-                } else if (event.button == 2) {    // right click
-                    // check that this new portal does not overlap with the other portal when they are on the same surface
-                    if (globals.PORTALS[0] !== null &&
-                        intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
-                        !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
-                        return;
-                    }
-                    // delete the old portal this new one is replacing
-                    if (globals.PORTALS[1] !== null) {
-                        this.deletePortal(1)
-                    }
-                    this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
-                }
-            }
-        })
+        // add event listener to construct portals
+        window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false);
     }
 
     addToUpdateList(object) {
@@ -359,9 +295,73 @@ class MainScene extends Scene {
         if (globals.PORTALS[otherPortalIndex] !== null) {
             globals.PORTALS[otherPortalIndex].output = globals.PORTALS[thisPortalIndex]
         }
-
     }
 
+    handleMouseDown(e) {
+        // if (!this.state.controls.isLocked) { return; }
+        if (!globals.CONTROLS.isLocked) { return; }
+
+        // create raycaster
+        let mouse = new Vector2(0,0)
+        const raycaster = new Raycaster();
+        raycaster.setFromCamera( mouse, globals.MAIN_CAMERA );
+
+        // define playerUpDirection
+        let playerUpDirection = new THREE.Vector3(0,1,0)
+        playerUpDirection.applyQuaternion(globals.MAIN_CAMERA.quaternion)
+
+        const intersects = raycaster.intersectObjects( this.intersectObjects );
+        if (intersects.length > 0) {
+            const point = intersects[0].point;
+            const normal = intersects[0].face.normal.clone().normalize()
+            const depthDir = playerUpDirection.clone().projectOnPlane(normal).normalize()
+            const widthDir = depthDir.clone().cross(normal)
+            const portal_width = consts.PORTAL_WIDTH
+            const portal_depth = consts.PORTAL_DEPTH
+
+            // the 4 corners of the new portal that will be at this point
+            let EPS = consts.PORTAL_EPS * 3;
+            let portalPoints = [point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
+                                point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(portal_width/2 + EPS))), 
+                                point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
+                                point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS)))]
+            
+                                for (let p of portalPoints) {
+                if (!this.validPortalPoint(p, normal, intersects[0].object)) {
+                    return;
+                }
+            }
+
+            // get points along the edge of the new portal to check for overlap against the other portal
+            let edgePoints = this.getEdgePoints(portalPoints);
+
+            if (e.button == 0) {           // left click
+                // check that this new portal does not overlap with the other portal when they are on the same surface
+                if (globals.PORTALS[1] !== null &&
+                    intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
+                    !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
+                    return;
+                }
+                // delete the old portal this new one is replacing
+                if (globals.PORTALS[0] !== null) {
+                    this.deletePortal(0);
+                }
+                this.createPortal(0, 1, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
+            } else if (e.button == 2) {    // right click
+                // check that this new portal does not overlap with the other portal when they are on the same surface
+                if (globals.PORTALS[0] !== null &&
+                    intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
+                    !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
+                    return;
+                }
+                // delete the old portal this new one is replacing
+                if (globals.PORTALS[1] !== null) {
+                    this.deletePortal(1)
+                }
+                this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
+            }
+        }
+    }
 }
 
 export default MainScene;
