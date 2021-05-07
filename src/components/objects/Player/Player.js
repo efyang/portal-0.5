@@ -114,6 +114,7 @@ class Player extends Group {
 
         // normal collision events don't happen consistently - will stop once an object is stable on the ground
         // so need to check contacts to detect if grounded or not
+        // https://github.com/schteppe/cannon.js/issues/313
         globals.CANNON_WORLD.addEventListener("postStep", (e) => {
             this.physicsBody.inJump = true
             if (globals.CANNON_WORLD.contacts.length > 0) {
