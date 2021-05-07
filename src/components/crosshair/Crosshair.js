@@ -1,31 +1,20 @@
-
-import { LineBasicMaterial, Line, BufferGeometry, BufferAttribute, Group } from 'three';
+import * as THREE from 'three'
+import { LineBasicMaterial, Line, BufferGeometry, BufferAttribute, Group, MeshBasicMaterial } from 'three';
 import { globals } from '../../globals';
+import CROSSHAIR_TEXTURE_PNG from '../../../assets/textures/crosshair.png'
 
 class Crosshair extends Group {
     constructor(...args) {
         super(...args)
 
         // Add a crosshair. Adapted from https://stackoverflow.com/questions/31655888/how-to-cast-a-visible-ray-threejs
-        var material = new LineBasicMaterial({ color: 0xAAFFAA });
+        let x = 0.04;
+        let y = 0.04;
 
-        // crosshair size
-        var x = 0.003, y = 0.003;
-
-        var geometry = new BufferGeometry();
-
-        const vertices = new Float32Array( [
-            0, y, 0,
-            0, -y, 0,
-            0, 0, 0,
-            x, 0, 0,
-            -x, 0, 0,
-        ] );
-
-        // itemSize = 3 because there are 3 values (components) per vertex
-        geometry.setAttribute( 'position', new BufferAttribute( vertices, 3 ) );
-
-        var crosshair = new Line( geometry, material );
+        const texture = new THREE.TextureLoader().load(CROSSHAIR_TEXTURE_PNG)
+        const geometry = new THREE.PlaneGeometry( x, y );
+        const material = new THREE.MeshBasicMaterial( {side: THREE.FrontSide, map: texture, transparent: true} );
+        let crosshair = new THREE.Mesh(geometry, material)
         // place it in the center
         var crosshairPercentX = 50;
         var crosshairPercentY = 50;

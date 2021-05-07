@@ -86,10 +86,13 @@ function renderPortal(thisIndex, pairIndex) {
 }
 
 const onAnimationFrameHandler = (timeStamp) => {
-    // stencil optimization - only render parts of scene multiple
-    // times when it is going to be viewed by the portal
     let renderer = globals.RENDERER
 
+    // don't show the crosshair when rendering portals
+    crosshair.visible = false
+
+    // stencil optimization - only render parts of scene multiple
+    // times when it is going to be viewed by the portal
     renderer.clearStencil()
     renderer.autoClearStencil = false
     if (globals.PORTALS[0])
@@ -98,6 +101,8 @@ const onAnimationFrameHandler = (timeStamp) => {
         renderer.render(globals.PORTALS[1].mesh, globals.MAIN_CAMERA)
     renderPortal(0, 1)
     renderPortal(1, 0)
+
+    crosshair.visible = true
 
     if (globals.PORTALS[0] === null && globals.PORTALS[1] !== null) {
         globals.PORTALS[1].mesh.visible = false

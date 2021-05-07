@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="portal_crosshair.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="455.10121"
+     inkscape:cy="334.97767"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g1252"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     objecttolerance="20"
+     inkscape:snap-perpendicular="true"
+     guidetolerance="20"
+     inkscape:snap-path-clip="true"
+     inkscape:snap-path-mask="true"
+     inkscape:snap-tangential="true"
+     inkscape:snap-smooth-nodes="false"
+     inkscape:snap-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-others="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     gridtolerance="10"
+     inkscape:window-width="2560"
+     inkscape:window-height="1440"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid848"
+       units="px"
+       originx="105"
+       originy="148.5"
+       dotted="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g870"
+       style="stroke:#000000;stroke-opacity:1"
+       transform="matrix(0.57573977,0,0,0.58819508,62.187117,35.095405)"
+       inkscape:export-xdpi="857.88824"
+       inkscape:export-ydpi="857.88824"
+       inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png">
+      <g
+         id="g1252"
+         transform="rotate(5.5206174,141.38,88.301845)">
+        <path
+           style="fill:#ff9955;stroke:#ffffff;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 593.44141,286.62109 a 59.208708,89.731028 17.246699 0 1 -6.37305,75.41602 59.208708,89.731028 17.246699 0 1 -86.27539,54.50195 59.208708,89.731028 17.246699 0 1 -6.43359,-4.26953 67.5,97.479642 0 0 0 39.99023,18.94922 67.5,97.479642 0 0 0 67.5,-97.47852 67.5,97.479642 0 0 0 -8.4082,-47.11914 z"
+           transform="scale(0.26458333)"
+           id="path866"
+           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
+           inkscape:export-xdpi="857.88824"
+           inkscape:export-ydpi="857.88824" />
+        <path
+           style="fill:#2ad4ff;stroke:#ffffff;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 534.32422,236.25977 a 67.5,97.479642 0 0 0 -67.47461,97.48046 67.5,97.479642 0 0 0 8.36133,46.98633 59.208708,89.731028 17.246699 0 1 6.42187,-75.24414 59.208708,89.731028 17.246699 0 1 86.27539,-54.50195 59.208708,89.731028 17.246699 0 1 6.58985,4.39844 67.5,97.479642 0 0 0 -40.14844,-19.11914 67.5,97.479642 0 0 0 -0.0254,0 z"
+           transform="scale(0.26458333)"
+           id="path21"
+           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
+           inkscape:export-xdpi="857.88824"
+           inkscape:export-ydpi="857.88824" />
+      </g>
+    </g>
+    <g
+       id="g1248"
+       transform="translate(32.411249,-0.6669054)"
+       style="fill:#aad400;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1">
+      <circle
+         id="path882-6"
+         style="fill:#d4ff2a;stroke:#000000;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cx="109.63042"
+         cy="89.635658"
+         r="0" />
+      <circle
+         id="path882-4"
+         style="fill:#d4ff2a;stroke:#000000;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cx="109.63042"
+         cy="89.635658"
+         r="0" />
+      <circle
+         id="path882-47"
+         style="fill:#d4ff2a;stroke:#000000;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cx="109.63042"
+         cy="89.635658"
+         r="0" />
+      <circle
+         id="path882-5"
+         style="fill:#d4ff2a;stroke:#000000;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cx="109.645"
+         cy="89.650238"
+         r="0" />
+      <circle
+         id="circle1419"
+         style="opacity:1;fill:#d4ff2a;stroke:#000000;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cx="109.645"
+         cy="89.650238"
+         rx="0.22727278"
+         ry="0.22727276" />
+    </g>
+    <circle
+       id="path882"
+       style="fill:#d4ff2a;stroke-width:0.0454544;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;opacity:1"
+       cx="109.645"
+       cy="89.650238"
+       rx="0.22727278"
+       ry="0.22727276"
+       transform="translate(32.411249,-0.66690539)" />
+    <g
+       id="g1487"
+       transform="translate(1.5435926,0.71120019)"
+       style="fill:#ffffff"
+       inkscape:export-xdpi="857.88824"
+       inkscape:export-ydpi="857.88824">
+      <g
+         id="g955"
+         transform="matrix(0.76243144,0,0,0.76243144,56.976437,20.287422)"
+         inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
+         inkscape:export-xdpi="857.88824"
+         inkscape:export-ydpi="857.88824">
+        <g
+           id="g1044">
+          <circle
+             id="path957"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0172645;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="87.41404"
+             r="0.6471644" />
+          <ellipse
+             id="path957-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0144414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="81.784363"
+             cy="87.41404"
+             rx="0.64857596"
+             ry="0.45183697" />
+          <ellipse
+             id="path957-5-3"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0144414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="67.903336"
+             cy="87.41404"
+             rx="0.64857596"
+             ry="0.45183697" />
+          <ellipse
+             id="path957-5-3-7"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0154405;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="92.619423"
+             rx="0.51691711"
+             ry="0.64807642" />
+          <ellipse
+             id="path957-5-3-7-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0154405;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="82.208649"
+             rx="0.51691711"
+             ry="0.64807642" />
+        </g>
+        <g
+           id="g1044-8"
+           style="fill:#ffffff"
+           transform="translate(36.727146,-0.80231903)"
+           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
+           inkscape:export-xdpi="857.88824"
+           inkscape:export-ydpi="857.88824">
+          <circle
+             id="path957-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0172645;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="87.41404"
+             r="0.6471644" />
+          <ellipse
+             id="path957-5-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0144414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="81.784363"
+             cy="87.41404"
+             rx="0.64857596"
+             ry="0.45183697" />
+          <ellipse
+             id="path957-5-3-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0144414;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="67.903336"
+             cy="87.41404"
+             rx="0.64857596"
+             ry="0.45183697" />
+          <ellipse
+             id="path957-5-3-7-6"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0154405;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="92.619423"
+             rx="0.51691711"
+             ry="0.64807642" />
+          <ellipse
+             id="path957-5-3-7-4-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:0.0154405;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             cx="74.843849"
+             cy="82.208649"
+             rx="0.51691711"
+             ry="0.64807642" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
