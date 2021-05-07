@@ -271,13 +271,8 @@ class MainScene extends Scene {
                 if (globals.PORTALS[p].STBB.containsPoint(pos)) {
                     globals.PORTALS[p].teleportPhysicalObject(d)
                     globals.PORTALS[p].teleportObject3D(globals.MAIN_CAMERA)
-                    d.physicsBody.inJump = true
                     d.physicsBody.collisionFilterMask |= globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
                     d.physicsBody.collisionFilterMask &= ~globals.PORTALS[1 - p].hostObjects.physicsBody.collisionFilterGroup
-                    // need to apply a small upwards force to ensure that the body does not phase into the object
-                    // if it does this (can happen when 2 portals are set and 1 is right above ground and another is slightly higher)
-                    // then collisions with the ground body will stop (idk why) and the player will be stuck in inJump
-                    d.physicsBody.applyForce(new CANNON.Vec3(0, 100 * d.physicsBody.mass, 0), d.physicsBody.position)
                     break
                 }
             }

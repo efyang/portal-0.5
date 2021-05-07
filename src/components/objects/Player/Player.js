@@ -112,14 +112,18 @@ class Player extends Group {
         let physicsBody = this.physicsBody
         parent.addToUpdateList(this);
 
-        // add collision event listener to regulate jumps
-        this.physicsBody.addEventListener("collide", function(e){ 
-            //let EPS = 0.4
-            // console.log(physicsBody.velocity.y)
-            //if (Math.abs(physicsBody.velocity.y) <= EPS) {
-            this.inJump = false
-            //}
-        } );
+        // normal collision events don't happen consistently - will stop once an object is stable on the ground
+        // so need to check contacts to detect if grounded or not
+        globals.CANNON_WORLD.addEventListener("postStep", (e) => {
+            this.physicsBody.inJump = true
+            if (globals.CANNON_WORLD.contacts.length > 0) {
+                for (let contact of globals.CANNON_WORLD.contacts) {
+                    if (contact.bi.id == this.physicsBody.id || contact.bj.id == this.physicsBody.id) {
+                        this.physicsBody.inJump = false
+                    }
+                }
+            }
+        })
 
         // for movement
         this.controller = {
@@ -145,6 +149,10 @@ class Player extends Group {
 
     // updates performed at each timestep
     update(timeStamp) {
+        if (!this.hadCollisions) {
+            this.hadCollisions = false
+            //this.inJump = true
+        }
 
         let animationIndex = 0
 
@@ -197,7 +205,7 @@ class Player extends Group {
             // console.log(this.physicsBody.inJump)
             if (!this.physicsBody.inJump) {
                 this.physicsBody.inJump = true
-                this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.2), this.physicsBody.position)
+                this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
             }
         }
 
