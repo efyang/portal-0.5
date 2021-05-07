@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import MODEL from './blenderExport.gltf';
 import { globals } from 'globals'
+import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
 
 class Player extends Group {
     constructor(parent) {
@@ -209,17 +210,16 @@ class Player extends Group {
         // copy position and rotation so player model aligns with the physical body
         if (this.mesh) {
             this.mesh.position.copy(this.physicsBody.position).add(new Vector3(0,-1,0))
-            // this.mesh.position.copy(this.physicsBody.position)
             this.mesh.quaternion.copy(this.physicsBody.quaternion)
-            this.meshClone.position.copy(this.mesh.position).add(new Vector3(0,-1,0))
-            // this.meshClone.position.copy(this.mesh.position)
+            this.mesh.quaternion.multiply(new THREE.Quaternion(0,50,0)).normalize()
 
-            this.mesh.quaternion.copy(this.mesh.quaternion).multiply(new THREE.Quaternion(0,50,0)).normalize()
-            this.meshClone.quaternion.copy(this.mesh.quaternion).multiply(new THREE.Quaternion(0,50,0)).normalize()
+            this.remove(this.meshClone)
+            this.meshClone = SkeletonUtils.clone(this.mesh)
+            this.add(this.meshClone)
         }
 
         // set camera position to be at player
-        // globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
+        globals.MAIN_CAMERA.position.copy(this.physicsBody.position)
 
         // handle model movements
         const timeElapsedS = (timeStamp - this.lastTimeStamp) * 0.001;
