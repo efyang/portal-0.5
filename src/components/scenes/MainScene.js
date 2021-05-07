@@ -76,6 +76,7 @@ class MainScene extends Scene {
         // Add other meshes to scene
         const lights = new BasicLights();
         const player = new Player(this);
+        globals.PLAYER = player
         this.add(lights, player)
         this.dynamicObjects.push(player)
 

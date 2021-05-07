@@ -91,6 +91,11 @@ const onAnimationFrameHandler = (timeStamp) => {
     // don't show the crosshair when rendering portals
     crosshair.visible = false
 
+    // only show player model when rendering portals
+    if (globals.PLAYER && globals.PLAYER.mesh) {
+        globals.PLAYER.mesh.visible = true
+    }
+
     // stencil optimization - only render parts of scene multiple
     // times when it is going to be viewed by the portal
     renderer.clearStencil()
@@ -103,6 +108,9 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderPortal(1, 0)
 
     crosshair.visible = true
+    if (globals.PLAYER && globals.PLAYER.mesh) {
+        globals.PLAYER.mesh.visible = false
+    }
 
     if (globals.PORTALS[0] === null && globals.PORTALS[1] !== null) {
         globals.PORTALS[1].mesh.visible = false

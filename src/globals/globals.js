@@ -25,4 +25,5 @@ export default {
     PORTALS: [null, null],
     CANNON_WORLD: physics.initPhysics(),
     CONTROLS: new PointerLockControls(camera, document.body),
+    PLAYER: null,
 }
