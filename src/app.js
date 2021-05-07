@@ -92,8 +92,12 @@ const onAnimationFrameHandler = (timeStamp) => {
     crosshair.visible = false
 
     // only show player model when rendering portals
+    // don't show the clone model when rendering portals
+    let cloneVisible = false
     if (globals.PLAYER && globals.PLAYER.mesh) {
         globals.PLAYER.mesh.visible = true
+        cloneVisible = globals.PLAYER.meshClone.visible
+        globals.PLAYER.meshClone.visible = false
     }
 
     // stencil optimization - only render parts of scene multiple
@@ -110,6 +114,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     crosshair.visible = true
     if (globals.PLAYER && globals.PLAYER.mesh) {
         globals.PLAYER.mesh.visible = false
+        globals.PLAYER.meshClone.visible = cloneVisible
     }
 
     if (globals.PORTALS[0] === null && globals.PORTALS[1] !== null) {
