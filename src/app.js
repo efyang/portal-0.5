@@ -26,7 +26,7 @@ const sound = new Audio( globals.LISTENER );
 globals.AUDIO_LOADER.load( BackgroundMP3, function( buffer ) {
     sound.setBuffer( buffer );
     sound.setLoop( true );
-    sound.setVolume( 0.3 );
+    sound.setVolume( 0.1 );
     sound.play();
 });
 

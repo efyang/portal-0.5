@@ -9,10 +9,10 @@ import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 
 // return JSON data from any file path (asynchronous)
-async function getJSON(path) {
-    const response = await fetch(path).then(response => response.json());
-    return response;
-}
+// async function getJSON(path) {
+//     const response = await fetch(path).then(response => response.json());
+//     return response;
+// }
 
 class MainScene extends Scene {
     constructor() {
@@ -315,6 +315,7 @@ class MainScene extends Scene {
         }
     }
 
+    // handle portal placements on mouse clicks
     handleMouseDown(e) {
         // if (!this.state.controls.isLocked) { return; }
         if (!globals.CONTROLS.isLocked) { return; }
@@ -349,7 +350,7 @@ class MainScene extends Scene {
             
                                 for (let p of portalPoints) {
                 if (!this.validPortalPoint(p, normal, intersects[0].object)) {
-                    this.playPortalGunError(sound)
+                    this.playPortalGunErrorSound(sound)
                     return;
                 }
             }
@@ -362,7 +363,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[1] !== null &&
                     intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
-                    this.playPortalGunError(sound)
+                    this.playPortalGunErrorSound(sound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -375,7 +376,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[0] !== null &&
                     intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
-                    this.playPortalGunError(sound)
+                    this.playPortalGunErrorSound(sound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -385,24 +386,23 @@ class MainScene extends Scene {
                 this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
             }
 
-            this.playPortalGunFire(sound)
+            this.playPortalGunFireSound(sound)
         }
     }
 
-    playPortalGunFire(sound) {
+    playPortalGunFireSound(sound) {
         globals.AUDIO_LOADER.load( PortalGunFireMP3, function( buffer ) {
             sound.setBuffer( buffer );
-            // sound.setLoop( true );
-            sound.setVolume( 0.3 );
+            sound.setVolume( 0.2 );
             sound.play();
         });
     }
 
-    playPortalGunError(sound) {
+    playPortalGunErrorSound(sound) {
         globals.AUDIO_LOADER.load( PortalGunErrorMP3, function( buffer ) {
             sound.setBuffer( buffer );
             // sound.setLoop( true );
-            sound.setVolume( 0.3 );
+            sound.setVolume( 0.2 );
             sound.play();
         });
     }

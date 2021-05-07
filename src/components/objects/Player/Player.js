@@ -1,11 +1,12 @@
-import { Group, Vector3 } from 'three';
+import { Group, Vector3, Audio } from 'three';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
-import MODEL from './blenderExport.gltf';
 import { globals } from 'globals'
 import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
+import JumpGruntMP3 from '../../../../assets/sounds/JumpGrunt.mp3'
+import LandingMP3 from '../../../../assets/sounds/Landing.mp3'
+import WalkingMP3 from '../../../../assets/sounds/Walking.mp3'
 
 class Player extends Group {
     constructor(parent) {
@@ -14,6 +15,9 @@ class Player extends Group {
 
         this.name = 'Player';
         let mass = 50;
+
+        this.lastTimeStampInJump = false;
+        this.counter = 0;
 
         // Construct the player model 
         // const geometry = new THREE.BoxGeometry(0.5, 2, 0.5);
@@ -111,12 +115,23 @@ class Player extends Group {
         // normal collision events don't happen consistently - will stop once an object is stable on the ground
         // so need to check contacts to detect if grounded or not
         // https://github.com/schteppe/cannon.js/issues/313
+
+        let upVector = new CANNON.Vec3(0, 1, 0);
+        let contactNormal = new CANNON.Vec3(0, 0, 0);
         globals.CANNON_WORLD.addEventListener("postStep", (e) => {
             this.physicsBody.inJump = true
             if (globals.CANNON_WORLD.contacts.length > 0) {
                 for (let contact of globals.CANNON_WORLD.contacts) {
+                    // console.log(contact)
                     if (contact.bi.id == this.physicsBody.id || contact.bj.id == this.physicsBody.id) {
                         this.physicsBody.inJump = false
+                        if(contact.bi.id == this.physicsBody.id) {
+                            contact.ni.negate(contactNormal);
+                        } else {
+                            contact.ni.copy(contactNormal);
+                        }
+                        this.physicsBody.inJump = contactNormal.dot(upVector) <= 0.5;
+                        
                     }
                 }
             }
@@ -146,6 +161,11 @@ class Player extends Group {
 
     // updates performed at each timestep
     update(timeStamp) {
+        // for player sounds
+        const JumpSound = new Audio( globals.LISTENER );
+        const LandingSound = new Audio( globals.LISTENER );
+        const WalkingSound = new Audio( globals.LISTENER );
+
         if (!this.hadCollisions) {
             this.hadCollisions = false
         }
@@ -181,6 +201,12 @@ class Player extends Group {
         // apply forces in WASD directions when pressed
         const f = 25 * this.physicsBody.mass * jumpMultiplier;
         
+        // if (this.controller["KeyW"].pressed || this.controller["KeyA"].pressed || this.controller["KeyS"].pressed || this.controller["KeyD"].pressed) { 
+        //     if (this.counter % 30 == 0 && !this.physicsBody.inJump) {
+        //         this.playWalkingSound(WalkingSound)
+        //     }
+        // }
+
         if (this.controller["KeyW"].pressed) {
             this.physicsBody.applyForce(forward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
@@ -195,12 +221,20 @@ class Player extends Group {
         }
 
         // handle jumping when space bar is pressed
-        if (this.controller["Space"].pressed) {
-            if (!this.physicsBody.inJump) {
-                this.physicsBody.inJump = true
-                this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
-            }
+        if (this.controller["Space"].pressed && !this.physicsBody.inJump) {
+            this.physicsBody.inJump = true
+            this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
+            // if (!this.lastTimeStampInJump && this.physicsBody.inJump) {
+            //     this.playJumpSound(JumpSound)
+            // }
+            this.playJumpSound(JumpSound)
+            console.log("HERE")
         }
+        // update lastTimeStampInJump
+        if (this.lastTimeStampInJump && !this.physicsBody.inJump) {
+            this.playLandingSound(LandingSound)
+        }
+        this.lastTimeStampInJump = this.physicsBody.inJump;
 
         // always look where the camera points
         this.physicsBody.quaternion.copy(globals.MAIN_CAMERA.quaternion)
@@ -256,6 +290,8 @@ class Player extends Group {
             this.setAction(action)
             this.mixers.update(timeElapsedS);
         }
+
+        this.counter += 1;
     }
 
     setAction(action) {
@@ -271,6 +307,30 @@ class Player extends Group {
             this.activeAction.fadeIn(fadeDuration)
             this.activeAction.play()
         }
+    }
+
+    playLandingSound(sound) {
+        globals.AUDIO_LOADER.load( LandingMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setVolume( 0.03 );
+            sound.play();
+        });
+    }
+
+    playJumpSound(sound) {
+        globals.AUDIO_LOADER.load( JumpGruntMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setVolume( 0.01 );
+            sound.play();
+        });
+    }
+
+    playWalkingSound(sound) {
+        globals.AUDIO_LOADER.load( WalkingMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setVolume( 0.001 );
+            sound.play();
+        });
     }
 }
 
