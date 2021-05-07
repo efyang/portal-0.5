@@ -1,5 +1,5 @@
 import * as physics from '../physics'
-import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera } from 'three';
+import { WebGLRenderer, WebGLRenderTarget, PerspectiveCamera, AudioListener, AudioLoader } from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 
 const camera = new PerspectiveCamera();
@@ -26,4 +26,10 @@ export default {
     CANNON_WORLD: physics.initPhysics(),
     CONTROLS: new PointerLockControls(camera, document.body),
     PLAYER: null,
+
+    /***********************************************************
+    * AUDIO
+    ***********************************************************/
+    LISTENER: new AudioListener(),
+    AUDIO_LOADER: new AudioLoader(),
 }

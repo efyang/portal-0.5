@@ -9,14 +9,28 @@
 import { Crosshair } from 'crosshair'
 import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
+import BackgroundMP3 from '../assets/sounds/BackgroundMusic.mp3'
+import { Audio } from 'three';
 
 const Stats = require("stats.js");
 const scene = new MainScene();
 
 // add a crosshair to the scene
 const crosshair = new Crosshair()
-
 globals.MAIN_CAMERA.add(crosshair);
+
+// create a global audio source
+const sound = new Audio( globals.LISTENER );
+
+// load a sound and set it as the Audio object's buffer
+globals.AUDIO_LOADER.load( BackgroundMP3, function( buffer ) {
+    sound.setBuffer( buffer );
+    sound.setLoop( true );
+    sound.setVolume( 0.3 );
+    sound.play();
+});
+
+globals.MAIN_CAMERA.add( globals.LISTENER );
 scene.add(globals.MAIN_CAMERA)
 
 // Set up renderer, canvas, and minor CSS adjustments

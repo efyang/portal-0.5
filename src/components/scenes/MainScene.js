@@ -1,5 +1,7 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, Vector2, Vector3, Raycaster, Box3} from 'three';
+import { Scene, Color, Vector2, Vector3, Raycaster, Box3, Audio} from 'three';
+import PortalGunFireMP3 from '../../../assets/sounds/PortalGunFire.mp3'
+import PortalGunErrorMP3 from '../../../assets/sounds/PortalGunError.mp3'
 import * as THREE from 'three';
 import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
@@ -136,13 +138,17 @@ class MainScene extends Scene {
                 continue
             }
             d.meshClone.visible = false
+            let CDBB_isOverlap = false;
             for (let p = 0; p < globals.PORTALS.length; p++) {
                 // collision disable, might be partially intersecting with portal
                 if (globals.PORTALS[p].CDBB.containsPoint(pos)) {
                     d.physicsBody.collisionFilterMask &= ~globals.PORTALS[p].hostObjects.physicsBody.collisionFilterGroup
                     // show the clone
-                    globals.PORTALS[p].teleportObject3D(d.meshClone)
-                    d.meshClone.visible = true
+                    if (p == 0 || (p > 0 && !CDBB_isOverlap)) {
+                        CDBB_isOverlap = true;
+                        globals.PORTALS[p].teleportObject3D(d.meshClone)
+                        d.meshClone.visible = true
+                    }
                 }
                 
                 // should teleport
@@ -301,6 +307,9 @@ class MainScene extends Scene {
         // if (!this.state.controls.isLocked) { return; }
         if (!globals.CONTROLS.isLocked) { return; }
 
+        // for portal sounds
+        const sound = new Audio( globals.LISTENER );
+
         // create raycaster
         let mouse = new Vector2(0,0)
         const raycaster = new Raycaster();
@@ -328,6 +337,7 @@ class MainScene extends Scene {
             
                                 for (let p of portalPoints) {
                 if (!this.validPortalPoint(p, normal, intersects[0].object)) {
+                    this.playPortalGunError(sound)
                     return;
                 }
             }
@@ -340,6 +350,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[1] !== null &&
                     intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
+                    this.playPortalGunError(sound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -352,6 +363,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[0] !== null &&
                     intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
+                    this.playPortalGunError(sound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -360,7 +372,27 @@ class MainScene extends Scene {
                 }
                 this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
             }
+
+            this.playPortalGunFire(sound)
         }
+    }
+
+    playPortalGunFire(sound) {
+        globals.AUDIO_LOADER.load( PortalGunFireMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            // sound.setLoop( true );
+            sound.setVolume( 0.3 );
+            sound.play();
+        });
+    }
+
+    playPortalGunError(sound) {
+        globals.AUDIO_LOADER.load( PortalGunErrorMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            // sound.setLoop( true );
+            sound.setVolume( 0.3 );
+            sound.play();
+        });
     }
 }
 

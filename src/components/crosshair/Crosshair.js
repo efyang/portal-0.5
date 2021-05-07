@@ -12,6 +12,7 @@ class Crosshair extends Group {
         let y = 0.04;
 
         const texture = new THREE.TextureLoader().load(CROSSHAIR_TEXTURE_PNG)
+        // texture.repeat.set(1.5, 1.5);
         const geometry = new THREE.PlaneGeometry( x, y );
         const material = new THREE.MeshBasicMaterial( {side: THREE.FrontSide, map: texture, transparent: true} );
         let crosshair = new THREE.Mesh(geometry, material)
