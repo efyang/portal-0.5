@@ -154,45 +154,16 @@ class MainScene extends Scene {
 
                 if (event.button == 0) {           // left click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
-
                     if (globals.PORTALS[1] !== null &&
                         intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                         !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
                         return;
                     }
-
                     // delete the old portal this new one is replacing
                     if (globals.PORTALS[0] !== null) {
-                        globals.PORTALS[0].mesh.geometry.dispose();
-                        globals.PORTALS[0].mesh.material.dispose();
-                        if (globals.PORTALS[0].hostObjects !== null) {
-                            // mark this object as collideable with portal 0 bb objects
-                            globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[0]
-                            // add back to environment group only if collideable with both portal objects
-                            if (!(globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
-                                !(globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
-                                globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
-                            }
-                        }
-                        this.remove(globals.PORTALS[0]);
+                        this.deletePortal(0);
                     }
-
-                    // create new portal
-                    globals.PORTALS[0] = new Portal(this,
-                        point,
-                        normal, // normal of surface
-                        playerUpDirection,
-                        globals.PORTALS[1],
-                        intersects[0].object.parent,
-                        'orange',
-                        portalPoints)
-                    this.add(globals.PORTALS[0])
-                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[0]
-                    // remove this object from the environment group
-                    globals.PORTALS[0].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
-                    if (globals.PORTALS[1] !== null) {
-                        globals.PORTALS[1].output = globals.PORTALS[0]
-                    }
+                    this.createPortal(0, 1, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
                 } else if (event.button == 2) {    // right click
                     // check that this new portal does not overlap with the other portal when they are on the same surface
                     if (globals.PORTALS[0] !== null &&
@@ -200,40 +171,11 @@ class MainScene extends Scene {
                         !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
                         return;
                     }
-
                     // delete the old portal this new one is replacing
                     if (globals.PORTALS[1] !== null) {
-                        globals.PORTALS[1].mesh.geometry.dispose();
-                        globals.PORTALS[1].mesh.material.dispose();
-                        if (globals.PORTALS[1].hostObjects !== null) {
-                            // mark this object as no longer in this group
-                            globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[1]
-                            // add back to environment group if in neither of the groups
-                            if (!(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
-                                !(globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
-                                globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
-                            }
-                        }
-                        this.remove(globals.PORTALS[1]);
+                        this.deletePortal(1)
                     }
-
-                    // create new portal
-                    globals.PORTALS[1] = new Portal(this,
-                        point,
-                        normal, // normal of surface
-                        playerUpDirection,
-                        globals.PORTALS[0],
-                        intersects[0].object.parent,
-                        'blue',
-                        portalPoints)
-                    this.add(globals.PORTALS[1])
-                    // add this object to the group
-                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[1]
-                    // remove this object from the environment group
-                    globals.PORTALS[1].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
-                    if (globals.PORTALS[0] !== null) {
-                        globals.PORTALS[0].output = globals.PORTALS[1]
-                    }
+                    this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
                 }
             }
         })
@@ -377,6 +319,47 @@ class MainScene extends Scene {
         }
 
         return true;
+    }
+
+    // deletes the portal with index portalIndex from the scene
+    deletePortal(portalIndex) {
+        globals.PORTALS[portalIndex].mesh.geometry.dispose();
+        globals.PORTALS[portalIndex].mesh.material.dispose();
+        if (globals.PORTALS[portalIndex].hostObjects !== null) {
+            // mark this object as collideable with portal 0 bb objects
+            globals.PORTALS[portalIndex].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_PORTAL_HOST_CDISABLE[portalIndex]
+            // add back to environment group only if collideable with both portal objects
+            if (!(globals.PORTALS[portalIndex].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[0]) &&
+                !(globals.PORTALS[portalIndex].hostObjects.physicsBody.collisionFilterGroup & consts.CGROUP_PORTAL_HOST_CDISABLE[1])) {
+                globals.PORTALS[portalIndex].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_ENVIRONMENT
+            }
+        }
+        this.remove(globals.PORTALS[portalIndex]);
+    }
+
+    // creates a new portal and adds it to the scene
+    createPortal(thisPortalIndex, otherPortalIndex, point, normal, hostObject, playerUpDirection, portalPoints) {
+        let color = 'orange';
+        if (thisPortalIndex == 1) {
+            color = 'blue';
+        }
+
+        globals.PORTALS[thisPortalIndex] = new Portal(this,
+            point,
+            normal, // normal of surface
+            playerUpDirection,
+            globals.PORTALS[otherPortalIndex],
+            hostObject,
+            color,
+            portalPoints)
+        this.add(globals.PORTALS[thisPortalIndex])
+        globals.PORTALS[thisPortalIndex].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[thisPortalIndex]
+        // remove this object from the environment group
+        globals.PORTALS[thisPortalIndex].hostObjects.physicsBody.collisionFilterGroup &= ~consts.CGROUP_ENVIRONMENT
+        if (globals.PORTALS[otherPortalIndex] !== null) {
+            globals.PORTALS[otherPortalIndex].output = globals.PORTALS[thisPortalIndex]
+        }
+
     }
 
 }
