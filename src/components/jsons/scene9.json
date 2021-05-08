@@ -46,16 +46,6 @@
 			"depthSegments": 1
 		},
 		{
-			"uuid": "579DB1D9-430D-48E9-A8A4-5844ADB31C7A",
-			"type": "BoxGeometry",
-			"width": 2,
-			"height": 8,
-			"depth": 10,
-			"widthSegments": 1,
-			"heightSegments": 1,
-			"depthSegments": 1
-		},
-		{
 			"uuid": "74B9BF35-9397-4291-BE1F-E91B09ED790E",
 			"type": "BoxGeometry",
 			"width": 10,
@@ -245,28 +235,6 @@
 			"stencilZPass": 7680
 		},
 		{
-			"uuid": "2E94B205-B23C-4359-AB05-A18A8398BE91",
-			"type": "MeshStandardMaterial",
-			"color": 16777215,
-			"roughness": 1,
-			"metalness": 0,
-			"emissive": 0,
-			"envMapIntensity": 1,
-			"refractionRatio": 1,
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"colorWrite": true,
-			"stencilWrite": false,
-			"stencilWriteMask": 255,
-			"stencilFunc": 519,
-			"stencilRef": 0,
-			"stencilFuncMask": 255,
-			"stencilFail": 7680,
-			"stencilZFail": 7680,
-			"stencilZPass": 7680
-		},
-		{
 			"uuid": "0BD3F4A4-4217-438E-A06E-2C5AEBB847A2",
 			"type": "MeshStandardMaterial",
 			"color": 16777215,
@@ -397,7 +365,7 @@
 				"type": "Mesh",
 				"name": "unplaceable_0",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,3,6,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,6,1],
 				"geometry": "50E4ABE4-0C88-4396-AB52-9A2744682793",
 				"material": "8B050A90-E2AA-4C3F-BDF7-5C11248758BC"
 			},
@@ -418,15 +386,6 @@
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,6,4,0,1],
 				"geometry": "A9AEB414-6794-4031-A2DF-52F4568B416E",
 				"material": "6FDD6F7A-1F19-4370-95C9-E4C14F907599"
-			},
-			{
-				"uuid": "6BA8832E-72F4-4986-A1C2-899928E5688B",
-				"type": "Mesh",
-				"name": "Box",
-				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-6,4,0,1],
-				"geometry": "579DB1D9-430D-48E9-A8A4-5844ADB31C7A",
-				"material": "2E94B205-B23C-4359-AB05-A18A8398BE91"
 			},
 			{
 				"uuid": "BB0D9025-8896-46C3-B0A1-B95E61A618AD",
@@ -533,7 +492,7 @@
 				"type": "Texture",
 				"generator": "Texture.toJSON"
 			},
-			"uuid": "4F998505-ED92-4C36-BDFE-694CFC2A9604",
+			"uuid": "2C0F91EE-ABCF-43B2-8F88-7C3BD6D36A62",
 			"name": "PMREM.cubeUv",
 			"mapping": 306,
 			"repeat": [1,1],
@@ -550,7 +509,7 @@
 			"flipY": true,
 			"premultiplyAlpha": false,
 			"unpackAlignment": 4,
-			"image": "840B4FF6-B9C3-4D44-A340-E08359A6EFEA"
+			"image": "68F31F75-15CC-4CC1-99F2-19D925AA990A"
 		}
 	}
 }

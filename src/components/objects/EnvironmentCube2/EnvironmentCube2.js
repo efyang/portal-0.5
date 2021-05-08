@@ -58,10 +58,10 @@ class EnvironmentCube2 extends Group {
         } );
 
         let cube = new Mesh( geometry, material );
-        // cube.position.copy(pos);
+        cube.position.copy(pos);
         let m = new Matrix4()
         m.elements = matrix;
-        cube.applyMatrix4(m)
+        // cube.applyMatrix4(m)
 
         this.add(cube)
 

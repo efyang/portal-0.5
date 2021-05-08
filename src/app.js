@@ -11,6 +11,11 @@ import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
 import BackgroundMP3 from '../assets/sounds/BackgroundMusic.mp3'
 import { Audio } from 'three'
+import './app.css';
+
+let instructionsContainer = document.createElement('div');
+instructionsContainer.id = 'instructions-container';
+
 
 const Stats = require("stats.js");
 const scene = new MainScene();
@@ -50,9 +55,8 @@ window.addEventListener( 'click', function () {
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
 let stats = new Stats();
 document.body.appendChild(stats.dom);
+
 // Render loop
-
-
 function renderPortal(thisIndex, pairIndex) {
     if (globals.PORTALS[thisIndex] === null || globals.PORTALS[pairIndex] === null) {
         return
