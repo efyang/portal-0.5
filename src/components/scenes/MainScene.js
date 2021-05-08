@@ -9,7 +9,7 @@ import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 
-import SCENE_JSON from '../jsons/scene6.json'
+import SCENE_JSON from '../jsons/scene.json'
 
 class MainScene extends Scene {
     constructor() {

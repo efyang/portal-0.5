@@ -29,7 +29,7 @@ export default {
     /**********************************************************
     * FILES
     **********************************************************/
-    FILES: ['scene'],
+    FILES: ['scene7'],
     CONCRETE_TEXTURE_SET: {
         map: CONCRETE_TEXTURE,
         roughnessMap: CONCRETE_ROUGH_TEXTURE,

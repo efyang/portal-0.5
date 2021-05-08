@@ -118,7 +118,6 @@ class Player extends Group {
         // construct the physical body
         this.physicsBody.updateMassProperties()
         globals.CANNON_WORLD.addBody(this.physicsBody);
-        let physicsBody = this.physicsBody
         parent.addToUpdateList(this);
 
         // normal collision events don't happen consistently - will stop once an object is stable on the ground
@@ -128,18 +127,19 @@ class Player extends Group {
         let upVector = new CANNON.Vec3(0, 1, 0);
         let contactNormal = new CANNON.Vec3(0, 0, 0);
         globals.CANNON_WORLD.addEventListener("postStep", (e) => {
-            this.physicsBody.inJump = true
+            this.physicsBody.inJump = true;
             if (globals.CANNON_WORLD.contacts.length > 0) {
                 for (let contact of globals.CANNON_WORLD.contacts) {
-                    // console.log(contact)
                     if (contact.bi.id == this.physicsBody.id || contact.bj.id == this.physicsBody.id) {
-                        this.physicsBody.inJump = false
+                        // console.log(contact.ni)
                         if(contact.bi.id == this.physicsBody.id) {
-                            contact.ni.negate(contactNormal);
+                            // contact.ni.negate(contactNormal);
+                            contactNormal = -1 * contact.ni
                         } else {
-                            contact.ni.copy(contactNormal);
+                            // contact.ni.copy(contactNormal);
+                            contactNormal = contact.ni
                         }
-                        this.physicsBody.inJump = contactNormal.dot(upVector) > 0.5;
+                        this.physicsBody.inJump = (contactNormal.dot(upVector) <= 0.5);
                     }
                 }
             }
