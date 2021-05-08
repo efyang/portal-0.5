@@ -9,7 +9,7 @@ import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 
-import SCENE_JSON from '../jsons/scene.json'
+import SCENE_JSON from '../jsons/scene6.json'
 
 class MainScene extends Scene {
     constructor() {
@@ -152,21 +152,12 @@ class MainScene extends Scene {
 
     validPortalPoint(point, normal, object) {
 
-        // check that no intersectable objects are directly in front of point
         const raycaster = new Raycaster();
-        let behindPoint = point.clone().add(normal.clone().multiplyScalar(-0.1))
-        raycaster.set(behindPoint, normal)
-        let intersects = raycaster.intersectObjects( this.intersectObjects );
 
-        // if there is no intersect or if there is another object in the way, then return false
-        if (intersects.length == 0 ||  intersects[0].object != object) {
-            return false
-        }
-
-        // check that the same intersectable object is directly behind the point
-        let frontPoint = point.clone().add(normal.clone().multiplyScalar(0.1))
+        // check that no intersectable objects are directly in front of point
+        let frontPoint = point.clone().add(normal.clone().multiplyScalar(1))
         raycaster.set(frontPoint, normal.clone().multiplyScalar(-1))
-        intersects = raycaster.intersectObjects( this.intersectObjects );
+        let intersects = raycaster.intersectObjects( this.intersectObjects );
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 || intersects[0].object != object) {
@@ -175,7 +166,7 @@ class MainScene extends Scene {
 
         // have to also check if there is another face occupying the same space. The distance between the first and second intersects will be negligible
         // but the objects will be different.
-        if (intersects.length > 1 && intersects[0].distance - intersects[1].distance < 0.001 && intersects[1].object != object) {
+        if (intersects.length > 1 && Math.abs(intersects[0].distance - intersects[1].distance) < 0.001 && intersects[1].object != object) {
             return false
         }
         
@@ -310,7 +301,9 @@ class MainScene extends Scene {
                 return;
             }
             const point = intersects[0].point;
-            const normal = intersects[0].face.normal.clone().normalize()
+            // https://stackoverflow.com/questions/39082673/get-face-global-normal-in-three-js
+            const objectMatrix = new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)
+            const normal = intersects[0].face.normal.clone().applyMatrix3(objectMatrix).normalize()
             const depthDir = playerUpDirection.clone().projectOnPlane(normal).normalize()
             const widthDir = depthDir.clone().cross(normal)
             const portal_width = consts.PORTAL_WIDTH

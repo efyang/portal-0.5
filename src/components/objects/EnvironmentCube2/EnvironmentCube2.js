@@ -25,11 +25,11 @@ class EnvironmentCube2 extends Group {
 
         // create material
         const loader = new TextureLoader()
-        const loadTexture = (t, scale) => {
+        const loadTexture = (t, scale, udim, vdim) => {
             const texture = loader.load(t)
             texture.wrapS = RepeatWrapping;
             texture.wrapT = RepeatWrapping;
-            texture.repeat.set( this.dimensions[0]/scale, this.dimensions[1]/scale );
+            texture.repeat.set( udim / scale, vdim / scale);
             return texture
         }
 
@@ -43,22 +43,35 @@ class EnvironmentCube2 extends Group {
             // textureSet = consts.BROKENTILE_TEXTURE_SET
             //scale = 4
         }
+        let sideDims = [
+            [this.depth, this.height],
+            [this.depth, this.height],
+            [this.width, this.depth],
+            [this.width, this.depth],
+            [this.width, this.height],
+            [this.width, this.height],
+        ]
 
-        const material = new MeshStandardMaterial( {
-            side: DoubleSide,
-            color: color,
-            map: loadTexture(textureSet.map, scale),
-            aoMap: loadTexture(textureSet.aoMap, scale),
-            normalMap: loadTexture(textureSet.normalMap, scale),
-            roughnessMap: loadTexture(textureSet.roughnessMap, scale),
-            displacementMap: loadTexture(textureSet.displacementMap, scale),
-            displacementScale: textureSet.displacementScale,
-            roughness: 1, 
-            metalness: metalness
-        } );
+        let materials = []
+        for (let dims of sideDims) {
+            const material = new MeshStandardMaterial( {
+                side: DoubleSide,
+                color: color,
+                map: loadTexture(textureSet.map, scale, dims[0], dims[1]),
+                aoMap: loadTexture(textureSet.aoMap, scale, dims[0], dims[1]),
+                normalMap: loadTexture(textureSet.normalMap, scale, dims[0], dims[1]),
+                roughnessMap: loadTexture(textureSet.roughnessMap, scale, dims[0], dims[1]),
+                displacementMap: loadTexture(textureSet.displacementMap, scale, dims[0], dims[1]),
+                displacementScale: textureSet.displacementScale,
+                roughness: 1, 
+                metalness: metalness
+            } );
+            materials.push(material)
+        }
 
-        let cube = new Mesh( geometry, material );
-        cube.position.copy(pos);
+
+        let cube = new Mesh( geometry, materials );
+        // cube.position.copy(pos);
         let m = new Matrix4()
         m.elements = matrix;
         // cube.applyMatrix4(m)
