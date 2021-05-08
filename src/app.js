@@ -10,7 +10,7 @@ import { Crosshair } from 'crosshair'
 import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
 import BackgroundMP3 from '../assets/sounds/BackgroundMusic.mp3'
-import { Audio } from 'three';
+import { Audio } from 'three'
 
 const Stats = require("stats.js");
 const scene = new MainScene();
