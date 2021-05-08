@@ -9,7 +9,7 @@ import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 
-import SCENE_JSON from '../jsons/scene.json'
+import SCENE_JSON from '../jsons/scene6.json'
 
 class MainScene extends Scene {
     constructor() {
@@ -27,8 +27,6 @@ class MainScene extends Scene {
         const portalsFolder = this.state.gui.addFolder("portals")
         portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 1, 10, 1)
             .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
-
-
         
         globals.MAIN_CAMERA.position.copy(new Vector3(0, 5, 0))
 
@@ -71,7 +69,7 @@ class MainScene extends Scene {
         }
 
         // Add other meshes to scene
-        const lights = new BasicLights();
+        const lights = new BasicLights(this);
         const player = new Player(this);
         globals.PLAYER = player
         this.add(lights, player)
@@ -95,6 +93,10 @@ class MainScene extends Scene {
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
+        }
+        
+        for (const mesh of this.debugMeshes) {
+            mesh.visible = globals.DEBUG
         }
 
         // teleport sound

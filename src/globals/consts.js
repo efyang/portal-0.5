@@ -2,6 +2,18 @@ import FLOOR_TEXTURE_PNG from '../../assets/textures/floorTexture.png'
 import RING_TEXTURE_PNG from '../../assets/textures/ringTexture.png'
 import { TextureLoader } from 'three';
 
+import CONCRETE_TEXTURE from '../../assets/textures/concrete/Color.jpg'
+import CONCRETE_ROUGH_TEXTURE from '../../assets/textures/concrete/Roughness.jpg'
+import CONCRETE_NORMAL_TEXTURE from '../../assets/textures/concrete/Normal.jpg'
+import CONCRETE_DISP_TEXTURE from '../../assets/textures/concrete/Displacement.jpg'
+import CONCRETE_AO_TEXTURE from '../../assets/textures/concrete/AmbientOcclusion.jpg'
+
+import BROKENTILE_TEXTURE from '../../assets/textures/brokenTile/Color.jpg'
+import BROKENTILE_ROUGH_TEXTURE from '../../assets/textures/brokenTile/Roughness.jpg'
+import BROKENTILE_NORMAL_TEXTURE from '../../assets/textures/brokenTile/Normal.jpg'
+import BROKENTILE_DISP_TEXTURE from '../../assets/textures/brokenTile/Displacement.jpg'
+import BROKENTILE_AO_TEXTURE from '../../assets/textures/brokenTile/AmbientOcclusion.jpg'
+
 export default {
     /**********************************************************
     * PORTALS
@@ -18,12 +30,28 @@ export default {
     * FILES
     **********************************************************/
     FILES: ['scene'],
+    CONCRETE_TEXTURE_SET: {
+        map: CONCRETE_TEXTURE,
+        roughnessMap: CONCRETE_ROUGH_TEXTURE,
+        normalMap: CONCRETE_NORMAL_TEXTURE,
+        displacementMap: CONCRETE_DISP_TEXTURE,
+        aoMap: CONCRETE_AO_TEXTURE,
+        displacementScale: 0,
+    },
+    BROKENTILE_TEXTURE_SET: {
+        map: BROKENTILE_TEXTURE,
+        roughnessMap: BROKENTILE_ROUGH_TEXTURE,
+        normalMap: BROKENTILE_NORMAL_TEXTURE,
+        displacementMap: BROKENTILE_DISP_TEXTURE,
+        aoMap: BROKENTILE_AO_TEXTURE,
+        displacementScale: 1,
+    },
+    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG),
 
     /**********************************************************
     * FLOOR
     **********************************************************/
     FLOOR_TEXTURE: new TextureLoader().load(FLOOR_TEXTURE_PNG),
-    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG),
 
     /**********************************************************
     * PLAYER

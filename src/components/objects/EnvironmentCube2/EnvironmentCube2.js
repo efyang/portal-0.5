@@ -1,8 +1,6 @@
 import { Group, MeshStandardMaterial, Mesh, DoubleSide, RepeatWrapping, BoxGeometry, TextureLoader, Matrix4, Quaternion} from 'three';
 import {consts, globals} from 'globals'
 import * as CANNON from 'cannon'
-import FLOOR_TEXTURE_PNG from '../../../../assets/textures/floorTexture.png'
-
 
 class EnvironmentCube2 extends Group {
     constructor(parent, geo, pos, placeable, matrix) {
@@ -26,12 +24,38 @@ class EnvironmentCube2 extends Group {
         const geometry = new BoxGeometry( this.width, this.height, this.depth );
 
         // create material
-        // const texture = consts.FLOOR_TEXTURE.clone()
-        const texture = new TextureLoader().load(FLOOR_TEXTURE_PNG)
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set( this.dimensions[0]/2, this.dimensions[1]/2 );
-        const material = new MeshStandardMaterial( {side: DoubleSide, map: texture, roughness: 1, metalness: 0.5 } );
+        const loader = new TextureLoader()
+        const loadTexture = (t, scale) => {
+            const texture = loader.load(t)
+            texture.wrapS = RepeatWrapping;
+            texture.wrapT = RepeatWrapping;
+            texture.repeat.set( this.dimensions[0]/scale, this.dimensions[1]/scale );
+            return texture
+        }
+
+        let textureSet = consts.CONCRETE_TEXTURE_SET
+        let scale = 8
+        let color = 0xffffff
+        let metalness = 0
+        if (!placeable) {
+            color = 0x999999
+            metalness = 0.7
+            // textureSet = consts.BROKENTILE_TEXTURE_SET
+            //scale = 4
+        }
+
+        const material = new MeshStandardMaterial( {
+            side: DoubleSide,
+            color: color,
+            map: loadTexture(textureSet.map, scale),
+            aoMap: loadTexture(textureSet.aoMap, scale),
+            normalMap: loadTexture(textureSet.normalMap, scale),
+            roughnessMap: loadTexture(textureSet.roughnessMap, scale),
+            displacementMap: loadTexture(textureSet.displacementMap, scale),
+            displacementScale: textureSet.displacementScale,
+            roughness: 1, 
+            metalness: metalness
+        } );
 
         let cube = new Mesh( geometry, material );
         // cube.position.copy(pos);
