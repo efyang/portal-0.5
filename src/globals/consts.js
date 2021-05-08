@@ -24,7 +24,7 @@ export default {
     PORTAL_HEIGHT: 0.001,
     PORTAL_EPS: 0.01,
     PORTAL_RING_THICKNESS: 0.3,
-    PORTAL_COLORS: ['orange', 'cyan'],
+    PORTAL_COLORS: ['cyan', 'orange'],
 
     /**********************************************************
     * FILES
