@@ -8,13 +8,13 @@ class Crosshair extends Group {
         super(...args)
 
         // Add a crosshair. Adapted from https://stackoverflow.com/questions/31655888/how-to-cast-a-visible-ray-threejs
-        let x = 0.04;
-        let y = 0.04;
+        let x = 0.015;
+        let y = 0.015;
 
         const texture = new THREE.TextureLoader().load(CROSSHAIR_TEXTURE_PNG)
         // texture.repeat.set(1.5, 1.5);
         const geometry = new THREE.PlaneGeometry( x, y );
-        const material = new THREE.MeshBasicMaterial( {side: THREE.FrontSide, map: texture, transparent: true} );
+        const material = new THREE.MeshBasicMaterial( {side: THREE.FrontSide, map: texture, transparent: true, depthWrite: false} );
         let crosshair = new THREE.Mesh(geometry, material)
         // place it in the center
         var crosshairPercentX = 50;
@@ -24,7 +24,7 @@ class Crosshair extends Group {
 
         crosshair.position.x = crosshairPositionX * globals.MAIN_CAMERA.aspect;
         crosshair.position.y = crosshairPositionY;
-        crosshair.position.z = -0.3;
+        crosshair.position.z = -0.1;
 
         this.add(crosshair)
     }
