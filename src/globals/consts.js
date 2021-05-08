@@ -1,4 +1,5 @@
 import FLOOR_TEXTURE_PNG from '../../assets/textures/floorTexture.png'
+import RING_TEXTURE_PNG from '../../assets/textures/ringTexture.png'
 import { TextureLoader } from 'three';
 
 export default {
@@ -10,6 +11,8 @@ export default {
     PORTAL_CDBB_HEIGHT: 3,
     PORTAL_HEIGHT: 0.0001,
     PORTAL_EPS: 0.01,
+    PORTAL_RING_THICKNESS: 0.3,
+    PORTAL_COLORS: ['orange', 'cyan'],
 
     /**********************************************************
     * FILES
@@ -20,6 +23,7 @@ export default {
     * FLOOR
     **********************************************************/
     FLOOR_TEXTURE: new TextureLoader().load(FLOOR_TEXTURE_PNG),
+    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG),
 
     /**********************************************************
     * PLAYER
@@ -50,11 +54,11 @@ export default {
     //     set mask to CGROUP_ALL
     //     for each portal p:
     //         if d in p's bounding box:
-    //             set mask = mask & ~CGROUP_PORTAL_HOST_CDISABLE[p]
+    //             set mask &= ~CGROUP_PORTAL_HOST_CDISABLE[p]
     //     no change to group.
     // on creation of portal p:
-    //     set previous host object group back to CGROUP_ENVIRONMENT
-    //     set new host object group to CGROUP_PORTAL_HOST_CDISABLE[p]
+    //     set previous host object group back to CGROUP_ENVIRONMENT if in neither CGROUP_PORTAL_HOST_CDISABLE's
+    //     set new host object group &= CGROUP_PORTAL_HOST_CDISABLE[p]
     //     no change to mask.
     CGROUP_ENVIRONMENT: 1 << 0,
     CGROUP_PORTAL_HOST_CDISABLE: [1 << 1, 1 << 2],

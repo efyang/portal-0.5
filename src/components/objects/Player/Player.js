@@ -7,6 +7,14 @@ import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
 import JumpGruntMP3 from '../../../../assets/sounds/JumpGrunt.mp3'
 import LandingMP3 from '../../../../assets/sounds/Landing.mp3'
 import WalkingMP3 from '../../../../assets/sounds/Walking.mp3'
+import PLAYER_MODEL from './models/xbot.fbx'
+import ANIM_STANDING_IDLE from './models/StandingIdle.fbx'
+import ANIM_JUMP from './models/Jump.fbx'
+import ANIM_STATIONARY_RUNNING from './models/StationaryRunning.fbx'
+import ANIM_BACKWARD_RUNNING from './models/RunningBackward.fbx'
+import ANIM_RIGHT_STRAFE from './models/RightStrafe.fbx'
+import ANIM_LEFT_STRAFE from './models/LeftStrafe.fbx'
+import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
 
 class Player extends Group {
     constructor(parent) {
@@ -38,7 +46,7 @@ class Player extends Group {
         this.lastTimeStamp = 0;
         const loader = new FBXLoader();
 
-        loader.load('src/components/objects/Player/models/xbot.fbx', (fbx) => {
+        loader.load(PLAYER_MODEL, (fbx) => {
             fbx.scale.setScalar(0.007);
             this.mixers = new THREE.AnimationMixer(fbx)
             fbx.traverse(c => {
@@ -50,31 +58,31 @@ class Player extends Group {
             this.add(this.mesh);  
             this.add(this.meshClone)
             
-            loader.load('src/components/objects/Player/models/StandingIdle.fbx', (idleAnim) => {
+            loader.load(ANIM_STANDING_IDLE, (idleAnim) => {
                 let animationAction = this.mixers.clipAction(idleAnim.animations[0])
                 this.animationActions.push(animationAction)
 
-                loader.load('src/components/objects/Player/models/Jump.fbx', (jumpAnim) => {
+                loader.load(ANIM_JUMP, (jumpAnim) => {
                     let animationAction = this.mixers.clipAction(jumpAnim.animations[0])
                     this.animationActions.push(animationAction)
                 
-                    loader.load('src/components/objects/Player/models/StationaryRunning.fbx', (runningAnim) => {
+                    loader.load(ANIM_STATIONARY_RUNNING, (runningAnim) => {
                         let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                         this.animationActions.push(animationAction)
                         
-                        loader.load('src/components/objects/Player/models/RunningBackward.fbx', (runningAnim) => {
+                        loader.load(ANIM_BACKWARD_RUNNING, (runningAnim) => {
                             let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                             this.animationActions.push(animationAction)
 
-                            loader.load('src/components/objects/Player/models/RightStrafe.fbx', (runningAnim) => {
+                            loader.load(ANIM_RIGHT_STRAFE, (runningAnim) => {
                                 let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                 this.animationActions.push(animationAction)
 
-                                loader.load('src/components/objects/Player/models/LeftStrafe.fbx', (runningAnim) => {
+                                loader.load(ANIM_LEFT_STRAFE, (runningAnim) => {
                                     let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                     this.animationActions.push(animationAction)
 
-                                    loader.load('src/components/objects/Player/models/FallingIdle.fbx', (runningAnim) => {
+                                    loader.load(ANIM_FALLING_IDLE, (runningAnim) => {
                                         let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                         this.animationActions.push(animationAction)
                                         this.modelReady = true;

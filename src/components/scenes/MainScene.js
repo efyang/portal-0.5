@@ -8,11 +8,7 @@ import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 
-// return JSON data from any file path (asynchronous)
-// async function getJSON(path) {
-//     const response = await fetch(path).then(response => response.json());
-//     return response;
-// }
+import SCENE_JSON from '../jsons/scene.json'
 
 class MainScene extends Scene {
     constructor() {
@@ -49,30 +45,23 @@ class MainScene extends Scene {
         this.debugMeshes = []
 
         // load meshes from json file to scene
-        const files = consts.FILES;
-        for (let filename of files) {
-            let path = 'src/components/jsons/' + filename + '.json';
-            // load JSON data; then proceed
-            const loadJSON = async() => {
-                const data = await fetch(path).then(response => response.json())
+        // load JSON data; then proceed
+        const data = SCENE_JSON
 
-                for (let i = 0; i < data.geometries.length; i++) {
-                    let geometries = data.geometries[i]
-                    let matrix = data.object.children[i].matrix
-                    let position = new Vector3(matrix[12], matrix[13], matrix[14])
-                    let cube = new EnvironmentCube2(this, geometries, position);
-                    this.add(cube);
-                    // this.environmentObjects.push(cube.children[0]);
-                    // console.log(cube.children[0])
-                    this.environmentObjects.push(cube);
-                    this.intersectObjects.push(cube.children[0])
-                
-                    // just instantiate physics on load to not deal with async
-                    cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
-                    cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
-                }
-            }
-            loadJSON();
+        for (let i = 0; i < data.geometries.length; i++) {
+            let geometries = data.geometries[i]
+            let matrix = data.object.children[i].matrix
+            let position = new Vector3(matrix[12], matrix[13], matrix[14])
+            let cube = new EnvironmentCube2(this, geometries, position);
+            this.add(cube);
+            // this.environmentObjects.push(cube.children[0]);
+            // console.log(cube.children[0])
+            this.environmentObjects.push(cube);
+            this.intersectObjects.push(cube.children[0])
+        
+            // just instantiate physics on load to not deal with async
+            cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
+            cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
         }
 
         // Add other meshes to scene
@@ -82,37 +71,10 @@ class MainScene extends Scene {
         this.add(lights, player)
         this.dynamicObjects.push(player)
 
-        /*for (let e of this.environmentObjects) {
-            e.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
-            e.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
-        }*/
-
         for (let d of this.dynamicObjects) {
             d.physicsBody.collisionFilterGroup = consts.CGROUP_DYNAMIC 
             d.physicsBody.collisionFilterMask = consts.CGROUP_ALL
         }
-
-        /*
-        // set initial portals
-        // TODO: try removing these later on to test single portal cases
-        globals.PORTALS[0] = new Portal(this,
-            new Vector3(5, 1.1, 0),
-            new Vector3(1, 0, 0).normalize(), // normal of surface
-            new Vector3(0, 1, 0).normalize(),
-            null,
-            null,
-            'orange')
-
-        globals.PORTALS[1] = new Portal(this,
-            new Vector3(8, 1.1, 0),
-            new Vector3(-1, 0, 0).normalize(), // normal of surface
-            new Vector3(0, 1, 0).normalize(),
-            globals.PORTALS[0],
-            null,
-            'blue')
-
-        globals.PORTALS[0].output = globals.PORTALS[1]
-        this.add(globals.PORTALS[0], globals.PORTALS[1])*/
 
         // add event listener to construct portals
         window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false);
@@ -293,10 +255,7 @@ class MainScene extends Scene {
 
     // creates a new portal and adds it to the scene
     createPortal(thisPortalIndex, otherPortalIndex, point, normal, hostObject, playerUpDirection, portalPoints) {
-        let color = 'orange';
-        if (thisPortalIndex == 1) {
-            color = 'blue';
-        }
+        let color = consts.PORTAL_COLORS[thisPortalIndex]
 
         globals.PORTALS[thisPortalIndex] = new Portal(this,
             point,

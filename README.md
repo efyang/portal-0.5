@@ -70,5 +70,7 @@ Both models were downloaded from the Google Poly project:
 
 This skeleton project was adapted from [edwinwebb's ThreeJS seed project](https://github.com/edwinwebb/three-seed]) by Reilly Bova ’20.
 
+* Icon from [Good Ware](https://www.flaticon.com/free-icon/aperture_2150454?term=aperture&page=2&position=1&page=2&position=1&related_id=2150454&origin=search) on flaticon
+
 ## License
 [MIT](./LICENSE)

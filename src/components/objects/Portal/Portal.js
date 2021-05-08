@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 import { GeneralBB } from 'objects'
 import * as util from '../../../util'
-import { Group, Vector3 } from 'three'
+import { Group, MeshStandardMaterial, PlaneGeometry, Vector3 } from 'three'
 import { consts, globals } from '../../../globals';
 import { Line2, LineGeometry, LineMaterial } from 'three-fatline';
+import RING_TEXTURE_PNG from '../../../../assets/textures/ringTexture.png'
 
 const portal_width = consts.PORTAL_WIDTH
 const portal_depth = consts.PORTAL_DEPTH
@@ -95,32 +96,23 @@ class Portal extends Group {
         this.mesh.applyMatrix4(this.transform)
         this.mesh.updateMatrix()
         this.mesh.matrixAutoUpdate = false
+        this.add(this.mesh)
+
 
         // constructing the portal borders
-        const geometryLine = new LineGeometry();
-       
-        geometryLine.setPositions( [this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z, 
-                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
-                                    this.portalPoints[1].x, this.portalPoints[1].y, this.portalPoints[1].z,
-                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
-                                    this.portalPoints[2].x, this.portalPoints[2].y, this.portalPoints[2].z,
-                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
-                                    this.portalPoints[3].x, this.portalPoints[3].y, this.portalPoints[3].z,
-                                    this.portalPoints[0].x, this.portalPoints[0].y, this.portalPoints[0].z])
-
-        const matLine = new LineMaterial( {
-            color: ringColor,
-            linewidth: 3, // in pixels
-            opacity: 0.5,
-            transparent: true,
-            resolution: new THREE.Vector2(640, 480) // resolution of the viewport
-        } );
-
-        const line = new Line2( geometryLine, matLine );
-        line.computeLineDistances();
-        this.add( line );
-
-        this.add(this.mesh)
+        const ringGeometry = new THREE.PlaneGeometry(consts.PORTAL_WIDTH + 2 * consts.PORTAL_RING_THICKNESS, consts.PORTAL_DEPTH + 2 * consts.PORTAL_RING_THICKNESS);
+        const ringMaterial = new THREE.MeshStandardMaterial({color: ringColor, side: THREE.DoubleSide, opacity: 1, transparent: true, map: consts.RING_TEXTURE})
+        this.ringMesh = new THREE.Mesh(ringGeometry, ringMaterial)
+        this.ringMesh.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI/2))
+        this.ringMesh.applyMatrix4(this.transform)
+        this.ringMesh.position.add(normal.clone().multiplyScalar(consts.PORTAL_HEIGHT / 2 + 0.001))
+        // just so tha the textures don't overlap
+        if (ringColor === consts.PORTAL_COLORS[0]) {
+            this.ringMesh.position.add(normal.clone().multiplyScalar(0.001))
+        }
+        this.ringMesh.updateMatrix()
+        this.ringMesh.matrixAutoUpdate = false
+        this.add(this.ringMesh)
 
         // CDBB: collision disable BB
         // STBB: should teleport BB
