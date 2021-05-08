@@ -138,8 +138,7 @@ class Player extends Group {
                         } else {
                             contact.ni.copy(contactNormal);
                         }
-                        this.physicsBody.inJump = contactNormal.dot(upVector) <= 0.5;
-                        
+                        this.physicsBody.inJump = contactNormal.dot(upVector) > 0.5;
                     }
                 }
             }
