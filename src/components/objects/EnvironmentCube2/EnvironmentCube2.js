@@ -74,7 +74,7 @@ class EnvironmentCube2 extends Group {
         // cube.position.copy(pos);
         let m = new Matrix4()
         m.elements = matrix;
-        cube.applyMatrix4(m)
+        // cube.applyMatrix4(m)
 
         this.add(cube)
 

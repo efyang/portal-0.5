@@ -63,9 +63,8 @@ globals.CONTROLS.addEventListener('lock', () => {
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
 let stats = new Stats();
 document.body.appendChild(stats.dom);
+
 // Render loop
-
-
 function renderPortal(thisIndex, pairIndex) {
     if (globals.PORTALS[thisIndex] === null || globals.PORTALS[pairIndex] === null) {
         return
