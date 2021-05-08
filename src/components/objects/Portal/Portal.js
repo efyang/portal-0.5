@@ -101,15 +101,19 @@ class Portal extends Group {
 
         // constructing the portal borders
         const ringGeometry = new THREE.PlaneGeometry(consts.PORTAL_WIDTH + 2 * consts.PORTAL_RING_THICKNESS, consts.PORTAL_DEPTH + 2 * consts.PORTAL_RING_THICKNESS);
-        const ringMaterial = new THREE.MeshStandardMaterial({color: ringColor, side: THREE.DoubleSide, opacity: 1, transparent: true, map: consts.RING_TEXTURE})
+        // https://stackoverflow.com/questions/33571642/why-do-transparent-materials-result-in-occlusion
+        const ringMaterial = new THREE.MeshStandardMaterial({
+            color: ringColor,
+            side: THREE.DoubleSide,
+            opacity: 1,
+            transparent: true,
+            map: consts.RING_TEXTURE,
+            depthWrite: false,
+        })
         this.ringMesh = new THREE.Mesh(ringGeometry, ringMaterial)
         this.ringMesh.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI/2))
         this.ringMesh.applyMatrix4(this.transform)
         this.ringMesh.position.add(normal.clone().multiplyScalar(consts.PORTAL_HEIGHT / 2 + 0.001))
-        // just so tha the textures don't overlap
-        if (ringColor === consts.PORTAL_COLORS[0]) {
-            this.ringMesh.position.add(normal.clone().multiplyScalar(0.001))
-        }
         this.ringMesh.updateMatrix()
         this.ringMesh.matrixAutoUpdate = false
         this.add(this.ringMesh)
