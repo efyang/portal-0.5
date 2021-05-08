@@ -38,7 +38,6 @@ module.exports = {
         alias: {
             lights$: path.resolve(__dirname, 'src/components/lights'),
             crosshair$: path.resolve(__dirname, 'src/components/crosshair'),
-            audio$: path.resolve(__dirname, 'src/components/audio'),
             objects$: path.resolve(__dirname, 'src/components/objects'),
             scenes$: path.resolve(__dirname, 'src/components/scenes'),
             textures$: path.resolve(__dirname, 'assets/textures'),

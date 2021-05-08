@@ -2,6 +2,7 @@ import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster, Box3, Audio} from 'three';
 import PortalGunFireMP3 from '../../../assets/sounds/PortalGunFire.mp3'
 import PortalGunErrorMP3 from '../../../assets/sounds/PortalGunError.mp3'
+import TeleportMP3 from '../../../assets/sounds/Teleport.mp3'
 import * as THREE from 'three';
 import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
@@ -47,15 +48,20 @@ class MainScene extends Scene {
         // load meshes from json file to scene
         // load JSON data; then proceed
         const data = SCENE_JSON
-
         for (let i = 0; i < data.geometries.length; i++) {
             let geometries = data.geometries[i]
-            let matrix = data.object.children[i].matrix
+            let object = data.object.children[i]
+            let matrix = object.matrix
+            let name = object.name
+            let placeable = 1
+            if (name.split("_")[0] == "unplaceable") {
+                placeable = 0
+            }
             let position = new Vector3(matrix[12], matrix[13], matrix[14])
-            let cube = new EnvironmentCube2(this, geometries, position);
+            let cube = new EnvironmentCube2(this, geometries, position, placeable, matrix);
             this.add(cube);
-            // this.environmentObjects.push(cube.children[0]);
-            // console.log(cube.children[0])
+
+            // console.log(object)
             this.environmentObjects.push(cube);
             this.intersectObjects.push(cube.children[0])
         
@@ -91,6 +97,9 @@ class MainScene extends Scene {
             obj.update(timeStamp);
         }
 
+        // teleport sound
+        const TeleportSound = new Audio( globals.LISTENER );
+
         for (let d of this.dynamicObjects) {
             let pos = new Vector3(d.physicsBody.position.x, d.physicsBody.position.y, d.physicsBody.position.z)
             // let bb = new Box3(new Vector3().copy(d.physicsBody.aabb.lowerBound), new Vector3().copy(d.physicsBody.aabb.upperBound))
@@ -116,6 +125,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[p].STBB.containsPoint(pos)) {
                     globals.PORTALS[p].teleportPhysicalObject(d)
                     globals.PORTALS[p].teleportObject3D(globals.MAIN_CAMERA)
+                    this.playTeleportSound(TeleportSound)
 
                     // fix camera rotation
                     // create a new basis with up as the up
@@ -145,9 +155,11 @@ class MainScene extends Scene {
         let behindPoint = point.clone().add(normal.clone().multiplyScalar(-0.1))
         raycaster.set(behindPoint, normal)
         let intersects = raycaster.intersectObjects( this.intersectObjects );
+        console.log(intersects)
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 ||  intersects[0].object != object) {
+            console.log("HERE1")
             return false
         }
 
@@ -158,6 +170,7 @@ class MainScene extends Scene {
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 || intersects[0].object != object) {
+            console.log("HERE2")
             return false
         }
 
@@ -280,7 +293,7 @@ class MainScene extends Scene {
         if (!globals.CONTROLS.isLocked) { return; }
 
         // for portal sounds
-        const sound = new Audio( globals.LISTENER );
+        const PortalSound = new Audio( globals.LISTENER );
 
         // create raycaster
         let mouse = new Vector2(0,0)
@@ -293,6 +306,11 @@ class MainScene extends Scene {
 
         const intersects = raycaster.intersectObjects( this.intersectObjects );
         if (intersects.length > 0) {
+            console.log(intersects)
+            if (!intersects[0].object.parent.placeable) {
+                this.playPortalGunErrorSound(PortalSound)  
+                return;
+            }
             const point = intersects[0].point;
             const normal = intersects[0].face.normal.clone().normalize()
             const depthDir = playerUpDirection.clone().projectOnPlane(normal).normalize()
@@ -307,9 +325,10 @@ class MainScene extends Scene {
                                 point.clone().add(depthDir.clone().multiplyScalar(-portal_depth/2 - EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS))), 
                                 point.clone().add(depthDir.clone().multiplyScalar(portal_depth/2 + EPS).add(widthDir.clone().multiplyScalar(-portal_width/2 - EPS)))]
             
-                                for (let p of portalPoints) {
+            for (let p of portalPoints) {
                 if (!this.validPortalPoint(p, normal, intersects[0].object)) {
-                    this.playPortalGunErrorSound(sound)
+                    this.playPortalGunErrorSound(PortalSound)
+                    console.log("HERE")
                     return;
                 }
             }
@@ -322,7 +341,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[1] !== null &&
                     intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
-                    this.playPortalGunErrorSound(sound)
+                    this.playPortalGunErrorSound(PortalSound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -335,7 +354,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[0] !== null &&
                     intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
-                    this.playPortalGunErrorSound(sound)
+                    this.playPortalGunErrorSound(PortalSound)
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -345,7 +364,7 @@ class MainScene extends Scene {
                 this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
             }
 
-            this.playPortalGunFireSound(sound)
+            this.playPortalGunFireSound(PortalSound)
         }
     }
 
@@ -359,6 +378,15 @@ class MainScene extends Scene {
 
     playPortalGunErrorSound(sound) {
         globals.AUDIO_LOADER.load( PortalGunErrorMP3, function( buffer ) {
+            sound.setBuffer( buffer );
+            // sound.setLoop( true );
+            sound.setVolume( 0.2 );
+            sound.play();
+        });
+    }
+
+    playTeleportSound(sound) {
+        globals.AUDIO_LOADER.load( TeleportMP3, function( buffer ) {
             sound.setBuffer( buffer );
             // sound.setLoop( true );
             sound.setVolume( 0.2 );

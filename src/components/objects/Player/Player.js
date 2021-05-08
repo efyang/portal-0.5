@@ -231,11 +231,12 @@ class Player extends Group {
         if (this.controller["Space"].pressed && !this.physicsBody.inJump) {
             this.physicsBody.inJump = true
             this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
-            // if (!this.lastTimeStampInJump && this.physicsBody.inJump) {
-            //     this.playJumpSound(JumpSound)
-            // }
-            this.playJumpSound(JumpSound)
-            console.log("HERE")
+            if (!this.lastTimeStampInJump && this.physicsBody.inJump) {
+                this.playJumpSound(JumpSound)
+                console.log("HERE")
+            }
+            // this.playJumpSound(JumpSound)
+            
         }
         // update lastTimeStampInJump
         if (this.lastTimeStampInJump && !this.physicsBody.inJump) {
@@ -319,7 +320,7 @@ class Player extends Group {
     playLandingSound(sound) {
         globals.AUDIO_LOADER.load( LandingMP3, function( buffer ) {
             sound.setBuffer( buffer );
-            sound.setVolume( 0.03 );
+            sound.setVolume( 0.1 );
             sound.play();
         });
     }
@@ -327,7 +328,7 @@ class Player extends Group {
     playJumpSound(sound) {
         globals.AUDIO_LOADER.load( JumpGruntMP3, function( buffer ) {
             sound.setBuffer( buffer );
-            sound.setVolume( 0.01 );
+            sound.setVolume( 0.05 );
             sound.play();
         });
     }
