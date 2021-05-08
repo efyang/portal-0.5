@@ -21,7 +21,7 @@ export default {
     PORTAL_WIDTH: 1.5,
     PORTAL_DEPTH: 2,
     PORTAL_CDBB_HEIGHT: 3,
-    PORTAL_HEIGHT: 0.0001,
+    PORTAL_HEIGHT: 0.001,
     PORTAL_EPS: 0.01,
     PORTAL_RING_THICKNESS: 0.3,
     PORTAL_COLORS: ['orange', 'cyan'],
