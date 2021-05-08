@@ -60,11 +60,6 @@ globals.CONTROLS.addEventListener('lock', () => {
     instructionsContainer.style.display = 'none'
 })
 
-globals.CONTROLS.addEventListener('unlock', () => {
-    instructionsContainer.style.display = 'block'
-})
-
-
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
 let stats = new Stats();
 document.body.appendChild(stats.dom);
