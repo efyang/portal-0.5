@@ -24,7 +24,8 @@ class Player extends Group {
         this.name = 'Player';
         let mass = 50;
 
-        this.lastTimeStampInJump = false;
+        this.wasInJump = false;
+        this.shouldPlayJumpSound = false;
         this.counter = 0;
 
         // Construct the player model 
@@ -227,23 +228,27 @@ class Player extends Group {
             this.physicsBody.applyForce(right.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
         }
 
+        let shouldJump = false;
         // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed && !this.physicsBody.inJump) {
-            this.physicsBody.inJump = true
-            this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
-            if (!this.lastTimeStampInJump && this.physicsBody.inJump) {
-                this.playJumpSound(JumpSound)
-                console.log("HERE")
-            }
-            // this.playJumpSound(JumpSound)
-            
+            shouldJump = true;
+        
         }
         // update lastTimeStampInJump
-        if (this.lastTimeStampInJump && !this.physicsBody.inJump) {
+        if (this.wasInJump && !this.physicsBody.inJump) {
             this.playLandingSound(LandingSound)
         }
-        this.lastTimeStampInJump = this.physicsBody.inJump;
+        this.wasInJump = this.physicsBody.inJump;
 
+        if (shouldJump) {
+            this.shouldPlayJumpSound = !this.shouldPlayJumpSound;
+            this.physicsBody.inJump = true
+            this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
+            if (this.shouldPlayJumpSound && this.physicsBody.inJump) {
+                this.playJumpSound(JumpSound)
+            }
+        }
+        
         // always look where the camera points
         this.physicsBody.quaternion.copy(globals.MAIN_CAMERA.quaternion)
         this.physicsBody.quaternion.x = 0

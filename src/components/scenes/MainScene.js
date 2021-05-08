@@ -157,11 +157,9 @@ class MainScene extends Scene {
         let behindPoint = point.clone().add(normal.clone().multiplyScalar(-0.1))
         raycaster.set(behindPoint, normal)
         let intersects = raycaster.intersectObjects( this.intersectObjects );
-        console.log(intersects)
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 ||  intersects[0].object != object) {
-            console.log("HERE1")
             return false
         }
 
@@ -172,7 +170,6 @@ class MainScene extends Scene {
 
         // if there is no intersect or if there is another object in the way, then return false
         if (intersects.length == 0 || intersects[0].object != object) {
-            console.log("HERE2")
             return false
         }
 
@@ -238,13 +235,13 @@ class MainScene extends Scene {
     portalsNotOverlapping(portalPoints, edgePoints, otherPortalPoints) {
         for (let p of portalPoints) {
             if (this.pointInPortal(p, otherPortalPoints)) {
-                console.log("INVALID PLACEMENT (corner)")
+                // console.log("INVALID PLACEMENT (corner)")
                 return false;
             }
         }
         for (let p of edgePoints) {
             if (this.pointInPortal(p, otherPortalPoints)) {
-                console.log("INVALID PLACEMENT (edge)")
+                // console.log("INVALID PLACEMENT (edge)")
                 return false;
             }
         }
@@ -308,7 +305,6 @@ class MainScene extends Scene {
 
         const intersects = raycaster.intersectObjects( this.intersectObjects );
         if (intersects.length > 0) {
-            console.log(intersects)
             if (!intersects[0].object.parent.placeable) {
                 this.playPortalGunErrorSound(PortalSound)  
                 return;
@@ -330,7 +326,6 @@ class MainScene extends Scene {
             for (let p of portalPoints) {
                 if (!this.validPortalPoint(p, normal, intersects[0].object)) {
                     this.playPortalGunErrorSound(PortalSound)
-                    console.log("HERE")
                     return;
                 }
             }
