@@ -11,6 +11,8 @@ import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
 import BackgroundMP3 from '../assets/sounds/BackgroundMusic.mp3'
 import { Audio } from 'three'
+import './instructions.css'
+import INSTRUCTION_HTML from './instructions.html'
 
 const Stats = require("stats.js");
 const scene = new MainScene();
@@ -41,10 +43,26 @@ document.body.style.margin = 0; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
+// ideas from https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_pointerlock.html
+// https://github.com/karenying/drivers-ed/blob/master/src/app.js
+let instructionsContainer = document.createElement('div');
+instructionsContainer.id = 'instructions-container';
+instructionsContainer.innerHTML = INSTRUCTION_HTML
+document.body.appendChild(instructionsContainer)
+
+
 // lock camera controls on mouseclick
 window.addEventListener( 'click', function () {
     globals.CONTROLS.lock();
 } );
+
+globals.CONTROLS.addEventListener('lock', () => {
+    instructionsContainer.style.display = 'none'
+})
+
+globals.CONTROLS.addEventListener('unlock', () => {
+    instructionsContainer.style.display = 'block'
+})
 
 
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
