@@ -152,6 +152,16 @@ The relevant rendering code can be found in `src/app.js` and `src/components/obj
 
 One snag we ran into was how Three.js handled render targets and their respective textures. Three.js does not allow recursive texture rendering; that is, rendering to a texture while using that same texture in the scene. This makes sense as a limitation, as this usage case is not very common. However, this requires that we create a temporary render target in addition to the render target for each portal texture. On every portal render step, we render to the temporary target, and then swap the two render targets, using this rendered texture as the texture for the portal while providing a render target to render the next iteration. By swapping, we avoid having to instantiate multiple new render targets and dispose of them on every iteration, and also create a workaround to Three.js's recursive texture rendering limitation.
 
+One additional corner case we had to consider was that an object could be partially "within" a portal but not hav teleported yet. In this case, the other output portal should show the part of the object that has "teleported". To achieve this effect, we use the same method as [Daniel Ilett](https://danielilett.com/2020-01-03-tut4-4-portal-momentum/): we create a clone of the object's mesh when it is within the portal's CDBB and then teleport that mesh, and show it in the main scene render.
+
+<p align="center">
+<img width="500" height="300" src="images/cloning.png">
+<br>
+<i>
+"Where am I?"
+</i>
+</p>
+
 Using our method, we achieve good quality results, but take large performance hits (to be discussed in a later section):
 <p align="center">
 <img width="500" height="300" src="images/cornercase.png">
