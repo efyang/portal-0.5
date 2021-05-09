@@ -1,6 +1,6 @@
 {
   "name": "portal-0.5",
-  "repository": "portal-proto",
+  "repository": "portal-0.5",
   "version": "0.1.0",
   "title": "Portal 0.5",
   "description": "A basic implementation of core Portal mechanics in threejs and cannonjs.",
