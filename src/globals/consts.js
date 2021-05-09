@@ -14,6 +14,8 @@ import BROKENTILE_NORMAL_TEXTURE from '../../assets/textures/brokenTile/Normal.j
 import BROKENTILE_DISP_TEXTURE from '../../assets/textures/brokenTile/Displacement.jpg'
 import BROKENTILE_AO_TEXTURE from '../../assets/textures/brokenTile/AmbientOcclusion.jpg'
 
+const texLoader = new TextureLoader()
+
 export default {
     /**********************************************************
     * PORTALS
@@ -31,19 +33,19 @@ export default {
     **********************************************************/
     FILES: ['scene7'],
     CONCRETE_TEXTURE_SET: {
-        map: CONCRETE_TEXTURE,
-        roughnessMap: CONCRETE_ROUGH_TEXTURE,
-        normalMap: CONCRETE_NORMAL_TEXTURE,
-        displacementMap: CONCRETE_DISP_TEXTURE,
-        aoMap: CONCRETE_AO_TEXTURE,
+        map: texLoader.loadAsync(CONCRETE_TEXTURE),
+        roughnessMap: texLoader.loadAsync(CONCRETE_ROUGH_TEXTURE),
+        normalMap: texLoader.loadAsync(CONCRETE_NORMAL_TEXTURE),
+        displacementMap: texLoader.loadAsync(CONCRETE_DISP_TEXTURE),
+        aoMap: texLoader.loadAsync(CONCRETE_AO_TEXTURE),
         displacementScale: 0,
     },
     BROKENTILE_TEXTURE_SET: {
-        map: BROKENTILE_TEXTURE,
-        roughnessMap: BROKENTILE_ROUGH_TEXTURE,
-        normalMap: BROKENTILE_NORMAL_TEXTURE,
-        displacementMap: BROKENTILE_DISP_TEXTURE,
-        aoMap: BROKENTILE_AO_TEXTURE,
+        map: texLoader.loadAsync(BROKENTILE_TEXTURE),
+        roughnessMap: texLoader.loadAsync(BROKENTILE_ROUGH_TEXTURE),
+        normalMap: texLoader.loadAsync(BROKENTILE_NORMAL_TEXTURE),
+        displacementMap: texLoader.loadAsync(BROKENTILE_DISP_TEXTURE),
+        aoMap: texLoader.loadAsync(BROKENTILE_AO_TEXTURE),
         displacementScale: 1,
     },
     RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG),

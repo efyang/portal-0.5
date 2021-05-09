@@ -24,15 +24,6 @@ class EnvironmentCube2 extends Group {
         const geometry = new BoxGeometry( this.width, this.height, this.depth );
 
         // create material
-        const loader = new TextureLoader()
-        const loadTexture = (t, scale, udim, vdim) => {
-            const texture = loader.load(t)
-            texture.wrapS = RepeatWrapping;
-            texture.wrapT = RepeatWrapping;
-            texture.repeat.set( udim / scale, vdim / scale);
-            return texture
-        }
-
         let textureSet = consts.CONCRETE_TEXTURE_SET
         let scale = 8
         let color = 0xffffff
@@ -53,22 +44,41 @@ class EnvironmentCube2 extends Group {
         ]
 
         let materials = []
-        for (let dims of sideDims) {
+        for (let _ of sideDims) {
             const material = new MeshStandardMaterial( {
                 side: DoubleSide,
                 color: color,
-                map: loadTexture(textureSet.map, scale, dims[0], dims[1]),
-                aoMap: loadTexture(textureSet.aoMap, scale, dims[0], dims[1]),
-                normalMap: loadTexture(textureSet.normalMap, scale, dims[0], dims[1]),
-                roughnessMap: loadTexture(textureSet.roughnessMap, scale, dims[0], dims[1]),
-                displacementMap: loadTexture(textureSet.displacementMap, scale, dims[0], dims[1]),
-                displacementScale: textureSet.displacementScale,
                 roughness: 1, 
                 metalness: metalness
             } );
             materials.push(material)
         }
 
+        function loadTexture(t, dims, scale) {
+            const texture = t.clone()
+            texture.wrapS = RepeatWrapping;
+            texture.wrapT = RepeatWrapping;
+            texture.repeat.set( dims[0] / scale, dims[1] / scale);
+            texture.needsUpdate = true
+            return texture
+        }
+
+        for (let index in textureSet) {
+            const value = textureSet[index]
+            for (let i = 0; i < materials.length; i++) {
+                const dims = sideDims[i]
+                const material = materials[i]
+
+                if (typeof value === "number") {
+                    material[index] = value
+                } else {
+                    value.then((t) => {
+                        material[index] = loadTexture(t, dims, scale)
+                        material.needsUpdate = true
+                    })
+                }
+            }
+        }
 
         let cube = new Mesh( geometry, materials );
         // cube.position.copy(pos);
