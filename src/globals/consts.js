@@ -22,20 +22,25 @@ import PortalGunErrorMP3 from '../../assets/sounds/PortalGunError.mp3'
 import TeleportMP3 from '../../assets/sounds/Teleport.mp3'
 import BackgroundMP3 from '../../assets/sounds/BackgroundMusic.mp3'
 
+import 'util'
+import { notifyPageLoadAsset } from '../util';
+
 const listener = new AudioListener()
 const audio = new Audio(listener)
 const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
 
 export default {
+    N_ASSETS: 18,
+
     LISTENER: new AudioListener(),
-    JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3),
-    LANDING_SOUND: audioLoader.loadAsync(LandingMP3),
-    WALKING_SOUND: audioLoader.loadAsync(WalkingMP3),
-    PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(PortalGunFireMP3),
-    PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(PortalGunErrorMP3),
-    TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3),
-    BGMUSIC_SOUND: audioLoader.loadAsync(BackgroundMP3),
+    JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3).then(notifyPageLoadAsset),
+    LANDING_SOUND: audioLoader.loadAsync(LandingMP3).then(notifyPageLoadAsset),
+    WALKING_SOUND: audioLoader.loadAsync(WalkingMP3).then(notifyPageLoadAsset),
+    PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(PortalGunFireMP3).then(notifyPageLoadAsset),
+    PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(PortalGunErrorMP3).then(notifyPageLoadAsset),
+    TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3).then(notifyPageLoadAsset),
+    BGMUSIC_SOUND: audioLoader.loadAsync(BackgroundMP3).then(notifyPageLoadAsset),
 
     /**********************************************************
     * PORTALS
@@ -52,28 +57,27 @@ export default {
     * FILES
     **********************************************************/
     FILES: ['scene7'],
+
+    /**********************************************************
+    * TEXTURES
+    **********************************************************/
     CONCRETE_TEXTURE_SET: {
-        map: texLoader.loadAsync(CONCRETE_TEXTURE),
-        roughnessMap: texLoader.loadAsync(CONCRETE_ROUGH_TEXTURE),
-        normalMap: texLoader.loadAsync(CONCRETE_NORMAL_TEXTURE),
-        displacementMap: texLoader.loadAsync(CONCRETE_DISP_TEXTURE),
-        aoMap: texLoader.loadAsync(CONCRETE_AO_TEXTURE),
+        map: texLoader.loadAsync(CONCRETE_TEXTURE).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(CONCRETE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(CONCRETE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(CONCRETE_DISP_TEXTURE).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(CONCRETE_AO_TEXTURE).then(notifyPageLoadAsset),
         displacementScale: 0,
     },
     BROKENTILE_TEXTURE_SET: {
-        map: texLoader.loadAsync(BROKENTILE_TEXTURE),
-        roughnessMap: texLoader.loadAsync(BROKENTILE_ROUGH_TEXTURE),
-        normalMap: texLoader.loadAsync(BROKENTILE_NORMAL_TEXTURE),
-        displacementMap: texLoader.loadAsync(BROKENTILE_DISP_TEXTURE),
-        aoMap: texLoader.loadAsync(BROKENTILE_AO_TEXTURE),
+        map: texLoader.loadAsync(BROKENTILE_TEXTURE).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(BROKENTILE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(BROKENTILE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(BROKENTILE_DISP_TEXTURE).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(BROKENTILE_AO_TEXTURE).then(notifyPageLoadAsset),
         displacementScale: 1,
     },
-    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG),
-
-    /**********************************************************
-    * FLOOR
-    **********************************************************/
-    FLOOR_TEXTURE: new TextureLoader().load(FLOOR_TEXTURE_PNG),
+    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG, notifyPageLoadAsset),
 
     /**********************************************************
     * PLAYER

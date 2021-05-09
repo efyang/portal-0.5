@@ -1,5 +1,6 @@
 // general math and utilty functions
 import * as THREE from 'three'
+import {consts, globals} from 'globals'
 
 // convert vector3 to vector4
 export function threeToFour(v) {
@@ -16,4 +17,18 @@ export function threeToCannonVector3(v3) {
 
 export function cannonToThreeVector3(v3) {
     return new THREE.Vector3().copy(v3)
+}
+
+export function notifyPageLoadAsset(a) {
+    globals.N_ASSETS_LOADED++
+    const bar = document.getElementById("assets_progressbar")
+    const label = document.getElementById("assets_label")
+    bar.value = globals.N_ASSETS_LOADED / consts.N_ASSETS
+    if (bar.value >= 1) {
+        label.innerText = "Loading: done."
+        bar.style.display = 'none'
+    } else {
+        label.innerText = `Loaded asset: ${a.toString()}: ${(bar.value * 100).toFixed(2)}% complete. `
+    }
+    return a
 }
