@@ -1,12 +1,9 @@
-import { Group, Vector3, Audio } from 'three';
+import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
-import { globals } from 'globals'
+import { globals, consts } from 'globals'
 import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
-import JumpGruntMP3 from '../../../../assets/sounds/JumpGrunt.mp3'
-import LandingMP3 from '../../../../assets/sounds/Landing.mp3'
-import WalkingMP3 from '../../../../assets/sounds/Walking.mp3'
 import PLAYER_MODEL from './models/xbot.fbx'
 import ANIM_STANDING_IDLE from './models/StandingIdle.fbx'
 import ANIM_JUMP from './models/Jump.fbx'
@@ -15,6 +12,8 @@ import ANIM_BACKWARD_RUNNING from './models/RunningBackward.fbx'
 import ANIM_RIGHT_STRAFE from './models/RightStrafe.fbx'
 import ANIM_LEFT_STRAFE from './models/LeftStrafe.fbx'
 import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
+import '../../../audio'
+import { playSound } from '../../../audio';
 
 class Player extends Group {
     constructor(parent) {
@@ -170,10 +169,6 @@ class Player extends Group {
     // updates performed at each timestep
     update(timeStamp) {
         // for player sounds
-        const JumpSound = new Audio( globals.LISTENER );
-        const LandingSound = new Audio( globals.LISTENER );
-        const WalkingSound = new Audio( globals.LISTENER );
-
         if (!this.hadCollisions) {
             this.hadCollisions = false
         }
@@ -211,7 +206,7 @@ class Player extends Group {
         
         // if (this.controller["KeyW"].pressed || this.controller["KeyA"].pressed || this.controller["KeyS"].pressed || this.controller["KeyD"].pressed) { 
         //     if (this.counter % 30 == 0 && !this.physicsBody.inJump) {
-        //         this.playWalkingSound(WalkingSound)
+        //         this.playWalkingSound()
         //     }
         // }
 
@@ -236,7 +231,7 @@ class Player extends Group {
         }
         // update lastTimeStampInJump
         if (this.wasInJump && !this.physicsBody.inJump) {
-            this.playLandingSound(LandingSound)
+            this.playLandingSound()
         }
         this.wasInJump = this.physicsBody.inJump;
 
@@ -245,7 +240,7 @@ class Player extends Group {
             this.physicsBody.inJump = true
             this.physicsBody.applyImpulse(up.clone().multiplyScalar(f * 0.15), this.physicsBody.position)
             if (this.shouldPlayJumpSound && this.physicsBody.inJump) {
-                this.playJumpSound(JumpSound)
+                this.playJumpSound()
             }
         }
         
@@ -322,28 +317,16 @@ class Player extends Group {
         }
     }
 
-    playLandingSound(sound) {
-        globals.AUDIO_LOADER.load( LandingMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setVolume( 0.1 );
-            sound.play();
-        });
+    playLandingSound() {
+        playSound(consts.LANDING_SOUND, false, 0.1)
     }
 
-    playJumpSound(sound) {
-        globals.AUDIO_LOADER.load( JumpGruntMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setVolume( 0.05 );
-            sound.play();
-        });
+    playJumpSound() {
+        playSound(consts.JUMP_SOUND, false, 0.05)
     }
 
-    playWalkingSound(sound) {
-        globals.AUDIO_LOADER.load( WalkingMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setVolume( 0.001 );
-            sound.play();
-        });
+    playWalkingSound() {
+        playSound(consts.WALKING_SOUND, false, 0.001)
     }
 }
 

@@ -1,15 +1,14 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster, Box3, Audio} from 'three';
-import PortalGunFireMP3 from '../../../assets/sounds/PortalGunFire.mp3'
-import PortalGunErrorMP3 from '../../../assets/sounds/PortalGunError.mp3'
-import TeleportMP3 from '../../../assets/sounds/Teleport.mp3'
 import * as THREE from 'three';
 import { Player, Portal, EnvironmentCube2 } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
+import '../../audio'
 
 import SCENE_JSON from '../jsons/scene6.json'
+import { playSound } from '../../audio';
 
 class MainScene extends Scene {
     constructor() {
@@ -282,9 +281,6 @@ class MainScene extends Scene {
         // if (!this.state.controls.isLocked) { return; }
         if (!globals.CONTROLS.isLocked) { return; }
 
-        // for portal sounds
-        const PortalSound = new Audio( globals.LISTENER );
-
         // create raycaster
         let mouse = new Vector2(0,0)
         const raycaster = new Raycaster();
@@ -354,34 +350,20 @@ class MainScene extends Scene {
                 this.createPortal(1, 0, point, normal, intersects[0].object.parent, playerUpDirection, portalPoints)
             }
 
-            this.playPortalGunFireSound(PortalSound)
+            this.playPortalGunFireSound()
         }
     }
 
-    playPortalGunFireSound(sound) {
-        globals.AUDIO_LOADER.load( PortalGunFireMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setVolume( 0.2 );
-            sound.play();
-        });
+    playPortalGunFireSound() {
+        playSound(consts.PORTAL_GUN_FIRE_SOUND, false, 0.2)
     }
 
-    playPortalGunErrorSound(sound) {
-        globals.AUDIO_LOADER.load( PortalGunErrorMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            // sound.setLoop( true );
-            sound.setVolume( 0.2 );
-            sound.play();
-        });
+    playPortalGunErrorSound() {
+        playSound(consts.PORTAL_GUN_ERROR_SOUND, false, 0.2)
     }
 
-    playTeleportSound(sound) {
-        globals.AUDIO_LOADER.load( TeleportMP3, function( buffer ) {
-            sound.setBuffer( buffer );
-            // sound.setLoop( true );
-            sound.setVolume( 0.2 );
-            sound.play();
-        });
+    playTeleportSound() {
+        playSound(consts.TELEPORT_SOUND, false, 0.2)
     }
 }
 

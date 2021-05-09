@@ -1,6 +1,6 @@
 import FLOOR_TEXTURE_PNG from '../../assets/textures/floorTexture.png'
 import RING_TEXTURE_PNG from '../../assets/textures/ringTexture.png'
-import { TextureLoader } from 'three';
+import { AudioLoader, AudioListener, TextureLoader, Audio } from 'three';
 
 import CONCRETE_TEXTURE from '../../assets/textures/concrete/Color.jpg'
 import CONCRETE_ROUGH_TEXTURE from '../../assets/textures/concrete/Roughness.jpg'
@@ -14,9 +14,29 @@ import BROKENTILE_NORMAL_TEXTURE from '../../assets/textures/brokenTile/Normal.j
 import BROKENTILE_DISP_TEXTURE from '../../assets/textures/brokenTile/Displacement.jpg'
 import BROKENTILE_AO_TEXTURE from '../../assets/textures/brokenTile/AmbientOcclusion.jpg'
 
+import JumpGruntMP3 from '../../assets/sounds/JumpGrunt.mp3'
+import LandingMP3 from '../../assets/sounds/Landing.mp3'
+import WalkingMP3 from '../../assets/sounds/Walking.mp3'
+import PortalGunFireMP3 from '../../assets/sounds/PortalGunFire.mp3'
+import PortalGunErrorMP3 from '../../assets/sounds/PortalGunError.mp3'
+import TeleportMP3 from '../../assets/sounds/Teleport.mp3'
+import BackgroundMP3 from '../../assets/sounds/BackgroundMusic.mp3'
+
+const listener = new AudioListener()
+const audio = new Audio(listener)
+const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
 
 export default {
+    LISTENER: new AudioListener(),
+    JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3),
+    LANDING_SOUND: audioLoader.loadAsync(LandingMP3),
+    WALKING_SOUND: audioLoader.loadAsync(WalkingMP3),
+    PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(PortalGunFireMP3),
+    PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(PortalGunErrorMP3),
+    TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3),
+    BGMUSIC_SOUND: audioLoader.loadAsync(BackgroundMP3),
+
     /**********************************************************
     * PORTALS
     **********************************************************/
