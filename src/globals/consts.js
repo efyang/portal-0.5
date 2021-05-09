@@ -1,6 +1,6 @@
-import FLOOR_TEXTURE_PNG from '../../assets/textures/floorTexture.png'
 import RING_TEXTURE_PNG from '../../assets/textures/ringTexture.png'
 import { AudioLoader, AudioListener, TextureLoader, Audio } from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 
 import CONCRETE_TEXTURE from '../../assets/textures/concrete/Color.jpg'
 import CONCRETE_ROUGH_TEXTURE from '../../assets/textures/concrete/Roughness.jpg'
@@ -22,17 +22,28 @@ import PortalGunErrorMP3 from '../../assets/sounds/PortalGunError.mp3'
 import TeleportMP3 from '../../assets/sounds/Teleport.mp3'
 import BackgroundMP3 from '../../assets/sounds/BackgroundMusic.mp3'
 
+import PLAYER_MODEL from '../../assets/models/xbot.fbx'
+import ANIM_STANDING_IDLE from '../../assets/models/StandingIdle.fbx'
+import ANIM_JUMP from '../../assets/models/Jump.fbx'
+import ANIM_STATIONARY_RUNNING from '../../assets/models/StationaryRunning.fbx'
+import ANIM_BACKWARD_RUNNING from '../../assets/models/RunningBackward.fbx'
+import ANIM_RIGHT_STRAFE from '../../assets/models/RightStrafe.fbx'
+import ANIM_LEFT_STRAFE from '../../assets/models/LeftStrafe.fbx'
+import ANIM_FALLING_IDLE from '../../assets/models/FallingIdle.fbx'
+
 import 'util'
 import { notifyPageLoadAsset } from '../util';
 
-const listener = new AudioListener()
-const audio = new Audio(listener)
 const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
+const fbxLoader = new FBXLoader();
 
 export default {
     N_ASSETS: 26,
 
+    /**********************************************************
+    * AUDIO
+    **********************************************************/
     LISTENER: new AudioListener(),
     JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3).then(notifyPageLoadAsset),
     LANDING_SOUND: audioLoader.loadAsync(LandingMP3).then(notifyPageLoadAsset),
@@ -82,6 +93,16 @@ export default {
     /**********************************************************
     * PLAYER
     **********************************************************/
+    PLAYER_MODEL: fbxLoader.loadAsync(PLAYER_MODEL).then(notifyPageLoadAsset),
+    PLAYER_ANIMATIONS: {
+        ANIM_STANDING_IDLE: fbxLoader.loadAsync(ANIM_STANDING_IDLE).then(notifyPageLoadAsset),
+        ANIM_JUMP: fbxLoader.loadAsync(ANIM_JUMP).then(notifyPageLoadAsset),
+        ANIM_STATIONARY_RUNNING: fbxLoader.loadAsync(ANIM_STATIONARY_RUNNING).then(notifyPageLoadAsset),
+        ANIM_BACKWARD_RUNNING: fbxLoader.loadAsync(ANIM_BACKWARD_RUNNING).then(notifyPageLoadAsset),
+        ANIM_RIGHT_STRAFE: fbxLoader.loadAsync(ANIM_RIGHT_STRAFE).then(notifyPageLoadAsset),
+        ANIM_LEFT_STRAFE: fbxLoader.loadAsync(ANIM_LEFT_STRAFE).then(notifyPageLoadAsset),
+        ANIM_FALLING_IDLE: fbxLoader.loadAsync(ANIM_FALLING_IDLE).then(notifyPageLoadAsset),
+    },
 
     /**********************************************************
     * PHYSICS

@@ -293,7 +293,7 @@ class MainScene extends Scene {
         const intersects = raycaster.intersectObjects( this.intersectObjects );
         if (intersects.length > 0) {
             if (!intersects[0].object.parent.placeable) {
-                this.playPortalGunErrorSound(PortalSound)  
+                this.playPortalGunErrorSound()  
                 return;
             }
             const point = intersects[0].point;
@@ -314,7 +314,7 @@ class MainScene extends Scene {
             
             for (let p of portalPoints) {
                 if (!this.validPortalPoint(p, normal, intersects[0].object)) {
-                    this.playPortalGunErrorSound(PortalSound)
+                    this.playPortalGunErrorSound()
                     return;
                 }
             }
@@ -327,7 +327,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[1] !== null &&
                     intersects[0].object.parent == globals.PORTALS[1].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[1].portalPoints) ) {
-                    this.playPortalGunErrorSound(PortalSound)
+                    this.playPortalGunErrorSound()
                     return;
                 }
                 // delete the old portal this new one is replacing
@@ -340,7 +340,7 @@ class MainScene extends Scene {
                 if (globals.PORTALS[0] !== null &&
                     intersects[0].object.parent == globals.PORTALS[0].hostObjects &&
                     !this.portalsNotOverlapping(portalPoints, edgePoints, globals.PORTALS[0].portalPoints) ) {
-                    this.playPortalGunErrorSound(PortalSound)
+                    this.playPortalGunErrorSound()
                     return;
                 }
                 // delete the old portal this new one is replacing

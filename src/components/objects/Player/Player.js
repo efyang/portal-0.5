@@ -4,17 +4,7 @@ import * as CANNON from 'cannon';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { globals, consts } from 'globals'
 import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
-import PLAYER_MODEL from './models/xbot.fbx'
-import ANIM_STANDING_IDLE from './models/StandingIdle.fbx'
-import ANIM_JUMP from './models/Jump.fbx'
-import ANIM_STATIONARY_RUNNING from './models/StationaryRunning.fbx'
-import ANIM_BACKWARD_RUNNING from './models/RunningBackward.fbx'
-import ANIM_RIGHT_STRAFE from './models/RightStrafe.fbx'
-import ANIM_LEFT_STRAFE from './models/LeftStrafe.fbx'
-import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
 import { playSound } from '../../../audio';
-import '../../../util'
-import { notifyPageLoadAsset } from '../../../util';
 
 class Player extends Group {
     constructor(parent) {
@@ -39,7 +29,7 @@ class Player extends Group {
 
         // adapted from https://sbcode.net/threejs/fbx-animation/
         this.mixers = null;
-        this.animationActions = [];
+        this.animationActions = {}
         this.modelReady = false;
         this.lastAction = null;
         this.currAction = null;
@@ -47,8 +37,7 @@ class Player extends Group {
         this.lastTimeStamp = 0;
         const loader = new FBXLoader();
 
-        loader.load(PLAYER_MODEL, (fbx) => {
-            notifyPageLoadAsset(fbx)
+        consts.PLAYER_MODEL.then((fbx) => {
             fbx.scale.setScalar(0.007);
             this.mixers = new THREE.AnimationMixer(fbx)
             fbx.traverse(c => {
@@ -59,49 +48,17 @@ class Player extends Group {
             this.meshClone.visible = false
             this.add(this.mesh);  
             this.add(this.meshClone)
-            
-            loader.load(ANIM_STANDING_IDLE, (idleAnim) => {
-                notifyPageLoadAsset(idleAnim)
-                let animationAction = this.mixers.clipAction(idleAnim.animations[0])
-                this.animationActions.push(animationAction)
-
-                loader.load(ANIM_JUMP, (jumpAnim) => {
-                    notifyPageLoadAsset(jumpAnim)
-                    let animationAction = this.mixers.clipAction(jumpAnim.animations[0])
-                    this.animationActions.push(animationAction)
-                
-                    loader.load(ANIM_STATIONARY_RUNNING, (runningAnim) => {
-                        notifyPageLoadAsset(runningAnim)
-                        let animationAction = this.mixers.clipAction(runningAnim.animations[0])
-                        this.animationActions.push(animationAction)
-                        
-                        loader.load(ANIM_BACKWARD_RUNNING, (runningAnim) => {
-                            notifyPageLoadAsset(runningAnim)
-                            let animationAction = this.mixers.clipAction(runningAnim.animations[0])
-                            this.animationActions.push(animationAction)
-
-                            loader.load(ANIM_RIGHT_STRAFE, (runningAnim) => {
-                                notifyPageLoadAsset(runningAnim)
-                                let animationAction = this.mixers.clipAction(runningAnim.animations[0])
-                                this.animationActions.push(animationAction)
-
-                                loader.load(ANIM_LEFT_STRAFE, (runningAnim) => {
-                                    notifyPageLoadAsset(runningAnim)
-                                    let animationAction = this.mixers.clipAction(runningAnim.animations[0])
-                                    this.animationActions.push(animationAction)
-
-                                    loader.load(ANIM_FALLING_IDLE, (runningAnim) => {
-                                        notifyPageLoadAsset(runningAnim)
-                                        let animationAction = this.mixers.clipAction(runningAnim.animations[0])
-                                        this.animationActions.push(animationAction)
-                                        this.modelReady = true;
-                                    })
-                                })
-                            })
-                        })
-                    })
+        }).then(() => {
+            let animationPromises = []
+            for (let index in consts.PLAYER_ANIMATIONS) {
+                const anim = consts.PLAYER_ANIMATIONS[index]
+                anim.then((anim) => {
+                    const animationAction = this.mixers.clipAction(anim.animations[0])
+                    this.animationActions[index] = animationAction
                 })
-            })
+                animationPromises.push(anim)
+            }
+            Promise.all(animationPromises).then(() => this.modelReady = true)
         })
 
         var slipperyMaterial = new CANNON.Material();
@@ -276,34 +233,33 @@ class Player extends Group {
         // handle model movements
         const timeElapsedS = (timeStamp - this.lastTimeStamp) * 0.001;
         this.lastTimeStamp = timeStamp;
-        let animationIndex = 0
+        let action = this.animationActions.ANIM_STANDING_IDLE
         if (this.modelReady) {
             if (this.physicsBody.inJump) {
-                animationIndex = 6;
+                action = this.animationActions.ANIM_FALLING_IDLE
             } else if (this.controller["KeyW"].pressed && this.controller["KeyD"].pressed && this.controller["KeyA"].pressed && this.controller["KeyS"].pressed) {
-                animationIndex = 0
+                action = this.animationActions.ANIM_STANDING_IDLE
             } else if (this.controller["KeyW"].pressed && this.controller["KeyS"].pressed) {
-                animationIndex = 0;
+                action = this.animationActions.ANIM_STANDING_IDLE
                 if (this.controller["KeyD"].pressed) {
-                    animationIndex = 4
+                    action = this.animationActions.ANIM_RIGHT_STRAFE
                 } else if (this.controller["KeyA"].pressed) {
-                    animationIndex = 5
+                    action = this.animationActions.ANIM_LEFT_STRAFE
                 }
             } else if (this.controller["KeyA"].pressed && this.controller["KeyD"].pressed) {
-                animationIndex = 0;
+                action = this.animationActions.ANIM_STANDING_IDLE
                 if (this.controller["KeyW"].pressed) {
-                    animationIndex = 2
+                    action = this.animationActions.ANIM_STATIONARY_RUNNING
                 } else if (this.controller["KeyS"].pressed) {
-                    animationIndex = 3
+                    action = this.animationActions.ANIM_BACKWARD_RUNNING
                 }
             } else{
-                if (this.controller["KeyW"].pressed) { animationIndex = 2}
-                if (this.controller["KeyS"].pressed) { animationIndex = 3}
-                if (this.controller["KeyD"].pressed) { animationIndex = 4}
-                if (this.controller["KeyA"].pressed) { animationIndex = 5}
+                if (this.controller["KeyW"].pressed) { action = this.animationActions.ANIM_STATIONARY_RUNNING }
+                if (this.controller["KeyS"].pressed) { action = this.animationActions.ANIM_BACKWARD_RUNNING}
+                if (this.controller["KeyD"].pressed) { action = this.animationActions.ANIM_RIGHT_STRAFE}
+                if (this.controller["KeyA"].pressed) { action = this.animationActions.ANIM_LEFT_STRAFE}
             }
 
-            let action = this.animationActions[animationIndex];
             this.setAction(action)
             this.mixers.update(timeElapsedS);
         }
