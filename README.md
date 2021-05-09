@@ -2,8 +2,6 @@
 [Online Demo](https://efyang.dev/portal-proto/)
 
 ## Abstract/Introduction
-a brief description of your project and what you accomplished
-
 Portal 0.5 is an exciting first person game where a player is able to instantaneously teleport themselves to new locations via portals that they shoot onto surfaces. Players can explore their environment while enjoying the novelty of teleportation and interesting physical interactions. Portal 0.5 leverages the Three.js and Cannon.js libraries to deliver a comprehesive, visually-appealing, and fun demo of the Portal games.
 
 ### Goal
@@ -37,7 +35,7 @@ This method achieves very good results, and seems to have very good performance:
 
 The other main approach, as used by Daniel Ilett, is to render each virtual camera iteration to a texture, and directly replace the portal texture with this texture. This texture is then shaded with a special screen-space shader (so that it isn't just shrunk down to the portal mesh size), which maps each coordinate on the mesh to its actual screen-space coordinates, and uses these screen-space coordinates to map the texture (avoiding the shrinking problem). This requires that the portals then be rendered deepest-first, which can be done by teleporting the camera however many times the recursion goes first, and then undoing each teleportation on every recursive portal render iteration. An example of how a portal would be rendered is seen below:
 <p align="center">
-<img width="300" height="300" src="images/screenspaceexample.png">
+<img width="500" height="300" src="images/screenspaceexample.png">
 <br>
 <i>
 Example of rendering process using the screen-space shading method.
@@ -128,7 +126,7 @@ Example of debug mode portals showing their basis and CDBB in-game.
 As mentioned in the *Previous Work* section, there were two major established approaches to rendering portals, using the stencil buffer or using a screen-space shader along with rendering to textures. Given the time constraints of the project, it seemed most reasonable to attempt to implement one of these methods instead of finding a whole new method to render portals. In the prototyping phase of the project, we tried to implement the stencil buffer approach first. While the performance seemed to be promising as far as we got it (basic non-recursive portal rendering), it ended up being very hard to implement the actual recursive steps of the portal rendering. This difficulty was further compounded by the fact that the stencil buffer is completely opaque, and so there wasn't a really easy way to see which values were currently in the stencil buffer in order to debug our implementation. Furthermore, recursive rendering with the stencil buffer is very hard to reason about in practice, and therefore debug. For this reason, and our subsequent comparatively quick success with the screen-space shader method, we decided to go with the screen-space shader method.
 
 <p align="center">
-<img width="300" height="300" src="images/sbattempt.png">
+<img width="500" height="300" src="images/sbattempt.jpg">
 <br>
 <i>
 Attempting to understand the stencil buffer method.
@@ -138,13 +136,16 @@ Attempting to understand the stencil buffer method.
 To implement the screen-space shader method, each portal mesh had a special screen-space shader and associated texture uniform which mapped each pixel to its screen-space coordinates, and then used those screen-space coordinates to get the pixel in its associated texture uniform. They also included screen dimension uniforms in order to keep rendering correctly even after screen resizes.
 
 On every render pass we created a virtual camera for each portal that was a simple clone of the main camera. We updated the screen dimension uniforms associated with each portal in order to reflect the screen size in the screen-space coordinate calculation correctly even after window resizes. We teleport the virtual camera for each portal through the portal `PORTAL_RECURSION_LEVELS` times in order to put the camera at the equivalent virtual location that would render the deepest instance of the given portal. Then we also set both portals as invisible, as the texture for the portal at initialization is essentially garbage values that we do not want. For each iteration, we set the clipping plane as the plane of the output portal, in order to correctly cull objects that might otherwise occlude the virtual camera. We render the target into a texture, and then set the portal to use this texture and set it as visible again. Because when looking through one portal one will never see the other output portal, we keep the output portal hidden through this process so that there aren't visual artifacts caused by accidentally keeping it visible. We then undo the camera teleportation by one teleportation, and then continue the loop. For a visual reference (same as the one in the *Previous Work* section), refer below:
+
 <p align="center">
-<img width="300" height="300" src="images/screenspaceexample.png">
+<img width="500" height="300" src="images/screenspaceexample.png">
 <br>
 <i>
 Example of rendering process using screen-space shading.
 </i>
 </p>
+
+Note that we do actually use the stencil buffer in this process, but not to actually render the portals. The stencil buffer optimization is only to mark off places where the portal will actually be, therefore culling much of the scene in the process. In practice, we haven't seen much of a performance boost, however, even with this on. This optimization is much smaller and easier to reason about, which is why we included it.
 
 After both portals are rendered, the whole scene is then finally rendered normally. It's important that both portal main meshes use `MeshBasicMaterial` as opposed to `MeshStandardMaterial`, as this avoids having reflectivity or lighting artifacts from the scene that should not be present on a portal surface.
 
