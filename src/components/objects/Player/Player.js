@@ -12,8 +12,9 @@ import ANIM_BACKWARD_RUNNING from './models/RunningBackward.fbx'
 import ANIM_RIGHT_STRAFE from './models/RightStrafe.fbx'
 import ANIM_LEFT_STRAFE from './models/LeftStrafe.fbx'
 import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
-import '../../../audio'
 import { playSound } from '../../../audio';
+import '../../../util'
+import { notifyPageLoadAsset } from '../../../util';
 
 class Player extends Group {
     constructor(parent) {
@@ -47,6 +48,7 @@ class Player extends Group {
         const loader = new FBXLoader();
 
         loader.load(PLAYER_MODEL, (fbx) => {
+            notifyPageLoadAsset(fbx)
             fbx.scale.setScalar(0.007);
             this.mixers = new THREE.AnimationMixer(fbx)
             fbx.traverse(c => {
@@ -59,30 +61,37 @@ class Player extends Group {
             this.add(this.meshClone)
             
             loader.load(ANIM_STANDING_IDLE, (idleAnim) => {
+                notifyPageLoadAsset(idleAnim)
                 let animationAction = this.mixers.clipAction(idleAnim.animations[0])
                 this.animationActions.push(animationAction)
 
                 loader.load(ANIM_JUMP, (jumpAnim) => {
+                    notifyPageLoadAsset(jumpAnim)
                     let animationAction = this.mixers.clipAction(jumpAnim.animations[0])
                     this.animationActions.push(animationAction)
                 
                     loader.load(ANIM_STATIONARY_RUNNING, (runningAnim) => {
+                        notifyPageLoadAsset(runningAnim)
                         let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                         this.animationActions.push(animationAction)
                         
                         loader.load(ANIM_BACKWARD_RUNNING, (runningAnim) => {
+                            notifyPageLoadAsset(runningAnim)
                             let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                             this.animationActions.push(animationAction)
 
                             loader.load(ANIM_RIGHT_STRAFE, (runningAnim) => {
+                                notifyPageLoadAsset(runningAnim)
                                 let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                 this.animationActions.push(animationAction)
 
                                 loader.load(ANIM_LEFT_STRAFE, (runningAnim) => {
+                                    notifyPageLoadAsset(runningAnim)
                                     let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                     this.animationActions.push(animationAction)
 
                                     loader.load(ANIM_FALLING_IDLE, (runningAnim) => {
+                                        notifyPageLoadAsset(runningAnim)
                                         let animationAction = this.mixers.clipAction(runningAnim.animations[0])
                                         this.animationActions.push(animationAction)
                                         this.modelReady = true;

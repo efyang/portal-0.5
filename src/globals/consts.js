@@ -31,7 +31,7 @@ const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
 
 export default {
-    N_ASSETS: 18,
+    N_ASSETS: 26,
 
     LISTENER: new AudioListener(),
     JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3).then(notifyPageLoadAsset),
