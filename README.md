@@ -1,5 +1,5 @@
 # Portal 0.5
-[Online Demo](https://efyang.dev/portal-proto/)
+[Online Demo](https://efyang.dev/portal-0.5/)
 
 ## Abstract/Introduction
 Portal 0.5 is an exciting first person game where a player is able to instantaneously teleport themselves to new locations via portals that they shoot onto surfaces. Players can explore their environment while enjoying the novelty of teleportation and interesting physical interactions. Portal 0.5 leverages the Three.js and Cannon.js libraries to deliver a comprehesive, visually-appealing, and fun demo of the Portal games.
