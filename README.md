@@ -175,7 +175,7 @@ A classic corner case.
 To determine valid portal placement, we follow a procedure detailed here. First, we instantiate a Raycaster object from Three.js to find objects that intersect the ray originating from the player and pointing in the direction of the cursor. If the ray intersects at least one object, we consider if a portal can be placed at the point of nearest intersection, *P*, on a face *F* with normal *N*. To do this, we calculate the four corner points of the portal-to-be in world coordinates and check if each point is valid. To determine validity, a new Raycaster object is created with origin (*P* + *N*) and with direction (-1 * *N*), and we check that the first face the new raycaster intersects is equivalent to *F*. Essentially, this is checking that all four corners of the portal-to-be lie unobstructed on the face of nearest intersection of the original raycaster. To ensure this works, the scenes we generate must have edges like such where two faces meet: 
 
 <p align="center">
-<img width="500" height="300" src="images/portalPlacement1.png">
+<img width="500" height="300" src="images/portalPlacement.png">
 <br>
 <i>
 Example of necessary scene constructions.
