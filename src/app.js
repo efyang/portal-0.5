@@ -12,7 +12,7 @@ import { consts, globals } from 'globals';
 import './instructions.css'
 import INSTRUCTION_HTML from './instructions.html'
 import './audio'
-import { playSound } from './audio';
+import { playBGMusicCarousel } from './audio';
 
 const Stats = require("stats.js");
 const scene = new MainScene();
@@ -21,7 +21,7 @@ const scene = new MainScene();
 const crosshair = new Crosshair()
 globals.MAIN_CAMERA.add(crosshair);
 
-playSound(consts.BGMUSIC_SOUND, true, 0.1)
+playBGMusicCarousel()
 
 globals.MAIN_CAMERA.add( globals.LISTENER );
 scene.add(globals.MAIN_CAMERA)

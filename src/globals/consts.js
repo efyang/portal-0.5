@@ -51,7 +51,12 @@ export default {
     PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(PortalGunFireMP3).then(notifyPageLoadAsset),
     PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(PortalGunErrorMP3).then(notifyPageLoadAsset),
     TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3).then(notifyPageLoadAsset),
-    BGMUSIC_SOUND: audioLoader.loadAsync(BackgroundMP3).then(notifyPageLoadAsset),
+    BGMUSIC_SOUNDS: [
+        {
+            sound: audioLoader.loadAsync(BackgroundMP3).then(notifyPageLoadAsset),
+            volume: 0.1
+        },
+    ],
 
     /**********************************************************
     * PORTALS
