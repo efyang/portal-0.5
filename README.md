@@ -38,7 +38,7 @@ The other main approach, as used by Daniel Ilett, is to render each virtual came
 <img width="500" height="300" src="images/screenspaceexample.png">
 <br>
 <i>
-Example of rendering process using the screen-space shading method.
+Rendering process using the screen-space shading method.
 </i>
 </p>
 
@@ -47,7 +47,7 @@ This method achieves comparable results quality-wise compared with the stencil b
 <img width="500" height="300" src="images/screenspacerender.jpg">
 <br>
 <i>
-Example of rendering process using the screen-space shading example (c. Daniel Ilett)
+Rendering using the screen-space shading method (c. Daniel Ilett)
 </i>
 </p>
 
@@ -96,7 +96,7 @@ Physically, each portal consists of a main mesh `BoxGeometry` where the "portale
 <img width="500" height="300" src="images/portaldef.jpg">
 <br>
 <i>
-Example of how a base portal is transformed by its transformation matrix
+How a base portal is transformed by its transformation matrix
 </i>
 </p>
 
@@ -110,7 +110,7 @@ Additionally, the two bounding boxes are defined as shown below. These two bound
 <img width="450" height="300" src="images/portalbb.jpg">
 <br>
 <i>
-Example of where the CDBB and STBB are located relative to their associated portal.
+Where the CDBB and STBB are located relative to their associated portal.
 </i>
 </p>
 
@@ -141,7 +141,7 @@ On every render pass we created a virtual camera for each portal that was a simp
 <img width="500" height="300" src="images/screenspaceexample.png">
 <br>
 <i>
-Example of rendering process using screen-space shading.
+Example rendering process using screen-space shading.
 </i>
 </p>
 
