@@ -1,44 +1,6 @@
-import RING_TEXTURE_PNG from '../../assets/textures/ringTexture.png'
 import { AudioLoader, AudioListener, TextureLoader, Audio } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
-
-import CONCRETE_TEXTURE from '../../assets/textures/concrete/Color.jpg'
-import CONCRETE_ROUGH_TEXTURE from '../../assets/textures/concrete/Roughness.jpg'
-import CONCRETE_NORMAL_TEXTURE from '../../assets/textures/concrete/Normal.jpg'
-import CONCRETE_DISP_TEXTURE from '../../assets/textures/concrete/Displacement.jpg'
-import CONCRETE_AO_TEXTURE from '../../assets/textures/concrete/AmbientOcclusion.jpg'
-
-import BROKENTILE_TEXTURE from '../../assets/textures/brokenTile/Color.jpg'
-import BROKENTILE_ROUGH_TEXTURE from '../../assets/textures/brokenTile/Roughness.jpg'
-import BROKENTILE_NORMAL_TEXTURE from '../../assets/textures/brokenTile/Normal.jpg'
-import BROKENTILE_DISP_TEXTURE from '../../assets/textures/brokenTile/Displacement.jpg'
-import BROKENTILE_AO_TEXTURE from '../../assets/textures/brokenTile/AmbientOcclusion.jpg'
-
-import JumpGruntMP3 from '../../assets/sounds/JumpGrunt.mp3'
-import LandingMP3 from '../../assets/sounds/Landing.mp3'
-import WalkingMP3 from '../../assets/sounds/Walking.mp3'
-import PortalGunFireMP3 from '../../assets/sounds/PortalGunFire.mp3'
-import PortalGunErrorMP3 from '../../assets/sounds/PortalGunError.mp3'
-import TeleportMP3 from '../../assets/sounds/Teleport.mp3'
-import YTBackgroundMP3 from '../../assets/sounds/YTBackgroundMusic.mp3'
-import BlueDeeperThanIndigoMP3 from '../../assets/sounds/Daniel Birch - Blue Deeper Than Indigo.mp3'
-import IndigoGirlMP3 from '../../assets/sounds/Daniel Birch - Indigo Girl.mp3'
-import SatelliteMP3 from '../../assets/sounds/The Freeharmonic Orchestra - Satellite.mp3'
-import ChicaneMP3 from '../../assets/sounds/Bio Unit - Chicane.mp3'
-import IndustrialZoneMP3 from '../../assets/sounds/Bio Unit - Industrial Zone.mp3'
-import RozkolIMP3 from '../../assets/sounds/ROZKOL - I.mp3'
-import RozkolIIMP3 from '../../assets/sounds/ROZKOL - II.mp3'
-import RozkolIIIMP3 from '../../assets/sounds/ROZKOL - III.mp3'
-
-import PLAYER_MODEL from '../../assets/models/xbot.fbx'
-import ANIM_STANDING_IDLE from '../../assets/models/StandingIdle.fbx'
-import ANIM_JUMP from '../../assets/models/Jump.fbx'
-import ANIM_STATIONARY_RUNNING from '../../assets/models/StationaryRunning.fbx'
-import ANIM_BACKWARD_RUNNING from '../../assets/models/RunningBackward.fbx'
-import ANIM_RIGHT_STRAFE from '../../assets/models/RightStrafe.fbx'
-import ANIM_LEFT_STRAFE from '../../assets/models/LeftStrafe.fbx'
-import ANIM_FALLING_IDLE from '../../assets/models/FallingIdle.fbx'
-
+import * as assets from 'assets'
 import 'util'
 import { notifyPageLoadAsset } from '../util';
 
@@ -46,66 +8,69 @@ const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
 const fbxLoader = new FBXLoader();
 
+let BGMUSIC_SOUNDS = [
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.YTBackgroundMP3).then(notifyPageLoadAsset),
+        volume: 0.1,
+        name: "Background Music - Youtube"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.BlueDeeperThanIndigoMP3).then(notifyPageLoadAsset),
+        volume: 0.1,
+        name: "Blue Deeper Than Indigo - Daniel Birch"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.IndigoGirlMP3).then(notifyPageLoadAsset),
+        volume: 0.1,
+        name: "Indigo Girl - Daniel Birch"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.SatelliteMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Satellite - The Freeharmonic Orchestra"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.ChicaneMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Chicane - Bio Unit"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.IndustrialZoneMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Industrial Zone - Bio Unit"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.RozkolIMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "I - ROZKOL"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.RozkolIIMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "II - ROZKOL"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.RozkolIIIMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "III - ROZKOL"
+    },
+]
+
 export default {
-    N_ASSETS: 34,
+    N_ASSETS: assets.N_ASSETS,
 
     /**********************************************************
     * AUDIO
     **********************************************************/
     LISTENER: new AudioListener(),
-    JUMP_SOUND: audioLoader.loadAsync(JumpGruntMP3).then(notifyPageLoadAsset),
-    LANDING_SOUND: audioLoader.loadAsync(LandingMP3).then(notifyPageLoadAsset),
-    WALKING_SOUND: audioLoader.loadAsync(WalkingMP3).then(notifyPageLoadAsset),
-    PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(PortalGunFireMP3).then(notifyPageLoadAsset),
-    PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(PortalGunErrorMP3).then(notifyPageLoadAsset),
-    TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3).then(notifyPageLoadAsset),
-    BGMUSIC_SOUNDS: [
-        {
-            sound: audioLoader.loadAsync(YTBackgroundMP3).then(notifyPageLoadAsset),
-            volume: 0.1,
-            name: "Background Music - Youtube"
-        },
-        {
-            sound: audioLoader.loadAsync(BlueDeeperThanIndigoMP3).then(notifyPageLoadAsset),
-            volume: 0.1,
-            name: "Blue Deeper Than Indigo - Daniel Birch"
-        },
-        {
-            sound: audioLoader.loadAsync(IndigoGirlMP3).then(notifyPageLoadAsset),
-            volume: 0.1,
-            name: "Indigo Girl - Daniel Birch"
-        },
-        {
-            sound: audioLoader.loadAsync(SatelliteMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "Satellite - The Freeharmonic Orchestra"
-        },
-        {
-            sound: audioLoader.loadAsync(ChicaneMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "Chicane - Bio Unit"
-        },
-        {
-            sound: audioLoader.loadAsync(IndustrialZoneMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "Industrial Zone - Bio Unit"
-        },
-        {
-            sound: audioLoader.loadAsync(RozkolIMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "I - ROZKOL"
-        },
-        {
-            sound: audioLoader.loadAsync(RozkolIIMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "II - ROZKOL"
-        },
-        {
-            sound: audioLoader.loadAsync(RozkolIIIMP3).then(notifyPageLoadAsset),
-            volume: 0.07,
-            name: "III - ROZKOL"
-        },
-    ],
+    JUMP_SOUND: audioLoader.loadAsync(assets.ASSETS.JumpGruntMP3).then(notifyPageLoadAsset),
+    LANDING_SOUND: audioLoader.loadAsync(assets.ASSETS.LandingMP3).then(notifyPageLoadAsset),
+    WALKING_SOUND: audioLoader.loadAsync(assets.ASSETS.WalkingMP3).then(notifyPageLoadAsset),
+    PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(assets.ASSETS.PortalGunFireMP3).then(notifyPageLoadAsset),
+    PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(assets.ASSETS.PortalGunErrorMP3).then(notifyPageLoadAsset),
+    TELEPORT_SOUND: audioLoader.loadAsync(assets.ASSETS.TeleportMP3).then(notifyPageLoadAsset),
+    BGMUSIC_SOUNDS: BGMUSIC_SOUNDS,
+    ALL_BGAUDIO_LOADED_PROMISE: Promise.all(BGMUSIC_SOUNDS.map(x => x.sound)),
 
     /**********************************************************
     * PORTALS
@@ -127,35 +92,35 @@ export default {
     * TEXTURES
     **********************************************************/
     CONCRETE_TEXTURE_SET: {
-        map: texLoader.loadAsync(CONCRETE_TEXTURE).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(CONCRETE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(CONCRETE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(CONCRETE_DISP_TEXTURE).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(CONCRETE_AO_TEXTURE).then(notifyPageLoadAsset),
+        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(notifyPageLoadAsset),
         displacementScale: 0,
     },
     BROKENTILE_TEXTURE_SET: {
-        map: texLoader.loadAsync(BROKENTILE_TEXTURE).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(BROKENTILE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(BROKENTILE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(BROKENTILE_DISP_TEXTURE).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(BROKENTILE_AO_TEXTURE).then(notifyPageLoadAsset),
+        map: texLoader.loadAsync(assets.ASSETS.BROKENTILE_TEXTURE).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_DISP_TEXTURE).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_AO_TEXTURE).then(notifyPageLoadAsset),
         displacementScale: 1,
     },
-    RING_TEXTURE: new TextureLoader().load(RING_TEXTURE_PNG, notifyPageLoadAsset),
+    RING_TEXTURE: new TextureLoader().load(assets.ASSETS.RING_TEXTURE_PNG, notifyPageLoadAsset),
 
     /**********************************************************
     * PLAYER
     **********************************************************/
-    PLAYER_MODEL: fbxLoader.loadAsync(PLAYER_MODEL).then(notifyPageLoadAsset),
+    PLAYER_MODEL: fbxLoader.loadAsync(assets.ASSETS.PLAYER_MODEL).then(notifyPageLoadAsset),
     PLAYER_ANIMATIONS: {
-        ANIM_STANDING_IDLE: fbxLoader.loadAsync(ANIM_STANDING_IDLE).then(notifyPageLoadAsset),
-        ANIM_JUMP: fbxLoader.loadAsync(ANIM_JUMP).then(notifyPageLoadAsset),
-        ANIM_STATIONARY_RUNNING: fbxLoader.loadAsync(ANIM_STATIONARY_RUNNING).then(notifyPageLoadAsset),
-        ANIM_BACKWARD_RUNNING: fbxLoader.loadAsync(ANIM_BACKWARD_RUNNING).then(notifyPageLoadAsset),
-        ANIM_RIGHT_STRAFE: fbxLoader.loadAsync(ANIM_RIGHT_STRAFE).then(notifyPageLoadAsset),
-        ANIM_LEFT_STRAFE: fbxLoader.loadAsync(ANIM_LEFT_STRAFE).then(notifyPageLoadAsset),
-        ANIM_FALLING_IDLE: fbxLoader.loadAsync(ANIM_FALLING_IDLE).then(notifyPageLoadAsset),
+        ANIM_STANDING_IDLE: fbxLoader.loadAsync(assets.ASSETS.ANIM_STANDING_IDLE).then(notifyPageLoadAsset),
+        ANIM_JUMP: fbxLoader.loadAsync(assets.ASSETS.ANIM_JUMP).then(notifyPageLoadAsset),
+        ANIM_STATIONARY_RUNNING: fbxLoader.loadAsync(assets.ASSETS.ANIM_STATIONARY_RUNNING).then(notifyPageLoadAsset),
+        ANIM_BACKWARD_RUNNING: fbxLoader.loadAsync(assets.ASSETS.ANIM_BACKWARD_RUNNING).then(notifyPageLoadAsset),
+        ANIM_RIGHT_STRAFE: fbxLoader.loadAsync(assets.ASSETS.ANIM_RIGHT_STRAFE).then(notifyPageLoadAsset),
+        ANIM_LEFT_STRAFE: fbxLoader.loadAsync(assets.ASSETS.ANIM_LEFT_STRAFE).then(notifyPageLoadAsset),
+        ANIM_FALLING_IDLE: fbxLoader.loadAsync(assets.ASSETS.ANIM_FALLING_IDLE).then(notifyPageLoadAsset),
     },
 
     /**********************************************************

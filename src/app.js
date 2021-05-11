@@ -21,7 +21,7 @@ const scene = new MainScene();
 const crosshair = new Crosshair()
 globals.MAIN_CAMERA.add(crosshair);
 
-playBGMusicCarousel()
+consts.ALL_BGAUDIO_LOADED_PROMISE.then(playBGMusicCarousel)
 
 globals.MAIN_CAMERA.add( globals.LISTENER );
 scene.add(globals.MAIN_CAMERA)
