@@ -20,7 +20,15 @@ import WalkingMP3 from '../../assets/sounds/Walking.mp3'
 import PortalGunFireMP3 from '../../assets/sounds/PortalGunFire.mp3'
 import PortalGunErrorMP3 from '../../assets/sounds/PortalGunError.mp3'
 import TeleportMP3 from '../../assets/sounds/Teleport.mp3'
-import BackgroundMP3 from '../../assets/sounds/BackgroundMusic.mp3'
+import YTBackgroundMP3 from '../../assets/sounds/YTBackgroundMusic.mp3'
+import BlueDeeperThanIndigoMP3 from '../../assets/sounds/Daniel Birch - Blue Deeper Than Indigo.mp3'
+import IndigoGirlMP3 from '../../assets/sounds/Daniel Birch - Indigo Girl.mp3'
+import SatelliteMP3 from '../../assets/sounds/The Freeharmonic Orchestra - Satellite.mp3'
+import ChicaneMP3 from '../../assets/sounds/Bio Unit - Chicane.mp3'
+import IndustrialZoneMP3 from '../../assets/sounds/Bio Unit - Industrial Zone.mp3'
+import RozkolIMP3 from '../../assets/sounds/ROZKOL - I.mp3'
+import RozkolIIMP3 from '../../assets/sounds/ROZKOL - II.mp3'
+import RozkolIIIMP3 from '../../assets/sounds/ROZKOL - III.mp3'
 
 import PLAYER_MODEL from '../../assets/models/xbot.fbx'
 import ANIM_STANDING_IDLE from '../../assets/models/StandingIdle.fbx'
@@ -39,7 +47,7 @@ const texLoader = new TextureLoader()
 const fbxLoader = new FBXLoader();
 
 export default {
-    N_ASSETS: 26,
+    N_ASSETS: 34,
 
     /**********************************************************
     * AUDIO
@@ -53,8 +61,49 @@ export default {
     TELEPORT_SOUND: audioLoader.loadAsync(TeleportMP3).then(notifyPageLoadAsset),
     BGMUSIC_SOUNDS: [
         {
-            sound: audioLoader.loadAsync(BackgroundMP3).then(notifyPageLoadAsset),
-            volume: 0.1
+            sound: audioLoader.loadAsync(YTBackgroundMP3).then(notifyPageLoadAsset),
+            volume: 0.1,
+            name: "Background Music - Youtube"
+        },
+        {
+            sound: audioLoader.loadAsync(BlueDeeperThanIndigoMP3).then(notifyPageLoadAsset),
+            volume: 0.1,
+            name: "Blue Deeper Than Indigo - Daniel Birch"
+        },
+        {
+            sound: audioLoader.loadAsync(IndigoGirlMP3).then(notifyPageLoadAsset),
+            volume: 0.1,
+            name: "Indigo Girl - Daniel Birch"
+        },
+        {
+            sound: audioLoader.loadAsync(SatelliteMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "Satellite - The Freeharmonic Orchestra"
+        },
+        {
+            sound: audioLoader.loadAsync(ChicaneMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "Chicane - Bio Unit"
+        },
+        {
+            sound: audioLoader.loadAsync(IndustrialZoneMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "Industrial Zone - Bio Unit"
+        },
+        {
+            sound: audioLoader.loadAsync(RozkolIMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "I - ROZKOL"
+        },
+        {
+            sound: audioLoader.loadAsync(RozkolIIMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "II - ROZKOL"
+        },
+        {
+            sound: audioLoader.loadAsync(RozkolIIIMP3).then(notifyPageLoadAsset),
+            volume: 0.07,
+            name: "III - ROZKOL"
         },
     ],
 

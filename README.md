@@ -239,7 +239,16 @@ Textures:
 
 Audio:
 
-* Background music: https://www.youtube.com/watch?v=4sG7Mh94vtI
+* Background music
+    * https://www.youtube.com/watch?v=4sG7Mh94vtI
+    * [Indigo Girl - Daniel Birch](https://freemusicarchive.org/music/Daniel_Birch/indigo/daniel-birch-indigo-girl)
+    * [Blue Deeper Than Indigo - Daniel Birch](https://freemusicarchive.org/music/Daniel_Birch/indigo/daniel-birch-blue-deeper-than-indigo)
+    * [Satellite - The Freeharmonic Orchestra](https://freemusicarchive.org/music/the-freeharmonic-orchestra/space-robots-the-future/satellite-1)
+    * [Industrial Zone - Bio Unit](https://freemusicarchive.org/music/Bio_Unit/disquiet/industrial-zone)
+    * [Chicane - Bio Unit](https://freemusicarchive.org/music/Bio_Unit/aerostat/chicane)
+    * [I - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/i-1)
+    * [II - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/ii-1)
+    * [III - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/iii-1)
 
 * Portal gun fire sound: https://freesound.org/people/Daleonfire/sounds/376694/
 
