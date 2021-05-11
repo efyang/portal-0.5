@@ -11,8 +11,8 @@ import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
 import './instructions.css'
 import INSTRUCTION_HTML from './instructions.html'
-import './audio'
 import { playBGMusicCarousel } from './audio';
+import { portalIsVisibleInCamera } from './util';
 
 const Stats = require("stats.js");
 const scene = new MainScene();
@@ -71,7 +71,16 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTAL_TARGETS[thisIndex].setSize(width, height)
     globals.PORTAL_TMP_TARGETS[thisIndex].setSize(width, height)
 
+    globals.PORTALS[thisIndex].mesh.material.stencilWrite = true
+    renderer.clearStencil()
+    renderer.setRenderTarget(null)
+    renderer.render(globals.PORTALS[pairIndex].mesh, globals.MAIN_CAMERA)
+
+    let shouldRender = new Array(globals.PORTAL_RECURSION_LEVELS + 1)
+    shouldRender[0] = portalIsVisibleInCamera(globals.MAIN_CAMERA, globals.PORTALS[thisIndex], null)
     for (let i = 0; i < globals.PORTAL_RECURSION_LEVELS; i++) {
+        shouldRender[i + 1] = portalIsVisibleInCamera(portalCamera, globals.PORTALS[thisIndex], globals.PORTALS[pairIndex].plane) && shouldRender[i]
+        //shouldRender[i + 1] = shouldRender[i]
         globals.PORTALS[thisIndex].teleportObject3D(portalCamera)
     }
 
@@ -79,7 +88,12 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTALS[thisIndex].visible = false
     globals.PORTALS[pairIndex].visible = false
     renderer.localClippingEnabled = true
-    for (let level = 0; level < globals.PORTAL_RECURSION_LEVELS; level++) {
+    for (let level = globals.PORTAL_RECURSION_LEVELS - 1; level >= 0; level--) {
+        if (!shouldRender[level]) {
+            globals.PORTALS[pairIndex].teleportObject3D(portalCamera)
+            continue
+        }
+        crosshair.visible = false
         // necessary so that we properly render recursion (otherwise the other portal might block)
         renderer.clippingPlanes = [globals.PORTALS[pairIndex].plane.clone()]
         renderer.setRenderTarget(globals.PORTAL_TMP_TARGETS[thisIndex])
@@ -100,6 +114,8 @@ function renderPortal(thisIndex, pairIndex) {
 
     globals.PORTALS[thisIndex].visible = true
     globals.PORTALS[pairIndex].visible = true
+
+    globals.PORTALS[thisIndex].mesh.material.stencilWrite = false
 }
 
 const onAnimationFrameHandler = (timeStamp) => {
@@ -119,12 +135,7 @@ const onAnimationFrameHandler = (timeStamp) => {
 
     // stencil optimization - only render parts of scene multiple
     // times when it is going to be viewed by the portal
-    renderer.clearStencil()
     renderer.autoClearStencil = false
-    if (globals.PORTALS[0])
-        renderer.render(globals.PORTALS[0].mesh, globals.MAIN_CAMERA)
-    if (globals.PORTALS[1])
-        renderer.render(globals.PORTALS[1].mesh, globals.MAIN_CAMERA)
     renderPortal(0, 1)
     renderPortal(1, 0)
 

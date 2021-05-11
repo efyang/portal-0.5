@@ -19,6 +19,20 @@ export function cannonToThreeVector3(v3) {
     return new THREE.Vector3().copy(v3)
 }
 
+export function portalIsVisibleInCamera(camera, portal, clippingPlane) {
+    camera.updateMatrix();
+    camera.updateMatrixWorld();
+    let frustum = new THREE.Frustum();
+    frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));  
+
+    // in frustum,
+    // in front of clipping plane,
+    // camera is in front of the portal
+    return frustum.intersectsObject( portal.mesh ) &&
+           (clippingPlane === null || clippingPlane.distanceToPoint(portal.mesh.position) > 0) &&
+           portal.plane.distanceToPoint(camera.position) > 0;
+}
+
 export function notifyPageLoadAsset(a) {
     globals.N_ASSETS_LOADED++
     const bar = document.getElementById("assets_progressbar")

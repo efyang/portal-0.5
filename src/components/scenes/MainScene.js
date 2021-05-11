@@ -266,7 +266,8 @@ class MainScene extends Scene {
             globals.PORTALS[otherPortalIndex],
             hostObject,
             color,
-            portalPoints)
+            portalPoints,
+            thisPortalIndex)
         this.add(globals.PORTALS[thisPortalIndex])
         globals.PORTALS[thisPortalIndex].hostObjects.physicsBody.collisionFilterGroup |= consts.CGROUP_PORTAL_HOST_CDISABLE[thisPortalIndex]
         // remove this object from the environment group
