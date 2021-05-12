@@ -1,4 +1,4 @@
-import { Group, MeshStandardMaterial, Mesh, DoubleSide, RepeatWrapping, BoxGeometry, TextureLoader, Matrix4, Quaternion} from 'three';
+import { Group, MeshStandardMaterial, Mesh, DoubleSide, RepeatWrapping, BoxGeometry, TextureLoader, Matrix4, Quaternion, FrontSide} from 'three';
 import {consts, globals} from 'globals'
 import * as CANNON from 'cannon'
 
@@ -46,7 +46,7 @@ class EnvironmentCube2 extends Group {
         let materials = []
         for (let _ of sideDims) {
             const material = new MeshStandardMaterial( {
-                side: DoubleSide,
+                side: FrontSide,
                 color: color,
                 roughness: 1, 
                 metalness: metalness

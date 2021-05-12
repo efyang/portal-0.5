@@ -104,14 +104,14 @@ class Portal extends Group {
         // https://stackoverflow.com/questions/33571642/why-do-transparent-materials-result-in-occlusion
         const ringMaterial = new THREE.MeshStandardMaterial({
             color: ringColor,
-            side: THREE.DoubleSide,
+            side: THREE.FrontSide,
             opacity: 1,
             transparent: true,
             map: consts.RING_TEXTURE,
             depthWrite: false,
         })
         this.ringMesh = new THREE.Mesh(ringGeometry, ringMaterial)
-        this.ringMesh.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI/2))
+        this.ringMesh.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI/2))
         this.ringMesh.applyMatrix4(this.transform)
         this.ringMesh.position.add(normal.clone().multiplyScalar(consts.PORTAL_HEIGHT / 2 + 0.001))
         this.ringMesh.updateMatrix()
