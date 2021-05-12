@@ -37,6 +37,9 @@ import ANIM_RIGHT_STRAFE from './models/RightStrafe.fbx'
 import ANIM_LEFT_STRAFE from './models/LeftStrafe.fbx'
 import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
 
+import LEVEL_0 from './levels/level0.json'
+import LEVEL_1 from './levels/level1.json'
+
 export const ASSETS = {
     RING_TEXTURE_PNG: RING_TEXTURE_PNG,
 
@@ -76,6 +79,9 @@ export const ASSETS = {
     ANIM_RIGHT_STRAFE: ANIM_RIGHT_STRAFE,
     ANIM_LEFT_STRAFE: ANIM_LEFT_STRAFE,
     ANIM_FALLING_IDLE: ANIM_FALLING_IDLE,
+
+    LEVEL_0: LEVEL_0,
+    LEVEL_1: LEVEL_1,
 }
 
 export const N_ASSETS = Object.keys(ASSETS).length

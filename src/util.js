@@ -37,6 +37,9 @@ export function notifyPageLoadAsset(a) {
     globals.N_ASSETS_LOADED++
     const bar = document.getElementById("assets_progressbar")
     const label = document.getElementById("assets_label")
+    if (bar === null) {
+        return a
+    }
     bar.value = globals.N_ASSETS_LOADED / consts.N_ASSETS
     if (bar.value >= 1) {
         label.innerText = "Loading: done."

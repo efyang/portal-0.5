@@ -31,6 +31,7 @@ class BasicLights extends Group {
         //const dir = new THREE.DirectionalLight(0xffffff, 0.5)
         //dir.position.set(0,10,0)
         //this.add(dir)
+        /*
         {
         const light = new PointLight( 0xffffff, 1, 0, 5);
         light.position.set( 0, 8, 0 );
@@ -47,7 +48,7 @@ class BasicLights extends Group {
         let helper = new THREE.PointLightHelper(light)
         this.add(helper)
         this.parent.debugMeshes.push(helper)
-        }
+        }*/
         /*
 
         const light2 = new PointLight( 0xffffff, 0.5, 0, 2);

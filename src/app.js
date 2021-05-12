@@ -27,8 +27,8 @@ globals.MAIN_CAMERA.add( globals.LISTENER );
 scene.add(globals.MAIN_CAMERA)
 
 // Set up renderer, canvas, and minor CSS adjustments
-globals.RENDERER.setPixelRatio(window.devicePixelRatio);
-const canvas = globals.RENDERER.domElement;
+consts.RENDERER.setPixelRatio(window.devicePixelRatio);
+const canvas = consts.RENDERER.domElement;
 canvas.style.display = 'block'; // Removes padding below canvas
 document.body.style.margin = 0; // Removes margin around page
 document.body.style.overflow = 'hidden'; // Fix scrolling
@@ -61,7 +61,7 @@ function renderPortal(thisIndex, pairIndex) {
         return
     }
 
-    let renderer = globals.RENDERER
+    let renderer = consts.RENDERER
     let portalCamera = globals.MAIN_CAMERA.clone()
 
     // ensure that uniforms and render target are correctly sized
@@ -119,7 +119,7 @@ function renderPortal(thisIndex, pairIndex) {
 }
 
 const onAnimationFrameHandler = (timeStamp) => {
-    let renderer = globals.RENDERER
+    let renderer = consts.RENDERER
 
     // don't show the crosshair when rendering portals
     crosshair.visible = false
@@ -170,7 +170,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderer.clippingPlanes = []
     renderer.render(scene, globals.MAIN_CAMERA)
 
-    // globals.RENDERER.render(appData.scene, appData.camera);
+    // consts.RENDERER.render(appData.scene, appData.camera);
     stats.update();
     scene.update && scene.update(timeStamp);
 
@@ -183,7 +183,7 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 // Resize Handler
 const windowResizeHandler = () => {
     const { innerWidth, innerHeight } = window;
-    globals.RENDERER.setSize(innerWidth, innerHeight);
+    consts.RENDERER.setSize(innerWidth, innerHeight);
     globals.MAIN_CAMERA.aspect = innerWidth / innerHeight;
     globals.MAIN_CAMERA.updateProjectionMatrix();
 };

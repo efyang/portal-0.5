@@ -3,7 +3,7 @@ import {consts, globals} from 'globals'
 import * as CANNON from 'cannon'
 
 class EnvironmentCube2 extends Group {
-    constructor(parent, geo, pos, placeable, matrix) {
+    constructor(parent, geo, placeable, matrix) {
         // Call parent Group() constructor
         super();
 
@@ -82,15 +82,13 @@ class EnvironmentCube2 extends Group {
 
         let cube = new Mesh( geometry, materials );
         // cube.position.copy(pos);
-        let m = new Matrix4()
-        m.elements = matrix;
-        cube.applyMatrix4(m)
+        cube.applyMatrix4(matrix)
 
         this.add(cube)
 
         // let quaternion = this.matrix4ToQuaternion(matrix)
         let quaternion = new Quaternion()
-        quaternion.setFromRotationMatrix(m).normalize();
+        quaternion.setFromRotationMatrix(matrix).normalize();
         let q1 = new CANNON.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
 
         // create physics
@@ -104,7 +102,7 @@ class EnvironmentCube2 extends Group {
         if (q1.x != 0 || q1.y != 0 || q1.z != 0) {
             this.physicsBody.quaternion = q1;
         }
-        this.physicsBody.position = new CANNON.Vec3(pos.x, pos.y, pos.z)
+        this.physicsBody.position = new CANNON.Vec3(cube.position.x, cube.position.y, cube.position.z)
         
         globals.CANNON_WORLD.addBody(this.physicsBody);
 

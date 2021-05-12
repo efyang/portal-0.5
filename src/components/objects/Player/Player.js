@@ -83,6 +83,7 @@ class Player extends Group {
         // construct the physical body
         this.physicsBody.updateMassProperties()
         globals.CANNON_WORLD.addBody(this.physicsBody);
+        this.parent = parent
         parent.addToUpdateList(this);
 
         // normal collision events don't happen consistently - will stop once an object is stable on the ground
@@ -265,6 +266,11 @@ class Player extends Group {
         }
 
         this.counter += 1;
+
+        // fall respawn
+        if (this.physicsBody.position.y < -100) {
+            this.physicsBody.position.copy(this.parent.spawnPoints[0].position)
+        }
     }
 
     setAction(action) {

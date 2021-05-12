@@ -1,14 +1,14 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, Vector2, Vector3, Raycaster, Box3, Audio} from 'three';
 import * as THREE from 'three';
-import { Player, Portal, EnvironmentCube2 } from 'objects';
+import { Player, Portal, EnvironmentCube2, TeleportCube } from 'objects';
 import { BasicLights } from 'lights';
 import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 import '../../audio'
 
-import SCENE_JSON from '../jsons/scene6.json'
 import { playSound } from '../../audio';
+import { notifyPageLoadAsset } from '../../util';
 
 class MainScene extends Scene {
     constructor() {
@@ -42,37 +42,26 @@ class MainScene extends Scene {
 
         this.debugMeshes = []
 
+        this.spawnPoints = {}
+        this.finishPoints = {}
+
         // load meshes from json file to scene
         // load JSON data; then proceed
-        const data = SCENE_JSON
-        for (let i = 0; i < data.geometries.length; i++) {
-            let geometries = data.geometries[i]
-            let object = data.object.children[i]
-            let matrix = object.matrix
-            let name = object.name
-            let placeable = 1
-            if (name.split("_")[0] == "unplaceable") {
-                placeable = 0
+        for (let i in consts.LEVELS) {
+            let level = consts.LEVELS[i]
+            for (let object of level.file.object.children) {
+                this.loadObject(object, level.file, level.offset)
             }
-            let position = new Vector3(matrix[12], matrix[13], matrix[14])
-            let cube = new EnvironmentCube2(this, geometries, position, placeable, matrix);
-            this.add(cube);
-
-            // console.log(object)
-            this.environmentObjects.push(cube);
-            this.intersectObjects.push(cube.children[0])
-        
-            // just instantiate physics on load to not deal with async
-            cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
-            cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
+            notifyPageLoadAsset(level)
         }
 
         // Add other meshes to scene
-        const lights = new BasicLights(this);
         const player = new Player(this);
+        const lights = new BasicLights(this)
         globals.PLAYER = player
-        this.add(lights, player)
+        this.add(player, lights)
         this.dynamicObjects.push(player)
+        player.physicsBody.position.copy(this.spawnPoints[0].cube.position)
 
         for (let d of this.dynamicObjects) {
             d.physicsBody.collisionFilterGroup = consts.CGROUP_DYNAMIC 
@@ -81,6 +70,53 @@ class MainScene extends Scene {
 
         // add event listener to construct portals
         window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false);
+    }
+
+    loadObject(object, json, offset) {
+        let matrix = new THREE.Matrix4()
+        matrix.elements = object.matrix
+        matrix.premultiply(new THREE.Matrix4().makeTranslation(offset[0], offset[1], offset[2]))
+        switch (object.type) {
+            case "Mesh":
+                let usplit = object.name.split("_")
+                let geometry = json.geometries.find(e => e.uuid === object.geometry)
+                if (usplit[0] === "spawn") {
+                    let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1])
+                    this.spawnPoints[usplit[1]] = cube
+                    this.add(cube)
+                } else if (usplit[0] === "finish") {
+                    let cube = new TeleportCube(this, geometry, matrix, 'purple', this.spawnPoints[usplit[1] + 1])
+                    this.finishPoints[usplit[1]] = cube
+                    this.add(cube)
+                } else {
+                    let placeable = true
+                    if (object.name.split("_")[0] == "unplaceable") {
+                        placeable = false
+                    }
+
+                    let cube = new EnvironmentCube2(this, geometry, placeable, matrix);
+                    this.add(cube);
+
+                    // console.log(object)
+                    this.environmentObjects.push(cube);
+                    this.intersectObjects.push(cube.children[0])
+                
+                    // just instantiate physics on load to not deal with async
+                    cube.physicsBody.collisionFilterGroup = consts.CGROUP_ENVIRONMENT
+                    cube.physicsBody.collisionFilterMask = consts.CGROUP_DYNAMIC
+                }
+                break;
+            case "PointLight":
+                const light = new THREE.PointLight(object.color, object.intensity, object.distance, object.decay)
+                light.position.applyMatrix4(matrix)
+                const lightHelper = new THREE.PointLightHelper(light)
+                this.debugMeshes.push(lightHelper)
+                this.add(light)
+                this.add(lightHelper)
+                break;
+            case "AmbientLight":
+                break;
+        }
     }
 
     addToUpdateList(object) {

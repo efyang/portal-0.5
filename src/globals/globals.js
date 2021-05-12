@@ -20,7 +20,6 @@ export default {
     * WORLD
     ***********************************************************/
     MAIN_CAMERA: camera,
-    RENDERER: new WebGLRenderer({ antialias: true, powerPreference: "high-performance" }),
     PORTAL_TARGETS: [new WebGLRenderTarget(1, 1), new WebGLRenderTarget(1, 1)],
     PORTAL_TMP_TARGETS: [new WebGLRenderTarget(1, 1), new WebGLRenderTarget(1, 1)],
     PORTALS: [null, null],

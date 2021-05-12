@@ -1,12 +1,19 @@
-import { AudioLoader, AudioListener, TextureLoader, Audio } from 'three';
+import { AudioLoader, AudioListener, TextureLoader, Audio, WebGLRenderer } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import * as assets from 'assets'
 import 'util'
 import { notifyPageLoadAsset } from '../util';
+import * as globals from './globals'
 
 const audioLoader = new AudioLoader()
 const texLoader = new TextureLoader()
 const fbxLoader = new FBXLoader();
+const renderer = new WebGLRenderer({ antialias: true, powerPreference: "high-performance" })
+
+function initTexture(t) {
+    renderer.initTexture(t)
+    return t
+}
 
 let BGMUSIC_SOUNDS = [
     {
@@ -58,6 +65,7 @@ let BGMUSIC_SOUNDS = [
 
 export default {
     N_ASSETS: assets.N_ASSETS,
+    RENDERER: renderer,
 
     /**********************************************************
     * AUDIO
@@ -86,28 +94,38 @@ export default {
     /**********************************************************
     * FILES
     **********************************************************/
+    LEVELS: {
+        LEVEL_0: {
+            file: assets.ASSETS.LEVEL_0,
+            offset: [0, 0, 0]
+        },
+        LEVEL_1: {
+            file: assets.ASSETS.LEVEL_1,
+            offset: [10000, 10000, 10000]
+        },
+    },
     FILES: ['scene7'],
 
     /**********************************************************
     * TEXTURES
     **********************************************************/
     CONCRETE_TEXTURE_SET: {
-        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(notifyPageLoadAsset),
+        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         displacementScale: 0,
     },
     BROKENTILE_TEXTURE_SET: {
-        map: texLoader.loadAsync(assets.ASSETS.BROKENTILE_TEXTURE).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_ROUGH_TEXTURE).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_NORMAL_TEXTURE).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_DISP_TEXTURE).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_AO_TEXTURE).then(notifyPageLoadAsset),
+        map: texLoader.loadAsync(assets.ASSETS.BROKENTILE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_ROUGH_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_NORMAL_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_DISP_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_AO_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         displacementScale: 1,
     },
-    RING_TEXTURE: new TextureLoader().load(assets.ASSETS.RING_TEXTURE_PNG, notifyPageLoadAsset),
+    RING_TEXTURE: new TextureLoader().load(assets.ASSETS.RING_TEXTURE_PNG, (t) => notifyPageLoadAsset(initTexture(t))),
 
     /**********************************************************
     * PLAYER
