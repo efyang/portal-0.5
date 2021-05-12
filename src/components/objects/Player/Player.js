@@ -269,7 +269,7 @@ class Player extends Group {
 
         // fall respawn
         if (this.physicsBody.position.y < -100) {
-            this.physicsBody.position.copy(this.parent.spawnPoints[0].position)
+            this.physicsBody.position.copy(globals.PLAYER_RESPAWN_POS)
         }
     }
 

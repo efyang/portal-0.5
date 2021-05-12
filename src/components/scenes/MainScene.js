@@ -54,6 +54,7 @@ class MainScene extends Scene {
             }
             notifyPageLoadAsset(level)
         }
+        globals.PLAYER_RESPAWN_POS.copy(this.spawnPoints[0].cube.position)
 
         // Add other meshes to scene
         const player = new Player(this);

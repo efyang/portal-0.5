@@ -43,6 +43,8 @@ class TeleportCube extends THREE.Group {
             if (!this.objectWasInsideLast[o] && o.physicsBody && this.bb.containsPoint(o.physicsBody.position) && this.outputCube) {
                 this.outputCube.objectWasInsideLast[o] = true
                 o.physicsBody.position.copy(this.outputCube.cube.position)
+                // will be auto teleported to the output
+                globals.PLAYER_RESPAWN_POS.copy(this.cube.position)
                 this.playTeleportSound()
             } else if (!this.objectWasInsideLast[o] && o.physicsBody && this.bb.containsPoint(o.physicsBody.position) && this.isVictory) {
                 this.objectWasInsideLast[o] = true
