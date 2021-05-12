@@ -15,7 +15,7 @@ export function playBGMusicCarousel() {
     const index = Math.floor(Math.random() * consts.BGMUSIC_SOUNDS.length)
     consts.BGMUSIC_SOUNDS[index].sound.then((sound) => {
         let player = new Audio(consts.LISTENER)
-        globals.PLAYER = player
+        globals.BGMUSIC_PLAYER = player
 
         player.setBuffer(sound)
         player.setLoop(false)
@@ -29,13 +29,13 @@ export function playBGMusicCarousel() {
 
 export function playCongrats() {
     consts.CONGRATS_SOUND.sound.then((sound) => {
-        if (globals.PLAYER) {
-            globals.PLAYER.onEnded = () => {}
-            globals.PLAYER.stop()
+        if (globals.BGMUSIC_PLAYER) {
+            globals.BGMUSIC_PLAYER.onEnded = () => {}
+            globals.BGMUSIC_PLAYER.stop()
         }
 
         let player = new Audio(consts.LISTENER)
-        globals.PLAYER = player
+        globals.BGMUSIC_PLAYER = player
         player.setBuffer(sound)
         player.setLoop(false)
         player.setVolume(consts.CONGRATS_SOUND.volume)
