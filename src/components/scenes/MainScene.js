@@ -81,11 +81,11 @@ class MainScene extends Scene {
                 let usplit = object.name.split("_")
                 let geometry = json.geometries.find(e => e.uuid === object.geometry)
                 if (usplit[0] === "spawn") {
-                    let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1])
+                    let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1], false)
                     this.spawnPoints[usplit[1]] = cube
                     this.add(cube)
                 } else if (usplit[0] === "finish") {
-                    let cube = new TeleportCube(this, geometry, matrix, 'purple', this.spawnPoints[usplit[1] + 1])
+                    let cube = new TeleportCube(this, geometry, matrix, 'purple', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory")
                     this.finishPoints[usplit[1]] = cube
                     this.add(cube)
                 } else {

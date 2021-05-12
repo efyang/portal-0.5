@@ -249,6 +249,10 @@ Audio:
     * [I - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/i-1)
     * [II - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/ii-1)
     * [III - ROZKOL](https://freemusicarchive.org/music/ROZKOL/mimetic-theater/iii-1)
+    * [Burden of Proof - David Hilowitz](https://freemusicarchive.org/music/David_Hilowitz/Film_Music/David_Hilowitz_-_Film_Cue_009_-_Burden_of_Proof)
+    * [A Life in Pictures - David Hilowitz](https://freemusicarchive.org/music/David_Hilowitz/Film_Music/David_Hilowitz_-_Film_Cue_013_-_A_Life_in_Pictures)
+    * [Crisis Averted - David Hilowitz](https://freemusicarchive.org/music/David_Hilowitz/Film_Music/David_Hilowitz_-_Film_Cue_003_-_Crisis_Averted)
+    * [Declassified Memo - David Hilowitz](https://freemusicarchive.org/music/David_Hilowitz/Film_Music/David_Hilowitz_-_Film_Cue_028_-_Declassified_Memo)
 
 * Portal gun fire sound: https://freesound.org/people/Daleonfire/sounds/376694/
 
@@ -259,6 +263,8 @@ Audio:
 * landing: https://freesound.org/people/Dundalkkirk/sounds/566093/
 
 * Teleport: https://freesound.org/people/steaq/sounds/560124/
+
+* Level Teleport: "Fast small sweep transition" on Mixkit
 
 Player Model Animations:
 

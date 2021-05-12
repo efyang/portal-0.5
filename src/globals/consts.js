@@ -61,6 +61,21 @@ let BGMUSIC_SOUNDS = [
         volume: 0.07,
         name: "III - ROZKOL"
     },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.BurdenOfProofMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Burden of Proof - David Hilowitz"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.DeclassifiedMemoMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Declassified Memo - David Hilowitz"
+    },
+    {
+        sound: audioLoader.loadAsync(assets.ASSETS.CrisisAvertedMP3).then(notifyPageLoadAsset),
+        volume: 0.07,
+        name: "Crisis Averted - David Hilowitz"
+    },
 ]
 
 export default {
@@ -77,8 +92,13 @@ export default {
     PORTAL_GUN_FIRE_SOUND: audioLoader.loadAsync(assets.ASSETS.PortalGunFireMP3).then(notifyPageLoadAsset),
     PORTAL_GUN_ERROR_SOUND: audioLoader.loadAsync(assets.ASSETS.PortalGunErrorMP3).then(notifyPageLoadAsset),
     TELEPORT_SOUND: audioLoader.loadAsync(assets.ASSETS.TeleportMP3).then(notifyPageLoadAsset),
+    LEVEL_TELEPORT_SOUND: audioLoader.loadAsync(assets.ASSETS.LevelTeleportFile).then(notifyPageLoadAsset),
     BGMUSIC_SOUNDS: BGMUSIC_SOUNDS,
     ALL_BGAUDIO_LOADED_PROMISE: Promise.all(BGMUSIC_SOUNDS.map(x => x.sound)),
+    CONGRATS_SOUND: {
+        sound: audioLoader.loadAsync(assets.ASSETS.CONGRATS_SOUND).then(notifyPageLoadAsset),
+        volume: 0.1,
+    },
 
     /**********************************************************
     * PORTALS
@@ -101,7 +121,11 @@ export default {
         },
         LEVEL_1: {
             file: assets.ASSETS.LEVEL_1,
-            offset: [10000, 10000, 10000]
+            offset: [10000, 0, 0]
+        },
+        LEVEL_2: {
+            file: assets.ASSETS.LEVEL_VICTORY,
+            offset: [10*10000, 0, 0]
         },
     },
     FILES: ['scene7'],

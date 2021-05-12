@@ -2,9 +2,10 @@ import * as THREE from 'three'
 import { GeneralBB } from 'objects';
 import {consts, globals} from 'globals'
 import {playSound} from '../../../audio'
+import {congrats} from '../../../util'
 
 class TeleportCube extends THREE.Group {
-    constructor(parent, geo, matrix, color, outputCube) {
+    constructor(parent, geo, matrix, color, outputCube, isVictory) {
         // Call parent Group() constructor
         super();
 
@@ -14,10 +15,11 @@ class TeleportCube extends THREE.Group {
         this.depth = geo.depth;
         this.outputCube = outputCube
         this.objectWasInsideLast = {}
+        this.isVictory = isVictory
 
         // create geometry
         const geometry = new THREE.BoxGeometry( this.width, this.height, this.depth );
-        const material = new THREE.MeshBasicMaterial({side: THREE.DoubleSide ,color: color, opacity: 0.2, transparent: true})
+        const material = new THREE.MeshBasicMaterial({side: THREE.FrontSide ,color: color, opacity: 0.2, transparent: true})
 
         this.cube = new THREE.Mesh( geometry, material );
         // cube.position.copy(pos);
@@ -42,6 +44,9 @@ class TeleportCube extends THREE.Group {
                 this.outputCube.objectWasInsideLast[o] = true
                 o.physicsBody.position.copy(this.outputCube.cube.position)
                 this.playTeleportSound()
+            } else if (!this.objectWasInsideLast[o] && o.physicsBody && this.bb.containsPoint(o.physicsBody.position) && this.isVictory) {
+                this.objectWasInsideLast[o] = true
+                congrats()
             }
             if (o.physicsBody && this.objectWasInsideLast[o] && !this.bb.containsPoint(o.physicsBody.position)) {
                 this.objectWasInsideLast[o] = false
@@ -50,7 +55,7 @@ class TeleportCube extends THREE.Group {
     }
 
     playTeleportSound() {
-        playSound(consts.TELEPORT_SOUND, false, 0.2)
+        playSound(consts.LEVEL_TELEPORT_SOUND, false, 0.2)
     }
 }
 

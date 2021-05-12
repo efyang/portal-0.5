@@ -18,6 +18,7 @@ import WalkingMP3 from './sounds/Walking.mp3'
 import PortalGunFireMP3 from './sounds/PortalGunFire.mp3'
 import PortalGunErrorMP3 from './sounds/PortalGunError.mp3'
 import TeleportMP3 from './sounds/Teleport.mp3'
+import LevelTeleportFile from './sounds/fastTeleport.wav'
 import YTBackgroundMP3 from './sounds/YTBackgroundMusic.mp3'
 import BlueDeeperThanIndigoMP3 from './sounds/Daniel Birch - Blue Deeper Than Indigo.mp3'
 import IndigoGirlMP3 from './sounds/Daniel Birch - Indigo Girl.mp3'
@@ -27,6 +28,10 @@ import IndustrialZoneMP3 from './sounds/Bio Unit - Industrial Zone.mp3'
 import RozkolIMP3 from './sounds/ROZKOL - I.mp3'
 import RozkolIIMP3 from './sounds/ROZKOL - II.mp3'
 import RozkolIIIMP3 from './sounds/ROZKOL - III.mp3'
+import LifeInPicturesMP3 from './sounds/David Hilowitz - A Life in Pictures.mp3'
+import BurdenOfProofMP3 from './sounds/David Hilowitz - Burden of Proof.mp3'
+import DeclassifiedMemoMP3 from './sounds/David Hilowitz - Declassified Memo.mp3'
+import CrisisAvertedMP3 from './sounds/David Hilowitz - Crisis Averted.mp3'
 
 import PLAYER_MODEL from './models/xbot.fbx'
 import ANIM_STANDING_IDLE from './models/StandingIdle.fbx'
@@ -39,6 +44,7 @@ import ANIM_FALLING_IDLE from './models/FallingIdle.fbx'
 
 import LEVEL_0 from './levels/level0.json'
 import LEVEL_1 from './levels/level1.json'
+import LEVEL_VICTORY from './levels/level_victory.json'
 
 export const ASSETS = {
     RING_TEXTURE_PNG: RING_TEXTURE_PNG,
@@ -61,6 +67,7 @@ export const ASSETS = {
     PortalGunFireMP3: PortalGunFireMP3,
     PortalGunErrorMP3: PortalGunErrorMP3,
     TeleportMP3: TeleportMP3,
+    LevelTeleportFile: LevelTeleportFile,
     YTBackgroundMP3: YTBackgroundMP3,
     BlueDeeperThanIndigoMP3: BlueDeeperThanIndigoMP3,
     IndigoGirlMP3: IndigoGirlMP3,
@@ -70,6 +77,10 @@ export const ASSETS = {
     RozkolIMP3: RozkolIMP3,
     RozkolIIMP3: RozkolIIMP3,
     RozkolIIIMP3: RozkolIIIMP3,
+    BurdenOfProofMP3: BurdenOfProofMP3,
+    DeclassifiedMemoMP3: DeclassifiedMemoMP3,
+    CrisisAvertedMP3: CrisisAvertedMP3,
+    CONGRATS_SOUND: LifeInPicturesMP3,
 
     PLAYER_MODEL: PLAYER_MODEL,
     ANIM_STANDING_IDLE: ANIM_STANDING_IDLE,
@@ -82,6 +93,7 @@ export const ASSETS = {
 
     LEVEL_0: LEVEL_0,
     LEVEL_1: LEVEL_1,
+    LEVEL_VICTORY: LEVEL_VICTORY,
 }
 
 export const N_ASSETS = Object.keys(ASSETS).length

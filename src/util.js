@@ -1,6 +1,8 @@
 // general math and utilty functions
 import * as THREE from 'three'
 import {consts, globals} from 'globals'
+import CONGRATS_HTML from './congrats.html'
+import {playCongrats} from './audio'
 
 // convert vector3 to vector4
 export function threeToFour(v) {
@@ -48,4 +50,11 @@ export function notifyPageLoadAsset(a) {
         label.innerText = `Loaded asset: ${a.toString()}: ${(bar.value * 100).toFixed(2)}% complete. `
     }
     return a
+}
+
+export function congrats() {
+    let instructionsContainer = document.getElementById('instructions-container')
+    instructionsContainer.innerHTML = CONGRATS_HTML
+    instructionsContainer.style.display = 'block'
+    playCongrats()
 }
