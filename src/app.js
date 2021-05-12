@@ -48,7 +48,12 @@ window.addEventListener( 'click', function () {
 } );
 
 globals.CONTROLS.addEventListener('lock', () => {
-    instructionsContainer.style.display = 'none'
+    setTimeout(() => {
+        instructionsContainer.style.opacity = '0'
+    }, 1000)
+    setTimeout(() => {
+        instructionsContainer.style.display = 'none'
+    }, 2000)
 })
 
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)

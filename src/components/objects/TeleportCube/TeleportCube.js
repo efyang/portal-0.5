@@ -2,10 +2,10 @@ import * as THREE from 'three'
 import { GeneralBB } from 'objects';
 import {consts, globals} from 'globals'
 import {playSound} from '../../../audio'
-import {congrats} from '../../../util'
+import {congrats, levelChange} from '../../../util'
 
 class TeleportCube extends THREE.Group {
-    constructor(parent, geo, matrix, color, outputCube, isVictory) {
+    constructor(parent, geo, matrix, color, outputCube, isVictory, levelName) {
         // Call parent Group() constructor
         super();
 
@@ -16,6 +16,7 @@ class TeleportCube extends THREE.Group {
         this.outputCube = outputCube
         this.objectWasInsideLast = {}
         this.isVictory = isVictory
+        this.levelName = levelName
 
         // create geometry
         const geometry = new THREE.BoxGeometry( this.width, this.height, this.depth );
@@ -47,6 +48,7 @@ class TeleportCube extends THREE.Group {
                 o.physicsBody.force.set(0, 0, 0)
                 // will be auto teleported to the output
                 globals.PLAYER_RESPAWN_POS.copy(this.cube.position)
+                levelChange(this.outputCube.levelName)
                 this.playTeleportSound()
                 // dispose of all environment objects
                 // can just dispose of current level, and then will be reloaded if we return

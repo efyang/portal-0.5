@@ -117,22 +117,27 @@ export default {
     LEVELS: {
         LEVEL_0: {
             file: assets.ASSETS.LEVEL_0,
+            name: "Level 1: Trapped",
             offset: [0, 0, 0]
         },
         LEVEL_1: {
             file: assets.ASSETS.LEVEL_1,
+            name: "Level 2: Open Sky",
             offset: [10000, 0, 0]
         },
         LEVEL_2: {
             file: assets.ASSETS.LEVEL_2,
+            name: "Level 3: Leap of Faith",
             offset: [2*10000, 0, 0]
         },
         LEVEL_3: {
             file: assets.ASSETS.LEVEL_3,
+            name: "Level 4: Guns & Roses",
             offset: [3*10000, 0, 0]
         },
         LEVEL_4: {
             file: assets.ASSETS.LEVEL_VICTORY,
+            name: "Level ?!?!",
             offset: [4*10000, 0, 0]
         },
     },

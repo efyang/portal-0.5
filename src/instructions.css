@@ -5,10 +5,12 @@
     right: 0;
     left: 0;
     top: 0;
+    opacity: 1;
+    transition: 1s;
 }
 
 #instructions {
-    width: 100%;
+    width: 70%;
     height: 90%;
 
     display: -webkit-box;
@@ -34,6 +36,10 @@
     line-height: 24px;
 
     cursor: pointer;
+
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #assets {
@@ -68,8 +74,8 @@
 #assets_progressbar {
     position: absolute;
     text-align: center;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: auto;
+    margin-right: auto;
     width: 50%;
 }
 
@@ -100,4 +106,36 @@
     line-height: 24px;
 
     cursor: pointer;
+}
+
+#levelchange {
+    width: 100%;
+    height: 90%;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+
+    color: #ffffff;
+    text-align: center;
+    font-family: Arial;
+    font-size: 14px;
+    line-height: 24px;
+
+    cursor: pointer;
+
+    opacity: 0;
+    transition: 1s;
 }

@@ -50,7 +50,7 @@ class MainScene extends Scene {
         for (let i in consts.LEVELS) {
             let level = consts.LEVELS[i]
             for (let object of level.file.object.children) {
-                this.loadObject(object, level.file, level.offset)
+                this.loadObject(object, level.file, level.offset, level.name)
             }
             notifyPageLoadAsset(level)
         }
@@ -73,7 +73,7 @@ class MainScene extends Scene {
         window.addEventListener("mousedown", (e) => this.handleMouseDown(e), false);
     }
 
-    loadObject(object, json, offset) {
+    loadObject(object, json, offset, levelName) {
         let matrix = new THREE.Matrix4()
         matrix.elements = object.matrix
         matrix.premultiply(new THREE.Matrix4().makeTranslation(offset[0], offset[1], offset[2]))
@@ -82,12 +82,12 @@ class MainScene extends Scene {
                 let usplit = object.name.split("_")
                 let geometry = json.geometries.find(e => e.uuid === object.geometry)
                 if (usplit[0] === "spawn") {
-                    let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1], false)
+                    let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1], false, levelName)
                     this.spawnPoints[usplit[1]] = cube
                     this.add(cube)
                     this.environmentObjects.push(cube);
                 } else if (usplit[0] === "finish") {
-                    let cube = new TeleportCube(this, geometry, matrix, 'red', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory")
+                    let cube = new TeleportCube(this, geometry, matrix, 'red', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory", levelName)
                     this.finishPoints[usplit[1]] = cube
                     this.add(cube)
                     this.environmentObjects.push(cube);
