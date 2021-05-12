@@ -124,8 +124,12 @@ export default {
             offset: [10000, 0, 0]
         },
         LEVEL_2: {
+            file: assets.ASSETS.LEVEL_2,
+            offset: [2*10000, 0, 0]
+        },
+        LEVEL_3: {
             file: assets.ASSETS.LEVEL_VICTORY,
-            offset: [10*10000, 0, 0]
+            offset: [3*10000, 0, 0]
         },
     },
     FILES: ['scene7'],
