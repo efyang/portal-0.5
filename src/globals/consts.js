@@ -141,14 +141,14 @@ export default {
         aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         displacementScale: 0,
     },
-    BROKENTILE_TEXTURE_SET: {
+    /*BROKENTILE_TEXTURE_SET: {
         map: texLoader.loadAsync(assets.ASSETS.BROKENTILE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         roughnessMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_ROUGH_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         normalMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_NORMAL_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         displacementMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_DISP_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         aoMap: texLoader.loadAsync(assets.ASSETS.BROKENTILE_AO_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
         displacementScale: 1,
-    },
+    },*/
     RING_TEXTURE: new TextureLoader().load(assets.ASSETS.RING_TEXTURE_PNG, (t) => notifyPageLoadAsset(initTexture(t))),
 
     /**********************************************************

@@ -6,11 +6,12 @@ import CONCRETE_NORMAL_TEXTURE from './textures/concrete/Normal.jpg'
 import CONCRETE_DISP_TEXTURE from './textures/concrete/Displacement.jpg'
 import CONCRETE_AO_TEXTURE from './textures/concrete/AmbientOcclusion.jpg'
 
+/*
 import BROKENTILE_TEXTURE from './textures/brokenTile/Color.jpg'
 import BROKENTILE_ROUGH_TEXTURE from './textures/brokenTile/Roughness.jpg'
 import BROKENTILE_NORMAL_TEXTURE from './textures/brokenTile/Normal.jpg'
 import BROKENTILE_DISP_TEXTURE from './textures/brokenTile/Displacement.jpg'
-import BROKENTILE_AO_TEXTURE from './textures/brokenTile/AmbientOcclusion.jpg'
+import BROKENTILE_AO_TEXTURE from './textures/brokenTile/AmbientOcclusion.jpg'*/
 
 import JumpGruntMP3 from './sounds/JumpGrunt.mp3'
 import LandingMP3 from './sounds/Landing.mp3'
@@ -55,11 +56,11 @@ export const ASSETS = {
     CONCRETE_DISP_TEXTURE: CONCRETE_DISP_TEXTURE,
     CONCRETE_AO_TEXTURE: CONCRETE_AO_TEXTURE,
 
-    BROKENTILE_TEXTURE: BROKENTILE_TEXTURE,
+    /*BROKENTILE_TEXTURE: BROKENTILE_TEXTURE,
     BROKENTILE_ROUGH_TEXTURE: BROKENTILE_ROUGH_TEXTURE,
     BROKENTILE_NORMAL_TEXTURE: BROKENTILE_NORMAL_TEXTURE,
     BROKENTILE_DISP_TEXTURE: BROKENTILE_DISP_TEXTURE,
-    BROKENTILE_AO_TEXTURE: BROKENTILE_AO_TEXTURE,
+    BROKENTILE_AO_TEXTURE: BROKENTILE_AO_TEXTURE,*/
 
     JumpGruntMP3: JumpGruntMP3,
     LandingMP3: LandingMP3,

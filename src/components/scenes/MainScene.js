@@ -85,7 +85,7 @@ class MainScene extends Scene {
                     this.spawnPoints[usplit[1]] = cube
                     this.add(cube)
                 } else if (usplit[0] === "finish") {
-                    let cube = new TeleportCube(this, geometry, matrix, 'purple', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory")
+                    let cube = new TeleportCube(this, geometry, matrix, 'red', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory")
                     this.finishPoints[usplit[1]] = cube
                     this.add(cube)
                 } else {
@@ -187,11 +187,10 @@ class MainScene extends Scene {
 
     validPortalPoint(point, normal, object) {
 
-        const raycaster = new Raycaster();
 
         // check that no intersectable objects are directly in front of point
         let frontPoint = point.clone().add(normal.clone().multiplyScalar(1))
-        raycaster.set(frontPoint, normal.clone().multiplyScalar(-1))
+        const raycaster = new Raycaster(frontPoint, normal.clone().multiplyScalar(-1), 0, 2000);
         let intersects = raycaster.intersectObjects( this.intersectObjects );
 
         // if there is no intersect or if there is another object in the way, then return false
@@ -322,6 +321,7 @@ class MainScene extends Scene {
         let mouse = new Vector2(0,0)
         const raycaster = new Raycaster();
         raycaster.setFromCamera( mouse, globals.MAIN_CAMERA );
+        raycaster.far = 2000
 
         // define playerUpDirection
         let playerUpDirection = new THREE.Vector3(0,1,0)

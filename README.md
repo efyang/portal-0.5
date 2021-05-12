@@ -223,6 +223,14 @@ We learned about how these common graphics and physics libraries are structured 
 
 Finding, using, and properly citing assets was also another aspect of graphics development in general that we had not experienced as much before this project as well.
 
+## Post-Interim Writeup Addendum (not reflected in [Writeup.pdf](Writeup.pdf))
+
+### Optimizations
+Since the interim report, we've added substantial optimizations on the portal rendering side. Before, we effectively had to render all level of both portals every single frame, which dropped framerates immensely. We now use a combination of per-level frustum culling and checking that the camera is actually in front of the portal before rendering each level of the portal.
+
+### Level System
+We define levels as a series of rooms which are linked together by teleport boxes, which teleport to the previous or next level. In this way, there is effectively a goal in each level. Additionally, these rooms are all loaded in the same scene, but are spaced apart much further apart than the camera far field, to avoid any performance detriments.
+
 ## CC Attributes and Credits
 
 This skeleton project was adapted from [edwinwebb's ThreeJS seed project](https://github.com/edwinwebb/three-seed]) by Reilly Bova ’20.
