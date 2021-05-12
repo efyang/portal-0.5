@@ -85,10 +85,12 @@ class MainScene extends Scene {
                     let cube = new TeleportCube(this, geometry, matrix, 'blue', this.finishPoints[usplit[1] - 1], false)
                     this.spawnPoints[usplit[1]] = cube
                     this.add(cube)
+                    this.environmentObjects.push(cube);
                 } else if (usplit[0] === "finish") {
                     let cube = new TeleportCube(this, geometry, matrix, 'red', this.spawnPoints[usplit[1] + 1], usplit[1] === "victory")
                     this.finishPoints[usplit[1]] = cube
                     this.add(cube)
+                    this.environmentObjects.push(cube);
                 } else {
                     let placeable = true
                     if (object.name.split("_")[0] == "unplaceable") {
@@ -114,6 +116,7 @@ class MainScene extends Scene {
                 this.debugMeshes.push(lightHelper)
                 this.add(light)
                 this.add(lightHelper)
+                // this.environmentObjects.push(light);
                 break;
             case "AmbientLight":
                 break;
@@ -289,6 +292,7 @@ class MainScene extends Scene {
             }
         }
         this.remove(globals.PORTALS[portalIndex]);
+        globals.PORTALS[portalIndex] = null
     }
 
     // creates a new portal and adds it to the scene

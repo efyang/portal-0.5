@@ -156,7 +156,7 @@
 			{
 				"uuid": "DF0F0B88-99AB-48FA-A91C-505F12A9325B",
 				"type": "Mesh",
-				"name": "spawn_3",
+				"name": "spawn_4",
 				"layers": 1,
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-7.235943,2.435955,0,1],
 				"geometry": "64FF52C9-CBA1-47BC-95CA-7BC68D1859A7",
