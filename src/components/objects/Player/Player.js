@@ -152,13 +152,13 @@ class Player extends Group {
         // physics changes while jumping
         let jumpMultiplier = 1
         if (this.physicsBody.inJump) {
-            jumpMultiplier = 0.1
+            jumpMultiplier = 0.01
         }
 
         if (!this.physicsBody.inJump) {
             this.physicsBody.linearDamping = 0.999
         } else {
-            this.physicsBody.linearDamping = 0.5
+            this.physicsBody.linearDamping = 0.1
         }
 
         // regulates speed when multiple directions are pressed 
