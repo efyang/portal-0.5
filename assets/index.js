@@ -38,6 +38,7 @@ import LifeInPicturesMP3 from './sounds/David Hilowitz - A Life in Pictures.mp3'
 import BurdenOfProofMP3 from './sounds/David Hilowitz - Burden of Proof.mp3'
 import DeclassifiedMemoMP3 from './sounds/David Hilowitz - Declassified Memo.mp3'
 import CrisisAvertedMP3 from './sounds/David Hilowitz - Crisis Averted.mp3'
+import WindloopSound from './sounds/windloop.wav'
 
 import PLAYER_MODEL from './models/xbot.fbx'
 import ANIM_STANDING_IDLE from './models/StandingIdle.fbx'
@@ -93,6 +94,7 @@ export const ASSETS = {
     BurdenOfProofMP3: BurdenOfProofMP3,
     DeclassifiedMemoMP3: DeclassifiedMemoMP3,
     CrisisAvertedMP3: CrisisAvertedMP3,
+    WindloopSound: WindloopSound,
     CONGRATS_SOUND: LifeInPicturesMP3,
 
     PLAYER_MODEL: PLAYER_MODEL,

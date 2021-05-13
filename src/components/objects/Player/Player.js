@@ -4,7 +4,7 @@ import * as CANNON from 'cannon';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { globals, consts } from 'globals'
 import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
-import { playSound } from '../../../audio';
+import { playSound, playWind } from '../../../audio';
 
 class Player extends Group {
     constructor(parent) {
@@ -271,6 +271,8 @@ class Player extends Group {
         if (this.physicsBody.position.y < -100) {
             this.physicsBody.position.copy(globals.PLAYER_RESPAWN_POS)
         }
+        
+        playWind(this.physicsBody.velocity)
     }
 
     setAction(action) {

@@ -45,3 +45,22 @@ export function playCongrats() {
         player.play()
     })
 }
+
+export function startPlayWindSound() {
+    consts.WIND_LOOP_SOUND.then((buffer) => {
+        let player = new Audio(consts.LISTENER)
+        player.setBuffer(buffer)
+        player.setLoop(true)
+        player.setVolume(0)
+        player.play()
+        globals.WIND_SOUND_PLAYER = player
+    })
+}
+
+export function playWind(playerVelocity) {
+    const magnitude = playerVelocity.length()
+    const volume = Math.min(0.5, Math.max(0, (magnitude - 10)/50 ))
+    if (globals.WIND_SOUND_PLAYER) {
+        globals.WIND_SOUND_PLAYER.setVolume(volume)
+    }
+}

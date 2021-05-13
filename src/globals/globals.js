@@ -28,6 +28,7 @@ export default {
     BGMUSIC_PLAYER: null,
     PLAYER: null,
     PLAYER_RESPAWN_POS: new Vector3(0, 5, 0),
+    WIND_SOUND_PLAYER: null,
 
     /***********************************************************
     * AUDIO

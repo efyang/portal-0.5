@@ -11,7 +11,7 @@ import { MainScene } from 'scenes';
 import { consts, globals } from 'globals';
 import './instructions.css'
 import INSTRUCTION_HTML from './instructions.html'
-import { playBGMusicCarousel } from './audio';
+import { playBGMusicCarousel, startPlayWindSound } from './audio';
 import { portalIsVisibleInCamera } from './util';
 
 const Stats = require("stats.js");
@@ -25,6 +25,8 @@ consts.ALL_BGAUDIO_LOADED_PROMISE.then(playBGMusicCarousel)
 
 globals.MAIN_CAMERA.add( globals.LISTENER );
 scene.add(globals.MAIN_CAMERA)
+
+startPlayWindSound()
 
 // Set up renderer, canvas, and minor CSS adjustments
 consts.RENDERER.setPixelRatio(window.devicePixelRatio);

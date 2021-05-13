@@ -95,6 +95,7 @@ export default {
     LEVEL_TELEPORT_SOUND: audioLoader.loadAsync(assets.ASSETS.LevelTeleportFile).then(notifyPageLoadAsset),
     BGMUSIC_SOUNDS: BGMUSIC_SOUNDS,
     ALL_BGAUDIO_LOADED_PROMISE: Promise.all(BGMUSIC_SOUNDS.map(x => x.sound)),
+    WIND_LOOP_SOUND: audioLoader.loadAsync(assets.ASSETS.WindloopSound).then(notifyPageLoadAsset),
     CONGRATS_SOUND: {
         sound: audioLoader.loadAsync(assets.ASSETS.CONGRATS_SOUND).then(notifyPageLoadAsset),
         volume: 0.1,
