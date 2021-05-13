@@ -59,7 +59,7 @@ export function startPlayWindSound() {
 
 export function playWind(playerVelocity) {
     const magnitude = playerVelocity.length()
-    const volume = Math.min(0.5, Math.max(0, (magnitude - 10)/50 ))
+    const volume = Math.min(0.2, Math.max(0, (magnitude - 5)/50 ))
     if (globals.WIND_SOUND_PLAYER) {
         globals.WIND_SOUND_PLAYER.setVolume(volume)
     }

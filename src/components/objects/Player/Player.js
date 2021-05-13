@@ -5,6 +5,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { globals, consts } from 'globals'
 import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils';
 import { playSound, playWind } from '../../../audio';
+import { hideInstructions } from '../../../util';
 
 class Player extends Group {
     constructor(parent) {
@@ -152,13 +153,13 @@ class Player extends Group {
         // physics changes while jumping
         let jumpMultiplier = 1
         if (this.physicsBody.inJump) {
-            jumpMultiplier = 0.01
+            jumpMultiplier = 0.05
         }
 
         if (!this.physicsBody.inJump) {
             this.physicsBody.linearDamping = 0.999
         } else {
-            this.physicsBody.linearDamping = 0.1
+            this.physicsBody.linearDamping = 0.01
         }
 
         // regulates speed when multiple directions are pressed 
@@ -179,22 +180,26 @@ class Player extends Group {
 
         if (this.controller["KeyW"].pressed) {
             this.physicsBody.applyForce(forward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
+            hideInstructions()
         }
         if (this.controller["KeyS"].pressed) {
             this.physicsBody.applyForce(backward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
+            hideInstructions()
         }
         if (this.controller["KeyA"].pressed) {
             this.physicsBody.applyForce(left.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
+            hideInstructions()
         }
         if (this.controller["KeyD"].pressed) {
             this.physicsBody.applyForce(right.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
+            hideInstructions()
         }
 
         let shouldJump = false;
         // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed && !this.physicsBody.inJump) {
             shouldJump = true;
-        
+            hideInstructions()
         }
         // update lastTimeStampInJump
         if (this.wasInJump && !this.physicsBody.inJump) {

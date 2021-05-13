@@ -58,12 +58,8 @@ export function notifyPageLoadAsset(a) {
 export function congrats() {
     let instructionsContainer = document.getElementById('instructions-container')
     instructionsContainer.innerHTML = CONGRATS_HTML
-    instructionsContainer.style.opacity = '0'
     instructionsContainer.style.display = 'block'
-    setTimeout(() => {
-        instructionsContainer.style.opacity = '1'
-    }, 1000)
-
+    instructionsContainer.style.opacity = '1'
     playCongrats()
 }
 
@@ -72,21 +68,20 @@ export function levelChange(name) {
     instructionsContainer.innerHTML = LEVELCHANGE_HTML
     instructionsContainer.style.display = 'block'
     let levelchange = document.getElementById('levelchange')
-    instructionsContainer.style.opacity = '0'
-    levelchange.style.opacity = '0'
-    setTimeout(() => {
-        levelchange.style.opacity = '1'
-        instructionsContainer.style.opacity = '1'
-    }, 1000)
-
-    setTimeout(() => {
-        levelchange.style.opacity = '0'
-        instructionsContainer.style.opacity = '0'
-    }, 6000)
-
-    setTimeout(() => {
-        instructionsContainer.style.display = 'none'
-    }, 7000)
+    levelchange.style.opacity = '1'
+    instructionsContainer.style.opacity = '1'
     let label = document.getElementById('levelname')
     label.innerHTML = name
+}
+
+export function hideInstructions() {
+    let instructionsContainer = document.getElementById('instructions-container')
+    if (instructionsContainer.style.display !== 'none') {
+        setTimeout(() => {
+            instructionsContainer.style.opacity = '0'
+        }, 1000)
+        setTimeout(() => {
+            instructionsContainer.style.display = 'none'
+        }, 2000)
+    }
 }

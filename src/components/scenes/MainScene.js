@@ -44,6 +44,7 @@ class MainScene extends Scene {
 
         this.spawnPoints = {}
         this.finishPoints = {}
+        this.pointLights = []
 
         // load meshes from json file to scene
         // load JSON data; then proceed
@@ -116,7 +117,7 @@ class MainScene extends Scene {
                 this.debugMeshes.push(lightHelper)
                 this.add(light)
                 this.add(lightHelper)
-                // this.environmentObjects.push(light);
+                this.pointLights.push(light)
                 break;
             case "AmbientLight":
                 break;

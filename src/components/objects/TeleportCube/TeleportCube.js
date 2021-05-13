@@ -63,6 +63,9 @@ class TeleportCube extends THREE.Group {
                         c.geometry.dispose()
                     }
                 }
+                for (let l of this.parent.pointLights) {
+                    l.dispose()
+                }
                 if (globals.PORTALS[0])
                     this.parent.deletePortal(0)
                 if (globals.PORTALS[1])

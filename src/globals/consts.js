@@ -137,9 +137,14 @@ export default {
             offset: [3*10000, 0, 0]
         },
         LEVEL_4: {
+            file: assets.ASSETS.LEVEL_4,
+            name: "Level 5: Behind the Scenes",
+            offset: [4*10000, 0, 0]
+        },
+        LEVEL_5: {
             file: assets.ASSETS.LEVEL_VICTORY,
             name: "Level ?!?!",
-            offset: [4*10000, 0, 0]
+            offset: [5*10000, 0, 0]
         },
     },
     FILES: ['scene7'],

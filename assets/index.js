@@ -53,6 +53,7 @@ import LEVEL_0 from './levels/level0.json'
 import LEVEL_1 from './levels/level1.json'
 import LEVEL_2 from './levels/level2.json'
 import LEVEL_3 from './levels/level3.json'
+import LEVEL_4 from './levels/level4.json'
 import LEVEL_VICTORY from './levels/level_victory.json'
 
 export const ASSETS = {
@@ -110,6 +111,7 @@ export const ASSETS = {
     LEVEL_1: LEVEL_1,
     LEVEL_2: LEVEL_2,
     LEVEL_3: LEVEL_3,
+    LEVEL_4: LEVEL_4,
     LEVEL_VICTORY: LEVEL_VICTORY,
 }
 

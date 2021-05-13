@@ -12,7 +12,7 @@ import { consts, globals } from 'globals';
 import './instructions.css'
 import INSTRUCTION_HTML from './instructions.html'
 import { playBGMusicCarousel, startPlayWindSound } from './audio';
-import { portalIsVisibleInCamera } from './util';
+import { hideInstructions, portalIsVisibleInCamera } from './util';
 
 const Stats = require("stats.js");
 const scene = new MainScene();
@@ -50,12 +50,7 @@ window.addEventListener( 'click', function () {
 } );
 
 globals.CONTROLS.addEventListener('lock', () => {
-    setTimeout(() => {
-        instructionsContainer.style.opacity = '0'
-    }, 1000)
-    setTimeout(() => {
-        instructionsContainer.style.display = 'none'
-    }, 2000)
+    hideInstructions()
 })
 
 // window.addEventListener("keydown", (event) => handleKeypress(event, appData), false)
