@@ -55,11 +55,6 @@ class TeleportCube extends THREE.Group {
                 // https://threejs.org/docs/index.html?q=poi#manual/en/introduction/How-to-dispose-of-objects
                 for (let e of this.parent.environmentObjects) {
                     for (let c of e.children) {
-                        if (Array.isArray(c.material)) {
-                            c.material.forEach(disposeMaterial)
-                        } else {
-                            disposeMaterial(c.material)
-                        }
                         c.geometry.dispose()
                     }
                 }
@@ -87,20 +82,6 @@ class TeleportCube extends THREE.Group {
     playTeleportSound() {
         playSound(consts.LEVEL_TELEPORT_SOUND, false, 0.2)
     }
-}
-
-function disposeMaterial(m) {
-    if (m.map)
-        m.map.dispose()
-    if (m.normalMap)
-        m.normalMap.dispose()
-    if (m.roughnessMap)
-        m.roughnessMap.dispose()
-    if (m.displacementMap)
-        m.displacementMap.dispose()
-    if (m.aoMap)
-        m.aoMap.dispose()
-    m.dispose()
 }
 
 export default TeleportCube;

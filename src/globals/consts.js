@@ -1,4 +1,4 @@
-import { AudioLoader, AudioListener, TextureLoader, Audio, WebGLRenderer, RepeatWrapping } from 'three';
+import { AudioLoader, AudioListener, TextureLoader, MeshStandardMaterial, WebGLRenderer, RepeatWrapping, FrontSide } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import * as assets from 'assets'
 import 'util'
@@ -85,6 +85,27 @@ let BGMUSIC_SOUNDS = [
     },
 ]
 
+const concrete_material = new MeshStandardMaterial( {
+    side: FrontSide,
+    color: 0xffffff,
+    roughness: 1, 
+    displacementScale: 0,
+} );
+
+const metal_material = new MeshStandardMaterial( {
+    side: FrontSide,
+    color: 0x999999,
+    roughness: 1,
+    metalness: 0.7,
+    displacementScale: 0,
+} );
+
+function loadConcreteTexture(t, index) {
+    concrete_material[index] = metal_material[index] = t
+    concrete_material.needsUpdate = metal_material.needsUpdate = true
+    return t
+}
+
 export default {
     N_ASSETS: assets.N_ASSETS,
     RENDERER: renderer,
@@ -159,13 +180,15 @@ export default {
     /**********************************************************
     * TEXTURES
     **********************************************************/
-    CONCRETE_TEXTURE_SET: {
-        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
-        displacementScale: 0,
+    CONCRETE_MATERIAL: concrete_material,
+    METAL_MATERIAL: metal_material,
+    // just need these here to load in the right order, don't use these
+    CONCRETE_MATERIAL_LOADERS: {
+        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset).then((t) => loadConcreteTexture(t, "map")),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset).then((t) => loadConcreteTexture(t, "roughnessMap")),
+        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset).then((t) => loadConcreteTexture(t, "normalMap")),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset).then((t) => loadConcreteTexture(t, "displacementMap")),
+        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset).then((t) => loadConcreteTexture(t, "aoMap")),
     },
     /*BROKENTILE_TEXTURE_SET: {
         map: texLoader.loadAsync(assets.ASSETS.BROKENTILE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),

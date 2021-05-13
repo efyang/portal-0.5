@@ -45,10 +45,10 @@ export function notifyPageLoadAsset(a) {
     }
     bar.value = globals.N_ASSETS_LOADED / consts.N_ASSETS
     if (bar.value >= 1) {
+        label.innerText = "Loading: done."
         setTimeout(() => {
-            label.innerText = "Loading: done."
             bar.style.display = 'none'
-        }, 2000)
+        }, 500)
     } else {
         label.innerText = `Loaded asset: ${a.toString()}: ${(bar.value * 100).toFixed(2)}% complete. `
     }
@@ -68,18 +68,20 @@ export function levelChange(name) {
     instructionsContainer.innerHTML = LEVELCHANGE_HTML
     instructionsContainer.style.display = 'block'
     let levelchange = document.getElementById('levelchange')
-    levelchange.style.opacity = '1'
-    instructionsContainer.style.opacity = '1'
     let label = document.getElementById('levelname')
     label.innerHTML = name
+    levelchange.style.opacity = '1'
+    instructionsContainer.style.opacity = '1'
+    setTimeout(() => {
+        levelchange.style.opacity = '0'
+        instructionsContainer.style.opacity = '0'
+    }, 5000)
 }
 
 export function hideInstructions() {
     let instructionsContainer = document.getElementById('instructions-container')
     if (instructionsContainer.style.display !== 'none') {
-        setTimeout(() => {
-            instructionsContainer.style.opacity = '0'
-        }, 1000)
+        instructionsContainer.style.opacity = '0'
         setTimeout(() => {
             instructionsContainer.style.display = 'none'
         }, 2000)

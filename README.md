@@ -228,6 +228,11 @@ Finding, using, and properly citing assets was also another aspect of graphics d
 ### Optimizations
 Since the interim report, we've added substantial optimizations on the portal rendering side. Before, we effectively had to render all level of both portals every single frame, which dropped framerates immensely. We now use a combination of per-level frustum culling and checking that the camera is actually in front of the portal before rendering each level of the portal. The stencil buffer doesn't actually improve performance (at least for just culling) as this step happens after the fragment shader, and so does not actually reduce the number of rendered pixels
 
+#### Texture Loading Optimizations
+Three.js's `Texture.clone()` is supposed to be a shallow copy and therefore use very little memory, which we quickly have found to not be the case (perhaps we were doing it wrong). We needed to clone the concrete texture for every block because we needed to adjust the wrapping repeat times to fit with the dimensions of the box. However, this ended up taking gigabytes (!!!) of memory in our case for a trivial number of environment boxes, while also causing substantial frame loading and stuttering and need for regular disposal on loading a level. With our new approach, we use the same base texture for every box (and indeed, same material as well), and instead directly set the uv coordinates in a similar way [as detailed here](https://stackoverflow.com/questions/27097884/three-js-efficiently-mapping-uvs-to-plane) for each face-vertex of each box. This gives us substantial memory improvements (now only on the order of gigabytes) and essentially zero stutter on level load.
+        // directly uv map the wrapping for each cube
+
+
 ### Level System
 We define levels as a series of rooms which are linked together by teleport boxes, which teleport to the previous or next level. In this way, there is effectively a goal in each level. Additionally, these rooms are all loaded in the same scene, but are spaced apart much further apart than the camera far field, to avoid any performance detriments.
 
@@ -313,6 +318,12 @@ Various other references:
 * Retrieving face normals in world coordinates: https://stackoverflow.com/questions/39082673/get-face-global-normal-in-three-js
 
 * Cannon.Js collision filter usage: https://github.com/schteppe/cannon.js/blob/master/demos/collisionFilter.html
+
+* Texture repeat uv mapping: https://stackoverflow.com/questions/27097884/three-js-efficiently-mapping-uvs-to-plane
+
+* BufferGeometry uv attributes: https://threejsfundamentals.org/threejs/lessons/threejs-custom-buffergeometry.html
+
+* BufferGeometry uv attribute updating: https://discourse.threejs.org/t/updating-uv-coordinates-of-buffergeometry/9180/2
 
 ## License
 [MIT](./LICENSE)

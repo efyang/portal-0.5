@@ -23,6 +23,12 @@ class EnvironmentCube2 extends Group {
         let scale = 8
         // create geometry
         const geometry = new BoxGeometry( this.width, this.height, this.depth );
+        // directly uv map the wrapping for each cube
+        // https://stackoverflow.com/questions/27097884/three-js-efficiently-mapping-uvs-to-plane
+        // https://threejsfundamentals.org/threejs/lessons/threejs-custom-buffergeometry.html
+        // https://discourse.threejs.org/t/updating-uv-coordinates-of-buffergeometry/9180/2
+        // while texture cloning isn't supposed to take much memory or time (should be shallow clone)
+        // ends up being very substantial (gigabytes of memory), so manually uv map ourselves and just use one texture
         let uvs = geometry.getAttribute("uv")
         uvs.setXY(0, this.height, this.depth)
         uvs.setXY(1, this.height, 0)
@@ -55,72 +61,17 @@ class EnvironmentCube2 extends Group {
             uvs.array[i] /= scale
         }
 
-        // create material
-        let textureSet = consts.CONCRETE_TEXTURE_SET
-        let color = 0xffffff
-        let metalness = 0
+        let material = consts.CONCRETE_MATERIAL
         if (!placeable) {
-            color = 0x999999
-            metalness = 0.7
-            // textureSet = consts.BROKENTILE_TEXTURE_SET
-            //scale = 4
-        }
-        let sideDims = [
-            [this.depth, this.height],
-            [this.depth, this.height],
-            [this.width, this.depth],
-            [this.width, this.depth],
-            [this.width, this.height],
-            [this.width, this.height],
-        ]
-
-        let materials = []
-        for (let _ of sideDims) {
-            const material = new MeshStandardMaterial( {
-                side: FrontSide,
-                color: color,
-                roughness: 1, 
-                metalness: metalness
-            } );
-            materials.push(material)
+            material = consts.METAL_MATERIAL
         }
 
-        /*
-        function loadTexture(t, dims, scale) {
-            const texture = t.clone()
-            texture.wrapS = RepeatWrapping;
-            texture.wrapT = RepeatWrapping;
-            texture.repeat.set(1, 1);
-            //texture.repeat.set( dims[0] / scale, dims[1] / scale);
-            texture.needsUpdate = true
-            return texture
-        }*/
-
-        for (let index in textureSet) {
-            const value = textureSet[index]
-            for (let i = 0; i < materials.length; i++) {
-                const dims = sideDims[i]
-                const material = materials[i]
-
-                if (typeof value === "number") {
-                    material[index] = value
-                } else {
-                    value.then((t) => {
-                        // material[index] = loadTexture(t, dims, scale)
-                        material[index] = t
-                        material.needsUpdate = true
-                    })
-                }
-            }
-        }
-
-        let cube = new Mesh( geometry, materials );
+        let cube = new Mesh( geometry, material );
         // cube.position.copy(pos);
         cube.applyMatrix4(matrix)
 
         this.add(cube)
 
-        // let quaternion = this.matrix4ToQuaternion(matrix)
         let quaternion = new Quaternion()
         quaternion.setFromRotationMatrix(matrix).normalize();
         let q1 = new CANNON.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w)
@@ -147,18 +98,6 @@ class EnvironmentCube2 extends Group {
 
 
     update(timeStamp) {}
-
-    matrix4ToQuaternion(m) {
-        let q = new CANNON.Quaternion();
-        q.w = Math.sin( Math.max( 0, 1 + m[0,0] + m[1,1] + m[2,2] ) ) / 2; 
-        q.x = Math.sin( Math.max( 0, 1 + m[0,0] - m[1,1] - m[2,2] ) ) / 2; 
-        q.y = Math.sin( Math.max( 0, 1 - m[0,0] + m[1,1] - m[2,2] ) ) / 2; 
-        q.z = Math.sin( Math.max( 0, 1 - m[0,0] - m[1,1] + m[2,2] ) ) / 2; 
-        q.x *= Math.sin( q.x * ( m[2,1] - m[1,2] ) );
-        q.y *= Math.sin( q.y * ( m[0,2] - m[2,0] ) );
-        q.z *= Math.sin( q.z * ( m[1,0] - m[0,1] ) );
-        return q;
-    }
 }
 
 export default EnvironmentCube2;
