@@ -3,8 +3,6 @@ import { GeneralBB } from 'objects'
 import * as util from '../../../util'
 import { Group, MeshStandardMaterial, PlaneGeometry, Vector3 } from 'three'
 import { consts, globals } from '../../../globals';
-import { Line2, LineGeometry, LineMaterial } from 'three-fatline';
-import RING_TEXTURE_PNG from '../../../../assets/textures/ringTexture.png'
 
 const portal_width = consts.PORTAL_WIDTH
 const portal_depth = consts.PORTAL_DEPTH
@@ -134,6 +132,7 @@ class Portal extends Group {
 
         this.debugMeshes.add(this.CDBB.helper)
         this.debugMeshes.add(this.STBB.helper)
+        this.debugMeshes.visible = globals.DEBUG
         this.add(this.debugMeshes)
        
         // if valid placement, add and render
