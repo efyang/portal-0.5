@@ -230,7 +230,6 @@ Since the interim report, we've added substantial optimizations on the portal re
 
 #### Texture Loading Optimizations
 Three.js's `Texture.clone()` is supposed to be a shallow copy and therefore use very little memory, which we quickly have found to not be the case (perhaps we were doing it wrong). We needed to clone the concrete texture for every block because we needed to adjust the wrapping repeat times to fit with the dimensions of the box. However, this ended up taking gigabytes (!!!) of memory in our case for a trivial number of environment boxes, while also causing substantial frame loading and stuttering and need for regular disposal on loading a level. With our new approach, we use the same base texture for every box (and indeed, same material as well), and instead directly set the uv coordinates in a similar way [as detailed here](https://stackoverflow.com/questions/27097884/three-js-efficiently-mapping-uvs-to-plane) for each face-vertex of each box. This gives us substantial memory improvements (now only on the order of <1GB total) and essentially zero stutter on level load.
-        // directly uv map the wrapping for each cube
 
 
 ### Level System
