@@ -23,7 +23,7 @@ globals.MAIN_CAMERA.add(crosshair);
 
 consts.ALL_BGAUDIO_LOADED_PROMISE.then(playBGMusicCarousel)
 
-globals.MAIN_CAMERA.add( globals.LISTENER );
+globals.MAIN_CAMERA.add( consts.LISTENER );
 scene.add(globals.MAIN_CAMERA)
 
 startPlayWindSound()
