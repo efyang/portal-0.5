@@ -10,28 +10,12 @@
 }
 
 #instructions {
-    width: 70%;
-    height: 90%;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: box;
-
-    -webkit-box-orient: horizontal;
-    -moz-box-orient: horizontal;
-    box-orient: horizontal;
-
-    -webkit-box-pack: center;
-    -moz-box-pack: center;
-    box-pack: center;
-
-    -webkit-box-align: center;
-    -moz-box-align: center;
-    box-align: center;
+    padding-top: 10%;
+    width: 50%;
 
     color: #ffffff;
     text-align: center;
-    font-family: Arial;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     line-height: 24px;
 
@@ -45,38 +29,44 @@
 #assets {
     width: 100%;
     height: 10%;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: box;
-
-    -webkit-box-orient: horizontal;
-    -moz-box-orient: horizontal;
-    box-orient: horizontal;
-
-    -webkit-box-pack: center;
-    -moz-box-pack: center;
-    box-pack: center;
-
-    -webkit-box-align: center;
-    -moz-box-align: center;
-    box-align: center;
+    position: relative;
 
     color: #ffffff;
     text-align: center;
-    font-family: Arial;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     line-height: 24px;
 
     cursor: pointer;
+    position: absolute;
+    bottom: 2%;
 }
 
-#assets_progressbar {
-    position: absolute;
-    text-align: center;
+#assets_progressbar_container {
     margin-left: auto;
     margin-right: auto;
     width: 50%;
+}
+
+progress {
+    width: 100%;
+    border-radius: 100px;
+    background: rgba(200,200,200,0.5);
+}
+
+progress::-moz-progress-bar {
+    border-radius: 100px;
+    background: linear-gradient(90deg, rgba(0,209,255,0.8) 0%, rgba(255,170,0,0.8) 100%);
+}
+
+progress::-webkit-progress-bar {
+    background: rgba(0.5,0.5,0.5,0.5);
+    border-radius: 100px;
+}
+
+progress::-webkit-progress-value {
+    border-radius: 100px;
+    background: linear-gradient(90deg, rgba(0,209,255,0.8) 0%, rgba(255,170,0,0.8) 100%);
 }
 
 #congrats {
@@ -101,7 +91,7 @@
 
     color: #ffffff;
     text-align: center;
-    font-family: Arial;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     line-height: 24px;
 
@@ -130,7 +120,7 @@
 
     color: #ffffff;
     text-align: center;
-    font-family: Arial;
+    font-family: Poppins, sans-serif;
     font-size: 14px;
     line-height: 24px;
 
@@ -138,4 +128,30 @@
 
     opacity: 0;
     transition: 1s;
+}
+
+#writeup {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding-right: 1em;
+    padding-bottom: 1em;
+}
+
+.writeupCircle {
+  height: 40px;
+  width: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  background-image: url(code24px.svg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
+.writeupCircle:hover {
+    opacity: 1;
 }

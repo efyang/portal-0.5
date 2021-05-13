@@ -1,8 +1,12 @@
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,100;1,300&family=Poppins&display=swap" rel="stylesheet"> 
+
 <div id="instructions">
-    <span style="font-size:36px">Portal 0.5</span>
+    <span style="font-size:6em; font-weight: 100; font-family: Montserrat, sans-serif; font-style: italic;">PORTAL 0.5</span>
     <br /><br />
     <br /><br />
-    <span style="font-size:24px">Click to play</span>
+    <span style="font-size:2em; font-weight: 300; font-family: Montserrat, sans-serif; font-style: italic;">Click to play</span>
+    <br />
     <br />
     Move: WASD<br/>
     Jump: SPACE<br/>
@@ -12,12 +16,23 @@
     Get to the red cube to progress to the next level.<br/>
     Get to the blue cube to go back to the previous level.<br/>
     <br/>
-    Note: there may be frame stutter or lag due to cleanup at some times (so that this doesn't take 8GB of memory to run), so please be patient.</br>
+    <span style="font-size:0.8em;">
+        Note: there may be frame stutter or lag due to cleanup at some times (so that this doesn't take 8GB of memory to run), so please be patient.</br>
+    </span>
     <br/>
 </div>
 
 <div id="assets">
-    <progress id="assets_progressbar" value="0" max="1"></progress> 
-    <br/>
+    <div id="assets_progressbar_container">
+        <progress id="assets_progressbar" value="0" max="1"></progress> 
+    </div>
     <label id="assets_label" for="assets_progressbar">Loading assets: 0% complete. </label>
+</div>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+<div id="writeup">
+    <a class="writeupCircle" title="Code/Writeup" href="https://github.com/efyang/portal-0.5">
+    </a>
 </div>
