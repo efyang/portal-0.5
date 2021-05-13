@@ -33,6 +33,5 @@ export default {
     /***********************************************************
     * AUDIO
     ***********************************************************/
-    LISTENER: new AudioListener(),
     AUDIO_LOADER: new AudioLoader(),
 }

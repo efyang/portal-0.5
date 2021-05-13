@@ -107,7 +107,6 @@ class Portal extends Group {
             transparent: true,
             map: consts.RING_TEXTURE,
             depthWrite: false,
-            roughness: 0,
         })
         this.ringMesh = new THREE.Mesh(ringGeometry, ringMaterial)
         this.ringMesh.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI/2))

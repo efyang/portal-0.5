@@ -26,6 +26,9 @@ class MainScene extends Scene {
         const portalsFolder = this.state.gui.addFolder("portals")
         portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 1, 10, 1)
             .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
+        const audioFolder = this.state.gui.addFolder("audio")
+        audioFolder.add({"Master Volume": consts.LISTENER.getMasterVolume()}, "Master Volume", 0, 1, 0.01)
+            .onChange((v) => consts.LISTENER.setMasterVolume(v))
         
         globals.MAIN_CAMERA.position.copy(new Vector3(0, 5, 0))
 
@@ -140,7 +143,7 @@ class MainScene extends Scene {
         }
 
         // teleport sound
-        const TeleportSound = new Audio( globals.LISTENER );
+        const TeleportSound = new Audio( consts.LISTENER );
 
         for (let d of this.dynamicObjects) {
             let pos = new Vector3(d.physicsBody.position.x, d.physicsBody.position.y, d.physicsBody.position.z)
