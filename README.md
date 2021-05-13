@@ -290,6 +290,10 @@ Player Model Animations:
 
 Flavicon: Icon from [Good Ware](https://www.flaticon.com/free-icon/aperture_2150454) on flaticon
 
+Fonts: Montserrat and Poppins from Google Fonts
+
+Code Icon from Google Material Design Icons
+
 Various other references:
 
 * Portal placement formulas: https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle, https://math.stackexchange.com/questions/128991/how-to-calculate-the-area-of-a-3d-triangle 
