@@ -93,12 +93,12 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTALS[thisIndex].visible = false
     globals.PORTALS[pairIndex].visible = false
     renderer.localClippingEnabled = true
+    crosshair.visible = false
     for (let level = globals.PORTAL_RECURSION_LEVELS - 1; level >= 0; level--) {
         if (!shouldRender[level]) {
             globals.PORTALS[pairIndex].teleportObject3D(portalCamera)
             continue
         }
-        crosshair.visible = false
         // necessary so that we properly render recursion (otherwise the other portal might block)
         renderer.clippingPlanes = [globals.PORTALS[pairIndex].plane.clone()]
         renderer.setRenderTarget(globals.PORTAL_TMP_TARGETS[thisIndex])
@@ -144,7 +144,9 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderPortal(0, 1)
     renderPortal(1, 0)
 
+    crosshair.updateTexture(globals.PORTALS[0] !== null, globals.PORTALS[1] !== null)
     crosshair.visible = true
+
     if (globals.PLAYER && globals.PLAYER.mesh) {
         globals.PLAYER.mesh.visible = false
         globals.PLAYER.meshClone.visible = cloneVisible

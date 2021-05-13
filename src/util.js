@@ -45,8 +45,10 @@ export function notifyPageLoadAsset(a) {
     }
     bar.value = globals.N_ASSETS_LOADED / consts.N_ASSETS
     if (bar.value >= 1) {
-        label.innerText = "Loading: done."
-        bar.style.display = 'none'
+        setTimeout(() => {
+            label.innerText = "Loading: done."
+            bar.style.display = 'none'
+        }, 2000)
     } else {
         label.innerText = `Loaded asset: ${a.toString()}: ${(bar.value * 100).toFixed(2)}% complete. `
     }

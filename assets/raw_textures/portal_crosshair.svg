@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="455.10121"
-     inkscape:cy="334.97767"
+     inkscape:zoom="3.959798"
+     inkscape:cx="412.09387"
+     inkscape:cy="345.74476"
      inkscape:document-units="mm"
      inkscape:current-layer="g1252"
      inkscape:document-rotation="0"
@@ -87,21 +87,21 @@
          id="g1252"
          transform="rotate(5.5206174,141.38,88.301845)">
         <path
-           style="fill:#ff9955;stroke:#ffffff;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#ffc600;stroke:#ffc600;stroke-width:3.24738453;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round;fill-opacity:1"
            d="m 593.44141,286.62109 a 59.208708,89.731028 17.246699 0 1 -6.37305,75.41602 59.208708,89.731028 17.246699 0 1 -86.27539,54.50195 59.208708,89.731028 17.246699 0 1 -6.43359,-4.26953 67.5,97.479642 0 0 0 39.99023,18.94922 67.5,97.479642 0 0 0 67.5,-97.47852 67.5,97.479642 0 0 0 -8.4082,-47.11914 z"
            transform="scale(0.26458333)"
            id="path866"
-           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
-           inkscape:export-xdpi="857.88824"
-           inkscape:export-ydpi="857.88824" />
+           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshairBoth.png"
+           inkscape:export-xdpi="484.37192"
+           inkscape:export-ydpi="484.37192" />
         <path
-           style="fill:#2ad4ff;stroke:#ffffff;stroke-width:0.377953;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#00e1ff;stroke:#00e1ff;stroke-width:3.24738453;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1;stroke-linejoin:round;stroke-linecap:round"
            d="m 534.32422,236.25977 a 67.5,97.479642 0 0 0 -67.47461,97.48046 67.5,97.479642 0 0 0 8.36133,46.98633 59.208708,89.731028 17.246699 0 1 6.42187,-75.24414 59.208708,89.731028 17.246699 0 1 86.27539,-54.50195 59.208708,89.731028 17.246699 0 1 6.58985,4.39844 67.5,97.479642 0 0 0 -40.14844,-19.11914 67.5,97.479642 0 0 0 -0.0254,0 z"
            transform="scale(0.26458333)"
            id="path21"
-           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshair.png"
-           inkscape:export-xdpi="857.88824"
-           inkscape:export-ydpi="857.88824" />
+           inkscape:export-filename="/home/efyang/projects/portal-proto/assets/textures/crosshairBoth.png"
+           inkscape:export-xdpi="484.37192"
+           inkscape:export-ydpi="484.37192" />
       </g>
     </g>
     <g

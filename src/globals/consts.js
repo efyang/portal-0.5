@@ -109,7 +109,7 @@ export default {
     PORTAL_HEIGHT: 0.001,
     PORTAL_EPS: 0.01,
     PORTAL_RING_THICKNESS: 0.3,
-    PORTAL_COLORS: ['cyan', 'orange'],
+    PORTAL_COLORS: [0x00e1ff, 0xffc600],
 
     /**********************************************************
     * FILES
@@ -177,6 +177,10 @@ export default {
         ANIM_LEFT_STRAFE: fbxLoader.loadAsync(assets.ASSETS.ANIM_LEFT_STRAFE).then(notifyPageLoadAsset),
         ANIM_FALLING_IDLE: fbxLoader.loadAsync(assets.ASSETS.ANIM_FALLING_IDLE).then(notifyPageLoadAsset),
     },
+    CROSSHAIR_NONE_TEXTURE: texLoader.loadAsync(assets.ASSETS.CROSSHAIR_NONE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+    CROSSHAIR_BLUE_TEXTURE: texLoader.loadAsync(assets.ASSETS.CROSSHAIR_BLUE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+    CROSSHAIR_ORANGE_TEXTURE: texLoader.loadAsync(assets.ASSETS.CROSSHAIR_ORANGE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+    CROSSHAIR_BOTH_TEXTURE: texLoader.loadAsync(assets.ASSETS.CROSSHAIR_BOTH_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
 
     /**********************************************************
     * PHYSICS

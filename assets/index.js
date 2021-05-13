@@ -1,5 +1,10 @@
 import RING_TEXTURE_PNG from './textures/ringTexture.png'
 
+import CROSSHAIR_NONE_TEXTURE from './textures/crosshairNone.png'
+import CROSSHAIR_ORANGE_TEXTURE from './textures/crosshairOrange.png'
+import CROSSHAIR_BLUE_TEXTURE from './textures/crosshairBlue.png'
+import CROSSHAIR_BOTH_TEXTURE from './textures/crosshairBoth.png'
+
 import CONCRETE_TEXTURE from './textures/concrete/Color.jpg'
 import CONCRETE_ROUGH_TEXTURE from './textures/concrete/Roughness.jpg'
 import CONCRETE_NORMAL_TEXTURE from './textures/concrete/Normal.jpg'
@@ -63,6 +68,11 @@ export const ASSETS = {
     BROKENTILE_NORMAL_TEXTURE: BROKENTILE_NORMAL_TEXTURE,
     BROKENTILE_DISP_TEXTURE: BROKENTILE_DISP_TEXTURE,
     BROKENTILE_AO_TEXTURE: BROKENTILE_AO_TEXTURE,*/
+
+    CROSSHAIR_NONE_TEXTURE: CROSSHAIR_NONE_TEXTURE,
+    CROSSHAIR_ORANGE_TEXTURE: CROSSHAIR_ORANGE_TEXTURE,
+    CROSSHAIR_BLUE_TEXTURE: CROSSHAIR_BLUE_TEXTURE,
+    CROSSHAIR_BOTH_TEXTURE: CROSSHAIR_BOTH_TEXTURE,
 
     JumpGruntMP3: JumpGruntMP3,
     LandingMP3: LandingMP3,
