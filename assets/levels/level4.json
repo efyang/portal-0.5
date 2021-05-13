@@ -136,10 +136,10 @@
 			"depthSegments": 1
 		},
 		{
-			"uuid": "EF6AAEC8-612F-4942-B1AE-F301BC547E0A",
+			"uuid": "C735B0C7-9ABB-4726-813A-A282FEC7AF92",
 			"type": "BoxGeometry",
 			"width": 6,
-			"height": 2,
+			"height": 4,
 			"depth": 6,
 			"widthSegments": 1,
 			"heightSegments": 1,
@@ -166,10 +166,10 @@
 			"depthSegments": 1
 		},
 		{
-			"uuid": "00AF480F-B50C-4AE1-9FCC-6453696A46BB",
+			"uuid": "F8461DF0-D5C2-445E-89F3-49F35588173A",
 			"type": "BoxGeometry",
 			"width": 6,
-			"height": 2,
+			"height": 4,
 			"depth": 6,
 			"widthSegments": 1,
 			"heightSegments": 1,
@@ -822,7 +822,7 @@
 				"type": "PointLight",
 				"name": "PointLight",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,63.466925,192.610472,-62.212746,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,63.466925,129.294182,-62.212746,1],
 				"color": 16777215,
 				"intensity": 2,
 				"distance": 200,
@@ -930,7 +930,7 @@
 				"name": "Box",
 				"layers": 1,
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,40.998006,29.119252,6.746292,1],
-				"geometry": "EF6AAEC8-612F-4942-B1AE-F301BC547E0A",
+				"geometry": "C735B0C7-9ABB-4726-813A-A282FEC7AF92",
 				"material": "7BBBECE8-6700-4821-9521-2F79C9936919"
 			},
 			{
@@ -947,7 +947,7 @@
 				"type": "Mesh",
 				"name": "unplaceable_0",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,36.189943,26.802733,12.968341,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,36.189943,26.147005,12.968341,1],
 				"geometry": "FAD36F31-F607-451B-B851-E5EA6A0969D1",
 				"material": "D884189F-2D36-4AD7-AF8C-05AA96FEECCB"
 			},
@@ -956,8 +956,8 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,36.41968,29.510906,17.958303,1],
-				"geometry": "00AF480F-B50C-4AE1-9FCC-6453696A46BB",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,36.41968,29.210396,17.958303,1],
+				"geometry": "F8461DF0-D5C2-445E-89F3-49F35588173A",
 				"material": "C9085B50-304B-4353-851E-DC22585BE077"
 			},
 			{
@@ -1019,7 +1019,7 @@
 				"type": "PointLight",
 				"name": "PointLight",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-1.032486,202.714044,49.995261,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-1.032486,150.82003,49.995261,1],
 				"color": 16777215,
 				"intensity": 2,
 				"distance": 300,
