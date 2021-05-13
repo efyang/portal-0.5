@@ -180,26 +180,26 @@ class Player extends Group {
 
         if (this.controller["KeyW"].pressed) {
             this.physicsBody.applyForce(forward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
-            hideInstructions()
+            if (!globals.IN_VICTORY) {hideInstructions()}
         }
         if (this.controller["KeyS"].pressed) {
             this.physicsBody.applyForce(backward.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
-            hideInstructions()
+            if (!globals.IN_VICTORY) {hideInstructions()}
         }
         if (this.controller["KeyA"].pressed) {
             this.physicsBody.applyForce(left.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
-            hideInstructions()
+            if (!globals.IN_VICTORY) {hideInstructions()}
         }
         if (this.controller["KeyD"].pressed) {
             this.physicsBody.applyForce(right.clone().multiplyScalar(f * movementMultiplier), this.physicsBody.position)
-            hideInstructions()
+            if (!globals.IN_VICTORY) {hideInstructions()}
         }
 
         let shouldJump = false;
         // handle jumping when space bar is pressed
         if (this.controller["Space"].pressed && !this.physicsBody.inJump) {
             shouldJump = true;
-            hideInstructions()
+            if (!globals.IN_VICTORY) {hideInstructions()}
         }
         // update lastTimeStampInJump
         if (this.wasInJump && !this.physicsBody.inJump) {

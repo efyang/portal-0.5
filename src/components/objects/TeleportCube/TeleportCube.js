@@ -72,10 +72,14 @@ class TeleportCube extends THREE.Group {
                     this.parent.deletePortal(1)
             } else if (!this.objectWasInsideLast[o] && o.physicsBody && this.bb.containsPoint(o.physicsBody.position) && this.isVictory) {
                 this.objectWasInsideLast[o] = true
+                globals.IN_VICTORY = true
                 congrats()
             }
             if (o.physicsBody && this.objectWasInsideLast[o] && !this.bb.containsPoint(o.physicsBody.position)) {
                 this.objectWasInsideLast[o] = false
+                if (this.isVictory) {
+                    globals.IN_VICTORY = false
+                }
             }
         }
     }
