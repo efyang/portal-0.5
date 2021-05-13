@@ -13,13 +13,22 @@ export function playSound(sound, loop, volume) {
 
 export function playBGMusicCarousel() {
     const index = Math.floor(Math.random() * consts.BGMUSIC_SOUNDS.length)
-    consts.BGMUSIC_SOUNDS[index].sound.then((sound) => {
+    playBGMusic(consts.BGMUSIC_SOUNDS[index].sound, consts.BGMUSIC_SOUNDS[index].volume)
+}
+
+export function playBGMusic(sound, volume) {
+    sound.then((sound) => {
+        if (globals.BGMUSIC_PLAYER) {
+            globals.BGMUSIC_PLAYER.onEnded = () => {}
+            globals.BGMUSIC_PLAYER.stop()
+        }
+
         let player = new Audio(consts.LISTENER)
         globals.BGMUSIC_PLAYER = player
 
         player.setBuffer(sound)
         player.setLoop(false)
-        player.setVolume(consts.BGMUSIC_SOUNDS[index].volume)
+        player.setVolume(volume)
         player.onEnded = () => {
             playBGMusicCarousel()
         }

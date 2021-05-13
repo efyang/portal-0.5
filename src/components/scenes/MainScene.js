@@ -7,7 +7,7 @@ import { consts, globals } from 'globals';
 import 'regenerator-runtime/runtime'
 import '../../audio'
 
-import { playSound } from '../../audio';
+import { playBGMusic, playSound } from '../../audio';
 import { notifyPageLoadAsset } from '../../util';
 
 class MainScene extends Scene {
@@ -29,6 +29,17 @@ class MainScene extends Scene {
         const audioFolder = this.state.gui.addFolder("audio")
         audioFolder.add({"Master Volume": consts.LISTENER.getMasterVolume()}, "Master Volume", 0, 1, 0.01)
             .onChange((v) => consts.LISTENER.setMasterVolume(v))
+        const musicFolder = this.state.gui.addFolder("music player")
+        for (let bgmusic of consts.BGMUSIC_SOUNDS) {
+            let obj = { add:function(){
+                playBGMusic(bgmusic.sound, bgmusic.volume)
+            }};
+            musicFolder.add(obj,'add').name("Play: " + bgmusic.name);
+        }
+        for (let li of this.state.gui.__ul.childNodes[3].childNodes[0].childNodes[0].childNodes) {
+            if (li.className === "title") { continue; }
+            li.childNodes[0].childNodes[0].style.width = "100%"
+        }
         
         globals.MAIN_CAMERA.position.copy(new Vector3(0, 5, 0))
 
