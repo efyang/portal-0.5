@@ -1,4 +1,4 @@
-import { AudioLoader, AudioListener, TextureLoader, Audio, WebGLRenderer } from 'three';
+import { AudioLoader, AudioListener, TextureLoader, Audio, WebGLRenderer, RepeatWrapping } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import * as assets from 'assets'
 import 'util'
@@ -12,6 +12,13 @@ const renderer = new WebGLRenderer({ antialias: true, powerPreference: "high-per
 
 function initTexture(t) {
     renderer.initTexture(t)
+    return t
+}
+
+function setWrapTexture(t) {
+    t.wrapS = RepeatWrapping;
+    t.wrapT = RepeatWrapping;
+    t.needsUpdate = true;
     return t
 }
 
@@ -153,11 +160,11 @@ export default {
     * TEXTURES
     **********************************************************/
     CONCRETE_TEXTURE_SET: {
-        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
-        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
-        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
-        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
-        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(initTexture).then(notifyPageLoadAsset),
+        map: texLoader.loadAsync(assets.ASSETS.CONCRETE_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
+        roughnessMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_ROUGH_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
+        normalMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_NORMAL_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
+        displacementMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_DISP_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
+        aoMap: texLoader.loadAsync(assets.ASSETS.CONCRETE_AO_TEXTURE).then(setWrapTexture).then(initTexture).then(notifyPageLoadAsset),
         displacementScale: 0,
     },
     /*BROKENTILE_TEXTURE_SET: {

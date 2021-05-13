@@ -20,12 +20,43 @@ class EnvironmentCube2 extends Group {
         this.dimensions = [geo.width, geo.height, geo.depth].sort(function(a, b){return b-a})
         // console.log(this.dimensions)
 
+        let scale = 8
         // create geometry
         const geometry = new BoxGeometry( this.width, this.height, this.depth );
+        let uvs = geometry.getAttribute("uv")
+        uvs.setXY(0, this.height, this.depth)
+        uvs.setXY(1, this.height, 0)
+        uvs.setXY(2, 0, this.depth)
+        uvs.setXY(3, 0, 0)
+        uvs.setXY(4, this.height, 0)
+        uvs.setXY(5, this.height, this.depth)
+        uvs.setXY(6, 0, 0)
+        uvs.setXY(7, 0, this.depth)
+
+        uvs.setXY(8, 0, 0)
+        uvs.setXY(9, this.width, 0)
+        uvs.setXY(10, 0, this.depth)
+        uvs.setXY(11, this.width, this.depth)
+        uvs.setXY(12, 0, this.depth)
+        uvs.setXY(13, this.width, this.depth)
+        uvs.setXY(14, 0, 0)
+        uvs.setXY(15, this.width, 0)
+
+        uvs.setXY(16, 0, this.height)
+        uvs.setXY(17, this.width, this.height)
+        uvs.setXY(18, 0, 0)
+        uvs.setXY(19, this.width, 0)
+        uvs.setXY(20, this.width, this.height)
+        uvs.setXY(21, 0, this.height)
+        uvs.setXY(22, this.width, 0)
+        uvs.setXY(23, 0, 0)
+
+        for (let i = 0; i < uvs.array.length; i++) {
+            uvs.array[i] /= scale
+        }
 
         // create material
         let textureSet = consts.CONCRETE_TEXTURE_SET
-        let scale = 8
         let color = 0xffffff
         let metalness = 0
         if (!placeable) {
@@ -54,14 +85,16 @@ class EnvironmentCube2 extends Group {
             materials.push(material)
         }
 
+        /*
         function loadTexture(t, dims, scale) {
             const texture = t.clone()
             texture.wrapS = RepeatWrapping;
             texture.wrapT = RepeatWrapping;
-            texture.repeat.set( dims[0] / scale, dims[1] / scale);
+            texture.repeat.set(1, 1);
+            //texture.repeat.set( dims[0] / scale, dims[1] / scale);
             texture.needsUpdate = true
             return texture
-        }
+        }*/
 
         for (let index in textureSet) {
             const value = textureSet[index]
@@ -73,7 +106,8 @@ class EnvironmentCube2 extends Group {
                     material[index] = value
                 } else {
                     value.then((t) => {
-                        material[index] = loadTexture(t, dims, scale)
+                        // material[index] = loadTexture(t, dims, scale)
+                        material[index] = t
                         material.needsUpdate = true
                     })
                 }
