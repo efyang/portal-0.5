@@ -179,6 +179,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     stats.update();
     scene.update && scene.update(timeStamp);
 
+    // https://stackoverflow.com/questions/11285065/limiting-framerate-in-three-js-to-increase-performance-requestanimationframe
     if (Date.now() >= timeTarget) {
         const timeStep = 1/60
         globals.CANNON_WORLD.step(timeStep)
