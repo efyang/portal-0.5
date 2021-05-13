@@ -30,6 +30,7 @@ export default {
     PLAYER_RESPAWN_POS: new Vector3(0, 5, 0),
     WIND_SOUND_PLAYER: null,
     IN_VICTORY: false,
+    PHYSICS_UPDATEPERSEC_LIMIT: 75,
 
     /***********************************************************
     * AUDIO

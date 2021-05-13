@@ -26,6 +26,9 @@ class MainScene extends Scene {
         const portalsFolder = this.state.gui.addFolder("portals")
         portalsFolder.add({"Portal Recursion Level": globals.PORTAL_RECURSION_LEVELS}, "Portal Recursion Level", 1, 10, 1)
             .onChange((v) => globals.PORTAL_RECURSION_LEVELS = v)
+        const physicsFolder = this.state.gui.addFolder("physics")
+        physicsFolder.add({"Updates/s Limit": globals.PHYSICS_UPDATEPERSEC_LIMIT}, "Updates/s Limit", 60, 240, 1)
+            .onChange((v) => globals.PHYSICS_UPDATEPERSEC_LIMIT = v)
         const audioFolder = this.state.gui.addFolder("audio")
         audioFolder.add({"Master Volume": consts.LISTENER.getMasterVolume()}, "Master Volume", 0, 1, 0.01)
             .onChange((v) => consts.LISTENER.setMasterVolume(v))
@@ -36,7 +39,7 @@ class MainScene extends Scene {
             }};
             musicFolder.add(obj,'add').name("Play: " + bgmusic.name);
         }
-        for (let li of this.state.gui.__ul.childNodes[3].childNodes[0].childNodes[0].childNodes) {
+        for (let li of this.state.gui.__ul.childNodes[4].childNodes[0].childNodes[0].childNodes) {
             if (li.className === "title") { continue; }
             li.childNodes[0].childNodes[0].style.width = "100%"
         }

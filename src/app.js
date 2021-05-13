@@ -120,6 +120,7 @@ function renderPortal(thisIndex, pairIndex) {
     globals.PORTALS[thisIndex].mesh.material.stencilWrite = false
 }
 
+let timeTarget = 0;
 const onAnimationFrameHandler = (timeStamp) => {
     let renderer = consts.RENDERER
 
@@ -178,8 +179,14 @@ const onAnimationFrameHandler = (timeStamp) => {
     stats.update();
     scene.update && scene.update(timeStamp);
 
-    const timeStep = 1/60
-    globals.CANNON_WORLD.step(timeStep)
+    if (Date.now() >= timeTarget) {
+        const timeStep = 1/60
+        globals.CANNON_WORLD.step(timeStep)
+        timeTarget += 1000/globals.PHYSICS_UPDATEPERSEC_LIMIT
+        if (Date.now() >= timeTarget) {
+            timeTarget = Date.now()
+        }
+    }
     window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
