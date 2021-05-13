@@ -337,6 +337,17 @@ class MainScene extends Scene {
         // if (!this.state.controls.isLocked) { return; }
         if (!globals.CONTROLS.isLocked) { return; }
 
+        if (e.button == 1) {
+            if (globals.MAIN_CAMERA.zoom === 1) {
+                globals.MAIN_CAMERA.zoom = 3
+                globals.MAIN_CAMERA.updateProjectionMatrix()
+            } else {
+                globals.MAIN_CAMERA.zoom = 1
+                globals.MAIN_CAMERA.updateProjectionMatrix()
+            }
+            return
+        }
+
         // create raycaster
         let mouse = new Vector2(0,0)
         const raycaster = new Raycaster();
