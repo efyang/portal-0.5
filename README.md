@@ -241,7 +241,7 @@ This skeleton project was adapted from [edwinwebb's ThreeJS seed project](https:
 
 Tutorials:
 
-* Portal rendering and mechanics: [torinmr](https://torinmr.github.io/cs148/), [Thomas Rinsma](?term=aperture&page=2&position=1&page=2&position=1&related_id=2150454&origin=search), [Daniel Ilett](https://danielilett.com/2019-12-01-tut4-intro-portals/)
+* Portal rendering and mechanics: [torinmr](https://torinmr.github.io/cs148/), [Thomas Rinsma](https://th0mas.nl/2013/05/19/rendering-recursive-portals-with-opengl/), [Daniel Ilett](https://danielilett.com/2019-12-01-tut4-intro-portals/)
 
 * Player model animation: https://sbcode.net/threejs/fbx-animation/
 
